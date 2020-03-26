@@ -1,10 +1,8 @@
-# Puzzle ITC HELM Techlab
+# HELM Techlab
 
 In the guided hands-on techlab, we show the participants the Helm basics.
 
-For more see [Puzzle HELM Techlabs online](https://helm.puzzle.ch/).
-
-:rocket: Changing IT for the better with HELM!
+For more see [HELM Techlabs online](https://helm-techlab.k8s.puzzle.ch/).
 
 ## Content Sections
 
@@ -14,7 +12,7 @@ The main part are the labs, which can be found at [content/labs](content/labs).
 
 ## Hugo
 
-HELM Techlab is built using the static page generator [Hugo](https://gohugo.io/) and published under [helm.puzzle.ch](https://helm.puzzle.ch/).
+HELM Techlab is built using the static page generator [Hugo](https://gohugo.io/) and published under [helm-techlab.k8s.puzzle.ch](https://helm-techlab.k8s.puzzle.ch/).
 
 The page uses the [dot theme](https://github.com/themefisher/dot) which is included as a Git Submodule.
 
@@ -29,13 +27,13 @@ git submodule update --init --recursive
 Build the image:
 
 ```bash
-docker build --build-arg HUGO_BASE_URL=http://localhost:8080/ -t puzzle/helm-techlab:latest .
+docker build --build-arg HUGO_BASE_URL=http://localhost:8080/ -t dreng/helm-techlab:latest .
 ```
 
 Run it locally:
 
 ```bash
-docker run -i -p 8080:8080 puzzle/helm-techlab
+docker run -i -p 8080:8080 dreng/helm-techlab
 ```
 
 ## Contributions
