@@ -5,10 +5,11 @@ weight: 10
 
 This guide shows how to install the Helm CLI. Helm can be installed either from source, or from pre-built binary releases.
 
-### From the binary release
+### Helm v3
 
 Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
 
+v3.1.2 https://github.com/helm/helm/releases/tag/v3.1.2
 1. Download your desired version
 2. Unpack it (`tar -zxvf helm-v3.0.0-linux-amd64.tar.gz`)
 3. Find the helm binary in the unpacked directory, and move it to its desired destination (`mv linux-amd64/helm /usr/local/bin/helm`)
@@ -16,22 +17,50 @@ Every [release](https://github.com/helm/helm/releases) of Helm provides binary r
 From there, you should be able to run the client and [add the stable repo](https://helm.sh/docs/intro/quickstart/#initialize-a-helm-chart-repository): `helm help`.
 
 
-{{% notice tip %}}
-
-SAMPLE Note
-
-{{% /notice %}}
-
-{{% collapse solution-1 "Solution 1" %}}
-
-SAMPLE Collapse
-
-{{% /collapse %}}
-
 
 ### Helm v2 vs v3
 
+Helm v2 requires a server-side component to be running inside your Kubernetes cluster, the Helm Server or also know as **Tiller**. Tiller is the service that actually communicates with the Kubernetes API to manage our Helm packages.
+
+This implies that Tiller:
+
+* will usually need admin privileges: If a user wants to install a chart that contains any cluster-wide element like a ClusterRole or a CustomResourceDefinition (CRD), Tiller should be privileged enough to create or delete those resources.
+* should be accessible to any authenticated user: Any valid user of the cluster may require access to install a chart.
+
+That leads to a now-obvious security issue: escalation of privileges. Suddenly, users with minimum privileges are able to interact with the cluster as if they were administrators. The problem is bigger if a Kubernetes pod gets compromised: that compromised pod is also able to access the cluster as an administrator. That's indeed disturbing.
+
+With the v3 release, Helm got rid of this Tiller part.
+
+#### Mitigating the issues
+
+The official Helm documentation explains a few hints to mitigate these problems. Unfortunately, they don't directly suit this case:
+
+* Reducing Tiller permissions may be an obvious option. That doesn't fit our needs though. You’ll probably want cluster administrators to be able to install charts with cluster-wide components.
+* Securing Tiller endpoint with a TLS certificate. With this certificate, users not only need to have a valid user, but they also need access to Tiller certificate to contact it. A compromised pod isn’t able to access Tiller since you should restrict access to the certificate by default. The problem is that managing access to the certificate is difficult to maintain. Now cluster administrators need to apply rules to allow or deny access for every new user.
+* Running a Tiller instance per namespace. This way you can reduce Tiller permissions for certain instances, while leaving others privileged. Again, the downside with this solution is that it's difficult to maintain and now you are wasting resources, having duplicated deployments.
+
+### Helm v2 and Tiller setup
 
 
-### Tiller
+Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
 
+v2.16.5 https://github.com/helm/helm/releases/tag/v2.16.5
+
+1. Download your desired version
+2. Unpack it (`tar -zxvf helm-v2.16.5-linux-amd64.tar.gz)
+3. Find the helm binary in the unpacked directory, and move it to its desired destination (`mv linux-amd64/helm /usr/local/bin/helm`)
+
+For this Exercise, you can install Tiller in your own Namespace, but we also need to create a ServiceAccount and a Role & Rolebinding for Helm to work correctly:
+
+```
+kubectl create sa "tiller-[USER]"
+kubectl create role "tiller-role-[USER]" --namespace [USER] --verb=* --resource=*.,*.apps,*.batch,*.extensions
+kubectl create rolebinding "tiller-rolebinding-[USER]" --role="tiller-role-[USER]" --serviceaccount="[USER]:tiller-[USER]"
+helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
+```
+
+To not always add the namespace when calling `helm` (with `--tiller-namespace [USER]`), you can set the following environment variable:
+
+```
+export TILLER_NAMESPACE=[USER]
+```

@@ -27,3 +27,15 @@ Helm installs charts into Kubernetes, creating a new release for each installati
 
 TODO:
 
+
+{{% notice tip %}}
+
+SAMPLE Note
+
+{{% /notice %}}
+
+{{% collapse solution-1 "Solution 1" %}}
+
+SAMPLE Collapse
+
+{{% /collapse %}}
