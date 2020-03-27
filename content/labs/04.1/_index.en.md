@@ -1,5 +1,5 @@
 ---
-title: "4.1 - Deploy your own App"
+title: "4.1 - Deploy your awesome Application"
 weight: 41
 ---
 

@@ -163,3 +163,4 @@ spec:
 
 As you see, they look similar to the well known Kubernetes resource files, but have some control elements starting&ending with: `{{ }}`. Theres template files are rendered trough a [Go Template](https://golang.org/pkg/text/template/) rendering engine.
 
+For details on Chart templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/getting_started/)
