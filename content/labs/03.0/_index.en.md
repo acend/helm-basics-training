@@ -62,7 +62,7 @@ Watch the deployed application with helm ls and also check the Rancher WebGUI fo
 ```
 helm ls
 NAME             	REVISION	UPDATED                 	STATUS  	CHART       	APP VERSION 	NAMESPACE        
-altered-billygoat	1       	Thu Sep 26 14:06:59 2019	DEPLOYED	hackmd-1.2.1	1.3.0-alpine	team1-dockerimage
+altered-billygoat	1       	Thu Sep 26 14:06:59 2019	DEPLOYED	hackmd-1.2.1	1.3.0-alpine	team1
 ```
 
 As soon as all Deployments are ready (hackmd and postgres) you can open the application with the URL from your `values.yaml` file or by using the link inside the Rancher WebGUI.
@@ -78,9 +78,10 @@ helm upgrade --reuse-values --set image.tag=1.3.1-alpine quiet-squirrel stable/h
 
 *Note*: Make sure to use the correct release name, as shown with the helm ls command.
 
-
 And then observe how the Deployment was changed to a the new container image tag.
 
 ### Cleanup
 
+```
 helm delete --purge altered-billygoat
+```
