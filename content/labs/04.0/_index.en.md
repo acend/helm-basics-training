@@ -24,7 +24,7 @@ Remember "Lab 2.0 - Create a simple Chart"? Lets have a closer look. The chart c
 
 ### values.yaml
 
-In the `values.yaml` file you define your templates values used in your templates:
+In the `values.yaml` file you define your values used in your templates:
 
 ```yaml
 # Default values for test.
@@ -161,6 +161,6 @@ spec:
     {{- end }}
 ```
 
-As you see, they look similar to the well known Kubernetes resource files, but have some control elements starting&ending with: `{{ }}`. Theres template files are rendered trough a [Go Template](https://golang.org/pkg/text/template/) rendering engine.
+As you see, they look similar to the well known Kubernetes resource files, but have some control elements starting&ending with: `{{ }}`. These template files are rendered trough a [Go Template](https://golang.org/pkg/text/template/) rendering engine.
 
 For details on Chart templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/getting_started/)

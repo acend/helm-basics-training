@@ -8,11 +8,11 @@ Using the generated Helm Chart, we are going to deploy our own application.
 
 ### Task 1: Change deployment.yml Template and values.yml File
 
-Our Container Image has the name `appuio/example-spring-boot:latest`. Change the content of your `deployment.yml` and `values.yml` so a Pod with the `the example-spring-boot` image is started instead of the `nginx` image from the default chart your created with `helm create mychart` in Lab 2.
+Our Container Image has the name `appuio/example-spring-boot:latest` and is a very basic Springboot application. Change the content of your `deployment.yml` and `values.yml` so a Pod with the `example-spring-boot` image is started instead of the `nginx` image from the default chart your created with `helm create mychart` in lab 2.
 
-The `appuio/example-spring-boot:latest` application has a health check running on port `8080` and path `/health`. Change the existing `deployment.yaml` to suit for this.
+The `appuio/example-spring-boot:latest` application is running on port `8080`. Change the existing `deployment.yaml` to suit for this.
 
-After the changes, try to create a release from your template.
+After the changes, create or upgrade a release from your template.
 
 {{% collapse solution-2 "Solution Task 1" %}}
 
@@ -27,7 +27,7 @@ In your `values.yaml` you currently only have to change `image.repository` with 
 replicaCount: 1
 
 image:
-  repository: appuio/example-spring-boot:latest
+  repository: appuio/example-spring-boot
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -128,11 +128,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /health
+              path: /
               port: http
           readinessProbe:
             httpGet:
-              path: /health
+              path: /
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -150,6 +150,8 @@ spec:
     {{- end }}
 
 ``` 
+
+As you see, the Deployment uses `{{ .Chart.AppVersion }}` for the image tage name. So you have to change this to `latest` in your `charts.yaml`
 
 To create a release, run within your chart directory:
 
