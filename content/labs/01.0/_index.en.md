@@ -59,8 +59,13 @@ kubectl create rolebinding "tiller-rolebinding-[USER]" --role="tiller-role-[USER
 helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
 ```
 
+{{% notice tip %}}
+
 To not always add the namespace when calling `helm` (with `--tiller-namespace [USER]`), you can set the following environment variable:
 
 ```
 export TILLER_NAMESPACE=[USER]
 ```
+
+{{% /notice %}}
+

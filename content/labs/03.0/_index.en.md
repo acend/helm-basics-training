@@ -76,7 +76,12 @@ We are now going to upgrade the application to a newer Container image. You can 
 helm upgrade --reuse-values --set image.tag=1.3.1-alpine quiet-squirrel stable/hackmd
 ```
 
-*Note*: Make sure to use the correct release name, as shown with the helm ls command.
+{{% notice tip %}}
+
+Make sure to use the correct release name, as shown with the helm ls command.
+
+{{% /notice %}}
+
 
 And then observe how the Deployment was changed to a the new container image tag.
 

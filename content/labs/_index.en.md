@@ -14,10 +14,12 @@ weight: 2
 ### Prerequisites
 
 * We assume you have knowlege about Kubernetes and do understand the concepts behind [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/), [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Services](https://kubernetes.io/docs/concepts/services-networking/service/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Secrets](https://kubernetes.io/docs/concepts/services-networking/service/)
+* You also should have `kubectl` installed and a working context to access a Kubernetes Cluster.
 
 
 ### Helm Overview
 
+Ok, let's start with Helm. 
 First, you have to understand the following 3 Helm concepts: **Chart**, **Repository** and **Release**.
 
 A **Chart** is a Helm package. It contains all of the resource definitions necessary to run an application, tool, or service inside of a Kubernetes cluster. Think of it like the Kubernetes equivalent of a Homebrew formula, an Apt dpkg, or a Yum RPM file.

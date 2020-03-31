@@ -167,7 +167,7 @@ data:
 
 ```
 
-Notice the `| b64enc` which is a builtin function to encode string with base64
+Notice the `| b64enc`, which is a builtin function to encode string with base64
 
 
 The Service for your MySQL database should look like this:
@@ -218,7 +218,7 @@ helm upgrade myreleasename .
 
 ### Task 2: Add Environment Variables to use the MySQL Database in your App
 
-We need some environment variables in our Deployment. The Goal of this Task is to allow a user to set them via values.
+We need some environment variables in our Deployment. The goal of this Task is to allow a user to set them via values.
 
 Add the following environment variables:
 
@@ -226,7 +226,6 @@ Add the following environment variables:
 * `SPRING_DATASOURCE_PASSWORD` value from secret you created in task 1
 * `SPRING_DATASOURCE_DRIVER_CLASS_NAME` with value `com.mysql.jdbc.Driver`
 * `SPRING_DATASOURCE_URL` with value `jdbc:mysql://springboot-mysql/springboot?autoReconnect=true`
-
 
 
 {{% collapse solution-2 "Solution Task 2" %}}
@@ -317,7 +316,11 @@ database:
   driver: com.mysql.jdbc.Driver
 ```
 
+{{% notice tip %}}
+
 Make your the `url` contains the correct Service Name. The Service Name is build based on the chartname `{{ include "mychart.fullname" . }}-mysql` (see template for the Service aboce)
+
+{{% /notice %}}
 
 To upgrade your existing release run: 
 

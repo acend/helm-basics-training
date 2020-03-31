@@ -172,6 +172,11 @@ helm upgrade myreleasename .
 
 The template folder does already have a file for an ingress and there are some variables in `values.yaml` to configure the ingress. Set the correct values for your app and upgrade it.
 
+{{% notice tip %}}
+
+The corrent values for your ingress depends on your Kubernetes Cluster, ask your teacher for correct values.
+
+{{% /notice %}}
 
 
 {{% collapse solution-2 "Solution Task 2" %}}
@@ -194,7 +199,7 @@ ingress:
   #      - chart-example.local
 ```
 
-So `ingress.enabled` is set to `true` and you have to define a `host` for your ingress (this depends on your lab setup, ask your teacher for correct falues). Furthermore, we have to define a `path` to your app. Lets have a look into your ingress template file to understand whats happening with the `host` & `path` array.
+So `ingress.enabled` is set to `true` and you have to define a `host` for your ingress. Furthermore, we have to define a `path` to your app. Lets have a look into your ingress template file to understand whats happening with the `host` & `path` array.
 
 ```yaml
 
