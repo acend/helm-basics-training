@@ -9,7 +9,7 @@ In this extended lab, we are going to deploy an existing application with a Helm
 
 Check out [Helm Hub](https://hub.helm.sh/), there you find a lot of Helm charts. For this lab, we choose [Wordpress](https://hub.helm.sh/charts/bitnami/wordpress), a publishing platform for building blogs and websites.
 
-### HackMD
+### Wordpress
 
 This Wordpress Helm Chart ist published in the bitnami Helm repository. First, add the bitnami repo to your local repo list:
 

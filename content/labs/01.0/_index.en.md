@@ -47,7 +47,7 @@ Every [release](https://github.com/helm/helm/releases) of Helm provides binary r
 v2.16.5 https://github.com/helm/helm/releases/tag/v2.16.5
 
 1. Download your desired version
-2. Unpack it (`tar -zxvf helm-v2.16.5-linux-amd64.tar.gz)
+2. Unpack it (`tar -zxvf helm-v2.16.5-linux-amd64.tar.gz`)
 3. Find the helm binary in the unpacked directory, and move it to its desired destination (`mv linux-amd64/helm /usr/local/bin/helm`)
 
 For this Exercise, you can install Tiller in your own Namespace, but we also need to create a ServiceAccount and a Role & Rolebinding for Helm to work correctly:
