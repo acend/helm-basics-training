@@ -35,6 +35,8 @@ updateStrategy:
   type: Recreate
 
 mariadb:
+  db:
+    password: mysuperpassword123
   master:
     persistence:
       size: 1Gi
@@ -82,13 +84,13 @@ As soon as all Deployments are ready (wordpress and mariadb) you can open the ap
 
 ### Upgrade
 
-We are now going to upgrade the application to a newer Container image. You can do this with:
+We are now going to upgrade the application to a newer Helm Chart version. You can do this with:
 
 ```
 helm upgrade -f values.yaml --version 9.1.1 wordpress bitnami/wordpress
 ```
 
-And then observe how the Deployment was changed to a the new container image tag.
+And then observe the changes in your Wordpress and MariaDB Apps
 
 ### Cleanup
 
