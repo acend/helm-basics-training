@@ -70,7 +70,7 @@ data:
   root-password: bXlwYXNzd29yZA==
 ```
 
-When creating the template files, make sure that a user can specify the `password` and `root-password`from the secret using a variable.
+When creating the template files, make sure that a user can specify the `password` and `root-password` from the secret using a variable.
 
 To connect to the database, you also need a Service:
 
@@ -84,6 +84,7 @@ metadata:
 spec:
   ports:
     - port: 3306
+      targetPort: mysql
   selector:
     app: example-spring-boot
     tier: mysql
@@ -104,9 +105,10 @@ The template file for the MySQL database `templates/deploy-mysql.yaml` could loo
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: name: {{ include "mychart.fullname" . }}-mysql
+  name: {{ include "mychart.fullname" . }}-mysql
   labels:
     {{- include "mychart.labels" . | nindent 4 }}
+    tier: mysql
 spec:
   selector:
     matchLabels:
@@ -131,12 +133,12 @@ spec:
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-password
+              name: "{{ .Values.database.secretName }}"
               key: "{{ .Values.database.secretKey }}"
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-root-password
+              name: "{{ .Values.database.secretName }}"
               key: "{{ .Values.database.secretKeyroot }}"
         ports:
         - containerPort: 3306
@@ -150,7 +152,7 @@ spec:
 
 ```
 
-The secret `templates/mysql-secret.yaml` file could look like this:
+The secret `templates/mysql-secret.yaml` file should look like this:
 
 
 ```yaml
@@ -160,8 +162,32 @@ kind: Secret
 metadata:
   name: mysql-root-password
 data:
-  password: {{ .Values.database.password }}
-  rootpassword: {{ .Values.database.rootpassword }}
+  password: {{ .Values.database.password | b64enc }}
+  rootpassword: {{ .Values.database.rootpassword | b64enc}}
+
+```
+
+Notice the `| b64enc` which is a builtin function to encode string with base64
+
+
+The Service for your MySQL database should look like this:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mychart.fullname" . }}-mysql
+  labels:
+    {{- include "mychart.labels" . | nindent 4 }}
+    tier: mysql
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+      protocol: TCP
+  selector:
+    {{- include "mychart.selectorLabels" . | nindent 4 }}
+    tier: mysql
 
 ```
 
@@ -172,9 +198,11 @@ database:
   host: myhost
   user: springboot
   dbname: sprintboot
-  secretName: secretName
+  secretName: mysql-root-password
   secretKey: password
   secretKeyroot: rootpassword
+  password: mysuperpassword123
+  rootpassword: mysuperrootpassword123
 ```
 
 To upgrade your existing release run: 
@@ -235,18 +263,18 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-              env:
-              - name: SPRING_DATASOURCE_URL
-                value: "{{ .Values.database.url }}"
-              - name: SPRING_DATASOURCE_USERNAME
-                value: "{{ .Values.database.user }}"
-              - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
-                value: "{{ .Values.database.driver }}"
-              - name: SPRING_DATASOURCE_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: {{ .Values.database.secretName }}
-                    key: {{ .Values.database.secretKey }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "{{ .Values.database.url }}"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "{{ .Values.database.user }}"
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: "{{ .Values.database.driver }}"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secretName }}
+                  key: {{ .Values.database.secretKey }}
           ports:
             - name: http
               containerPort: 8080
@@ -281,13 +309,15 @@ and your `values.yaml` should contain now (including the previously defined valu
 database:
   host: myhost
   user: springboot
-  dbname: sprintboot
+  dbname: springboot
   secretName: secretName
   secretKey: password
   secretKeyroot: rootpassword
   url: jdbc:mysql://springboot-mysql/springboot?autoReconnect=true
   driver: com.mysql.jdbc.Driver
 ```
+
+Make your the `url` contains the correct Service Name. The Service Name is build based on the chartname `{{ include "mychart.fullname" . }}-mysql` (see template for the Service aboce)
 
 To upgrade your existing release run: 
 
