@@ -18,20 +18,20 @@ This template is already a valid and fully functional chart which deploys NGINX.
 Before actually deploying our generated chart, we can check the (to be) generated Kubernetes ressources with the following Command:
 
 ```bash
-helm install --dry-run --debug --namespace [USER]-dockerimage mychart
+helm install --dry-run --debug --namespace [USER] mychart
 ```
 
 Finally, the following command creates a new Release with the Helm chart and deploys the application::
 
 ```bash
-helm install mychart --namespace [USER]-dockerimage
+helm install mychart --namespace [USER]
 ```
 
-With kubectl get pods --namespace [USER]-dockerimage you should see a new Pod. You can list the newly created Helm release with 
+With kubectl get pods --namespace [USER] you should see a new Pod. You can list the newly created Helm release with 
 the following command:
 
 ```bash
-helm ls --namespace [USER]-dockerimage
+helm ls --namespace [USER]
 ```
 
 
@@ -41,13 +41,13 @@ Your deployed NGINX is not yet accessible from external. To expose it, you have 
 now for the service type definition in your chart and make the change. You can apply your change with the following command:
 
 ```bash
-helm upgrade [RELEASE] --namespace [namespace] mychart
+helm upgrade [RELEASE] --namespace [USER] mychart
 ```
 
 As soon as the Service has a NodePort, you will see it with the following command (As we use -w (watch) you have to terminate the command with CTRL-C):
 
 ```bash
-kubectl get svc --namespace [namespace] -w
+kubectl get svc --namespace [USER] -w
 ```
 
 NGINX is now available at the given NodePort and should display a welcome-page when accessing it with curl or you can also open the page in your browser:
@@ -61,4 +61,4 @@ To remove an application, you can simply remove the Helm release with the follow
 helm delete [RELEASE]
 ```
 
-With `kubectl get pods --namespace [USER]-dockerimage` you should now longer see your application Pod.
+With `kubectl get pods --namespace [USER]` you should now longer see your application Pod.

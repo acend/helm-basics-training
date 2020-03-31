@@ -1,6 +1,6 @@
 ---
-title: "4.1 - Add a database to your app"
-weight: 41
+title: "4.2 - Add a database to your app"
+weight: 42
 ---
 
 ### Task 1: Create Template Files for MySQL Deployment
