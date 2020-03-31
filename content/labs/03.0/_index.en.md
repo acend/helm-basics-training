@@ -7,65 +7,77 @@ In this extended lab, we are going to deploy an existing application with a Helm
 
 ### Helm Hub
 
-Check out [Helm Hub](https://hub.helm.sh/), there you find a lot of Helm charts. For this lab, we choose [HackMD](https://hub.helm.sh/charts/stable/hackmd) a realtime, multiplatform collaborative markdown note editor.
+Check out [Helm Hub](https://hub.helm.sh/), there you find a lot of Helm charts. For this lab, we choose [Wordpress](https://hub.helm.sh/charts/bitnami/wordpress), a publishing platform for building blogs and websites.
 
 ### HackMD
 
-The official HackMD Helm-Chart ist published in the stable Helm repository. First, make sure that you have the stable repo added in your Helm client.
+This Wordpress Helm Chart ist published in the bitnami Helm repository. First, add the bitnami repo to your local repo list:
 
 ```
-helm repo list
+$ helm repo add bitnami https://charts.bitnami.com/bitnami
+$ helm repo list
 NAME           	URL                                              
-stable         	https://kubernetes-charts.storage.googleapis.com 
-local          	http://127.0.0.1:8879/charts
-```
-
-
-which should already be the case. If, for any reason, you don't have the stable repo, you can add it by typing:
+bitnami         https://charts.bitnami.com/bitnami 
 
 ```
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-```
 
-Let's check the available configuration for this Helm chart. Normally you find them in the `values.yaml` File inside the repository or described in the charts readme.
+Let's check the available configuration for this Helm chart. Normally you find them in the `values.yaml` File inside the repository or described in the charts readme. You can also check them on the Helm Hub page: https://hub.helm.sh/charts/bitnami/wordpress
 
-We are going to override some of the values, for that purpose, create a new values.yaml file locally on your workstation with the following content:
+We are going to override some of the values, for that purpose, create a new `values.yaml` file locally on your workstation with the following content:
 
 ```yaml
-image:
-  tag: 1.3.0-alpine
+---
 persistence:
-  storageClass: TODO
   size: 1Gi
+service:
+  type: ClusterIP
+updateStrategy: 
+  type: Recreate
+
+mariadb:
+  master:
+    persistence:
+      size: 1Gi
 ingress:
   enabled: true
-  hosts:
-    - TODO
-postgresql:
-  persistence:
-    size: 1Gi
-    storageClass: TODO
-  postgresPassword: my-secret-password
+  hostname: helmtechlab-wordpress.k8s-internal.puzzle.ch
 ```
 
 
-If you look inside the requirements.yaml file of the HackMD Chart you see a dependency to the postgresql Helm chart. All the postgresql values are used by this dependent Helm chart and the chart is automaticly deployed when installing HackMD.
+If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/requirements.yaml) file of the Workdpress Chart you see a dependency to the mariadb Helm chart. All the mariadb values are used by this dependent Helm chart and the chart is automaticly deployed when installing Wordpress.
 
-Now deploy the application with:
-
-```
-helm install -f values.yaml stable/hackmd
-```
-
-Watch the deployed application with helm ls and also check the Rancher WebGUI for the newly created Deployments, the Ingress and also the PersistenceVolumeClaim.
+Now deploy the application with (we choose the Helm Chart version 9.0.4 as we wan't to update later)
 
 ```
-helm ls
-NAME             	REVISION	UPDATED                 	STATUS  	CHART       	APP VERSION 	NAMESPACE        
-altered-billygoat	1       	Thu Sep 26 14:06:59 2019	DEPLOYED	hackmd-1.2.1	1.3.0-alpine	team1
+helm install wordpress -f values.yaml --version 9.0.4 bitnami/wordpress
 ```
 
-As soon as all Deployments are ready (hackmd and postgres) you can open the application with the URL from your `values.yaml` file or by using the link inside the Rancher WebGUI.
+Watch the deployed application with `helm ls` and `kubectl get deploy,pod,ingress,pvc` for the newly created Deployments, the Ingress and also the PersistenceVolumeClaim.
+
+```bash
+$ helm ls                                                                
+NAME     	NAMESPACE      	REVISION	UPDATED                                 	STATUS  	CHART          	APP VERSION
+wordpress	helmtechlab-spl	1       	2020-03-31 13:23:17.213961038 +0200 CEST	deployed	wordpress-9.0.4	5.3.2
+```
+
+```bash
+kubectl get deploy,pod,ingress,pvc
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/wordpress   1/1     1            1           2m6s
+
+NAME                             READY   STATUS    RESTARTS   AGE
+pod/wordpress-6bf6df9c5d-w4fpx   1/1     Running   0          2m6s
+pod/wordpress-mariadb-0          1/1     Running   0          2m6s
+
+NAME                           HOSTS                                          ADDRESS       PORTS   AGE
+ingress.extensions/wordpress   helmtechlab-wordpress.k8s-internal.puzzle.ch   10.100.1.10   80      2m6s
+
+NAME                                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS            AGE
+persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86-b7ed-a3a183f700fd   1Gi        RWO            cloudscale-volume-ssd   2m6s
+persistentvolumeclaim/wordpress                  Bound    pvc-83ebf739-0b0e-45a2-936e-e925141a0d35   1Gi        RWO            cloudscale-volume-ssd   2m7s
+```
+
+As soon as all Deployments are ready (wordpress and mariadb) you can open the application with the URL from your Ingress defined in `values.yaml`.
 
 
 ### Upgrade
@@ -73,20 +85,13 @@ As soon as all Deployments are ready (hackmd and postgres) you can open the appl
 We are now going to upgrade the application to a newer Container image. You can do this with:
 
 ```
-helm upgrade --reuse-values --set image.tag=1.3.1-alpine quiet-squirrel stable/hackmd
+helm upgrade -f values.yaml --version 9.1.1 wordpress bitnami/wordpress
 ```
-
-{{% notice tip %}}
-
-Make sure to use the correct release name, as shown with the helm ls command.
-
-{{% /notice %}}
-
 
 And then observe how the Deployment was changed to a the new container image tag.
 
 ### Cleanup
 
 ```
-helm delete --purge altered-billygoat
+helm uninstall wordpress
 ```
