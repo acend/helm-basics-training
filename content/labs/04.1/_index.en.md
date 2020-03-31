@@ -8,50 +8,112 @@ Using the generated Helm Chart, we are going to deploy our own application.
 
 ### Task 1: Change deployment.yml Template and values.yml File
 
-Our Container Image has the name `registry.puzzle.ch/dreng/myawesomeapp:latest`. With this, try to change the content of your `deplyment.yml` and `values.yml`.
+Our Container Image has the name `appuio/example-spring-boot:latest`. Change the content of your `deployment.yml` and `values.yml` so a Pod with the `the example-spring-boot` image is started instead of the `nginx` image from the default chart your created with `helm create mychart` in Lab 2.
 
+The `appuio/example-spring-boot:latest` application has a health check running on port `8080` and path `/health`. Change the existing `deployment.yaml` to suit for this.
 
-### Task 2: Add Environment Variables to the deployment.yml Template and values.yml
+After the changes, try to create a release from your template.
 
-We need some environment variables in our Deployment. Can you figure out how to add them? The Goal of this Task is to allow a user to set them via values.
+{{% collapse solution-2 "Solution Task 1" %}}
 
-Add the following environment variables:
+In your `values.yaml` you currently only have to change `image.repository` with the new image name.
 
-* `DATABASE_HOST`
-* `DATABASE_USER`
-* `DATABASE_PASSWORD`
-* `DATABASE_NAME`
+```yaml
 
-The `DATABASE_PASSWORD` should be read from a Kubernetes Secret
+# Default values for test.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
 
+replicaCount: 1
 
+image:
+  repository: appuio/example-spring-boot:latest
+  pullPolicy: IfNotPresent
 
-### Solution Task 2:
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
 
-{{% collapse solution-2 "Solution Task 2" %}}
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+```
+
+And then your `deployment.yaml` should look like this:
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "test.fullname" . }}
+  name: {{ include "mychart.fullname" . }}
   labels:
-    {{- include "test.labels" . | nindent 4 }}
+    {{- include "mychart.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "test.selectorLabels" . | nindent 6 }}
+      {{- include "mychart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "test.selectorLabels" . | nindent 8 }}
+        {{- include "mychart.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "test.serviceAccountName" . }}
+      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -60,29 +122,17 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-              env:
-              - name: DATABASE_HOST
-                value: "{{ .Values.database.host }}"
-              - name: DATABASE_USER
-                value: "{{ .Values.database.user }}"
-              - name: DATABASE_NAME
-                value: "{{ .Values.database.name }}"
-              - name: DATABASE_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: {{ .Values.database.secretName }}
-                    key: {{ .Values.database.secretKey }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -98,31 +148,19 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-```
-
-and your `values.yaml` should contain now:
 
 ``` 
-database:
-  host: myhost
-  user: myuser
-  name: myname
-  secretName: secretName
-  secretKey: password
+
+To create a release, run within your chart directory:
+
+```bash
+helm install myapp .
 ```
 
-and of course, you also need the Kubernetes Secret containing the `DATABASE_PASSWORD`
+this will create a new release with the name `myapp`. If you already have installed a release and want to update the existing one, use the following command:
 
-this could look like:
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: secretName
-data:
-  password: bXlwYXNzd29yZA==
+```bash
+helm upgrade myreleasename .
 ```
 
 {{% /collapse %}}
-
