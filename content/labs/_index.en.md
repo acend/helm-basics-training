@@ -9,6 +9,11 @@ weight: 2
 [Helm](https://github.com/helm/helm) is a [Cloud Native Foundation](https://www.cncf.io/) project to define, install and manage applications in Kubernetes.
 
 
+### Prerequisites
+
+* We assume you have knowlege about Kubernetes and do understand the concepts behind [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/), [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Services](https://kubernetes.io/docs/concepts/services-networking/service/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Secrets](https://kubernetes.io/docs/concepts/services-networking/service/)
+
+
 ### Helm Overview
 
 First, you have to understand the following 3 Helm concepts: **Chart**, **Repository** and **Release**.
