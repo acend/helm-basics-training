@@ -174,7 +174,7 @@ The template folder does already have a file for an ingress and there are some v
 
 
 
-{{% collapse solution-1 "Solution Task 1" %}}
+{{% collapse solution-2 "Solution Task 2" %}}
 
 Your `values.yaml` should look like this:
 
