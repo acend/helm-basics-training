@@ -14,7 +14,7 @@ The `appuio/example-spring-boot:latest` application is running on port `8080`. C
 
 After the changes, create or upgrade a release from your template.
 
-{{% collapse solution-2 "Solution Task 1" %}}
+{{% collapse solution-1 "Solution Task 1" %}}
 
 In your `values.yaml` you currently only have to change `image.repository` with the new image name.
 
@@ -164,5 +164,84 @@ this will create a new release with the name `myapp`. If you already have instal
 ```bash
 helm upgrade myreleasename .
 ```
+
+{{% /collapse %}}
+
+
+### Task 2: Create Ingress to access the App
+
+The template folder does already have a file for an ingress and there are some variables in `values.yaml` to configure the ingress. Set the correct values for your app and upgrade it.
+
+
+
+{{% collapse solution-1 "Solution Task 1" %}}
+
+Your `values.yaml` should look like this:
+
+```yaml
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: YOUR_INRESS_NAME
+      paths:
+      - /
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+```
+
+So `ingress.enabled` is set to `true` and you have to define a `host` for your ingress (this depends on your lab setup, ask your teacher for correct falues). Furthermore, we have to define a `path` to your app. Lets have a look into your ingress template file to understand whats happening with the `host` & `path` array.
+
+```yaml
+
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "test.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "test.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+{{- end }}
+
+```
+
+As you see, there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` which loops trough all the values in the `host` array. The same happens to the `path` value.
 
 {{% /collapse %}}
