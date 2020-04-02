@@ -32,19 +32,16 @@ With these concepts in mind, we can now explain Helm like this:
 
 Helm installs charts into Kubernetes, creating a new release for each installation. And to find new charts, you can search Helm chart repositories.
 
-### Techlab Setup
+### Task: Techlab Setup
 
-TODO:
+Make sure you have access to a Kubernetes Cluster and `kubectl` is configured the right context. For the following labs we are going to create a Namespace. You can choose any name, we suggest using e.g. your Username. In the labs we are going to use `[USER]` as a placeholder for your created Namespace.
 
+```bash
+kubectl create ns [USER]
+``` 
 
-{{% notice tip %}}
+{{% notice Special Notes for Die Mobiliar %}}
 
-SAMPLE Note
+Create the Namespace with your Mobiliar Rancher WebGUI inside a Feature Team on your dev Cluster.
 
 {{% /notice %}}
-
-{{% collapse solution-1 "Solution 1" %}}
-
-SAMPLE Collapse
-
-{{% /collapse %}}

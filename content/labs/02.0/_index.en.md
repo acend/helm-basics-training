@@ -6,16 +6,36 @@ weight: 20
 
 ### Task 1
 
+In this lab, we use the `helm` cli to create our very first Helm Chart:
+
 ```bash
 helm create mychart
 ```
 
-This template is already a valid and fully functional chart which deploys NGINX. Have a look now on the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later Section you find all the information about Helm templates
+This template is already a valid and fully functional chart which deploys NGINX. Have a look now on the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later Section you find all the information about Helm templates.
+
+
+{{% notice Special Notes for Die Mobiliar %}}
+
+You can use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image instead of `nginx` which you cannot pull on your Kubernetes cluster.
+
+So change your `values.yaml` file in the newly created `mychart`diretory.
+
+```
+[...]
+image:
+  repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx
+  pullPolicy: IfNotPresent
+[...]
+```
+
+{{% /notice %}}
+
 
 
 ### Task 2
 
-Before actually deploying our generated chart, we can check the (to be) generated Kubernetes ressources with the following Command:
+Before actually deploying our generated chart, we can check the (to be) generated Kubernetes ressources with the following command:
 
 ```bash
 helm install --dry-run --debug --namespace [USER] mychart
