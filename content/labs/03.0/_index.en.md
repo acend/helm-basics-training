@@ -48,11 +48,9 @@ ingress:
 
 If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/requirements.yaml) file of the Workdpress Chart you see a dependency to the mariadb Helm chart. All the mariadb values are used by this dependent Helm chart and the chart is automaticly deployed when installing Wordpress.
 
-Now deploy the application with (we choose the Helm Chart version 9.0.4 as we wan't to update later)
-
-{{% notice tip %}}
-
-**Die Mobiliar**
+{{% notice warning %}}
+**Die Mobiliar**: Have a look at the following special instructions
+{{% /notice %}}
 
 The chart in this version uses as the container images for wordpress and mariadb:
 
@@ -75,7 +73,7 @@ mariadb:
 [...]
 ```
 
-{{% /notice %}}
+Now deploy the application with (we choose the Helm Chart version 9.0.4 as we wan't to update later)
 
 ```
 helm install wordpress -f values.yaml --version 9.0.4 bitnami/wordpress

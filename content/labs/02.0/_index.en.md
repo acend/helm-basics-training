@@ -15,9 +15,9 @@ helm create mychart
 This template is already a valid and fully functional chart which deploys NGINX. Have a look now on the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later Section you find all the information about Helm templates.
 
 
-{{% notice tip %}}
-
-**Die Mobiliar**
+{{% notice warning %}}
+**Die Mobiliar**: Have a look at the following special instructions
+{{% /notice %}}
 
 You can use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image instead of `nginx` which you cannot pull on your Kubernetes cluster.
 
@@ -30,9 +30,6 @@ image:
   pullPolicy: IfNotPresent
 [...]
 ```
-
-{{% /notice %}}
-
 
 
 ### Task 2
