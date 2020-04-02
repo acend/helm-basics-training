@@ -39,6 +39,12 @@ That leads to a now-obvious security issue: escalation of privileges. Suddenly, 
 
 With the v3 release, Helm got rid of this Tiller part.
 
+{{% notice tip %}}
+Check out the [Helm Documentation](https://helm.sh/docs/topics/v2_v3_migration/) for more details about changes between v2 and v3.
+{{% /notice %}}
+
+
+
 #### Mitigating the issues
 
 The official Helm documentation explains a few hints to mitigate these problems. Unfortunately, they don't directly suit this case:
