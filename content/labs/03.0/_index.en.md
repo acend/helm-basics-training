@@ -71,7 +71,9 @@ mariadb:
 [...]
 ```
 
-and you can use the following settings for your ingress if you wan't to open the Wordpress instance after deployment.
+the Image tag remains as defined in the Chart `values.yaml` file.
+
+and you can use the following settings for your ingress if you wan't to open the Wordpress instance after deployment (altought this is not really necessary for this lab).
 
 ```yaml
 [...]
@@ -84,19 +86,19 @@ ingress:
 Now deploy the application with (we choose the Helm Chart version 9.0.4 as we wan't to update later)
 
 ```
-helm install wordpress -f values.yaml --version 9.0.4 bitnami/wordpress
+helm install wordpress -f values.yaml --namespace [USER] --version 9.0.4 bitnami/wordpress
 ```
 
 Watch the deployed application with `helm ls` and `kubectl get deploy,pod,ingress,pvc` for the newly created Deployments, the Ingress and also the PersistenceVolumeClaim.
 
 ```bash
-$ helm ls                                                                
+$ helm ls --namespace [USER]                                                            
 NAME     	NAMESPACE      	REVISION	UPDATED                                 	STATUS  	CHART          	APP VERSION
-wordpress	helmtechlab-spl	1       	2020-03-31 13:23:17.213961038 +0200 CEST	deployed	wordpress-9.0.4	5.3.2
+wordpress	[USER]        	1       	2020-03-31 13:23:17.213961038 +0200 CEST	deployed	wordpress-9.0.4	5.3.2
 ```
 
 ```bash
-kubectl get deploy,pod,ingress,pvc
+kubectl -n [USER] get deploy,pod,ingress,pvc
 NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/wordpress   1/1     1            1           2m6s
 
@@ -120,7 +122,7 @@ As soon as all Deployments are ready (wordpress and mariadb) you can open the ap
 We are now going to upgrade the application to a newer Helm Chart version. You can do this with:
 
 ```
-helm upgrade -f values.yaml --version 9.1.1 wordpress bitnami/wordpress
+helm upgrade -f values.yaml --namespace [USER] --version 9.1.1 wordpress bitnami/wordpress
 ```
 
 And then observe the changes in your Wordpress and MariaDB Apps
@@ -128,5 +130,5 @@ And then observe the changes in your Wordpress and MariaDB Apps
 ### Cleanup
 
 ```
-helm uninstall wordpress
+helm uninstall wordpress --namespace [USER]
 ```
