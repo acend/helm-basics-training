@@ -97,7 +97,7 @@ tolerations: []
 affinity: {}
 ```
 
-When instantiating a Release from a Chart, you can overwrite these values.
+When instantiating a Release from a Chart, you can overwrite these values, which allows you to specify you environment specific values.
 
 ### Templates
 

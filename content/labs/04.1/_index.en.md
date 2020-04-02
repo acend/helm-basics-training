@@ -14,6 +14,12 @@ The `appuio/example-spring-boot:latest` application is running on port `8080`. C
 
 After the changes, create or upgrade a release from your template.
 
+{{% notice warning %}}
+**Die Mobiliar**: You can use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` container image
+{{% /notice %}}
+
+
+
 {{% collapse solution-1 "Solution Task 1" %}}
 
 In your `values.yaml` you currently only have to change `image.repository` with the new image name.
@@ -151,9 +157,34 @@ spec:
 
 ``` 
 
-As you see, the Deployment uses `{{ .Chart.AppVersion }}` for the image tage name. So you have to change this to `latest` in your `charts.yaml`
+As you see, the Deployment uses `{{ .Chart.AppVersion }}` for the image tage name. So you have to change this to `latest` in your `charts.yaml`:
 
-To create a release, run within your chart directory:
+```yaml
+apiVersion: v2
+name: mychart
+description: A Helm chart for Kubernetes
+
+# A chart can be either an 'application' or a 'library' chart.
+#
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+version: 0.1.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+appVersion: latest
+
+```
+
+To create a release from your chart, run this within your chart directory:
 
 ```bash
 helm install myapp .
@@ -173,9 +204,7 @@ helm upgrade myreleasename .
 The template folder does already have a file for an ingress and there are some variables in `values.yaml` to configure the ingress. Set the correct values for your app and upgrade it.
 
 {{% notice tip %}}
-
 The corrent values for your ingress depends on your Kubernetes Cluster, ask your teacher for correct values.
-
 {{% /notice %}}
 
 

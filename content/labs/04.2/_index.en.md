@@ -58,6 +58,10 @@ spec:
 
 ```
 
+{{% notice warning %}}
+**Die Mobiliar**: You can use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mysql:5.6` container image
+{{% /notice %}}
+
 You also have to create a template for the `mysql-root-password` Secret:
 
 ```yaml

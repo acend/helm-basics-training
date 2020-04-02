@@ -40,9 +40,6 @@ mariadb:
   master:
     persistence:
       size: 1Gi
-ingress:
-  enabled: true
-  hostname: helmtechlab-wordpress.k8s-internal.puzzle.ch
 ```
 
 
@@ -67,9 +64,20 @@ image:
   repository: puzzle/helm-techlab/wordpress
 
 mariadb:
-  registry: registry.mobicorp.ch
-  repository: puzzle/helm-techlab/mariadb
+  image:
+    registry: registry.mobicorp.ch
+    repository: puzzle/helm-techlab/mariadb
 
+[...]
+```
+
+and you can use the following settings for your ingress if you wan't to open the Wordpress instance after deployment.
+
+```yaml
+[...]
+ingress:
+  enabled: true
+  hostname: helmtechlab-wordpress-[USER].phoenix.mobicorp.ch
 [...]
 ```
 
