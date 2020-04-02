@@ -16,12 +16,12 @@ The created chart is now in the `mychart` directory and already a valid and full
 
 
 {{% notice warning %}}
-**Die Mobiliar**: Have a look at the following special instructions
+**Die Mobiliar:** Have a look at the following special instructions
 {{% /notice %}}
 
 You can use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image instead of `nginx` which you cannot pull on your Kubernetes cluster.
 
-So change your `values.yaml` so match the following:
+So change your `values.yaml` to match the following:
 
 ```
 [...]
