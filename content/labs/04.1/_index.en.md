@@ -278,4 +278,8 @@ spec:
 
 As you see, there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` which loops trough all the values in the `host` array. The same happens to the `path` value.
 
+{{% notice tip %}}
+For details on Flow Control, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/control_structures/)
+{{% /notice %}}
+
 {{% /collapse %}}

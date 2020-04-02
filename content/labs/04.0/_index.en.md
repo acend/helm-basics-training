@@ -21,6 +21,17 @@ Remember "Lab 2.0 - Create a simple Chart"? Lets have a closer look. The chart c
 └── values.yaml
 ```
 
+If you take a look at the mychart/templates/ directory, you’ll notice a few files already there.
+
+* `NOTES.txt`: The “help text” for your chart. This will be displayed to your users when they run helm install.
+* `deployment.yaml`: A basic manifest for creating a Kubernetes deployment
+* `service.yaml`: A basic manifest for creating a service endpoint for your deployment
+* `_helpers.tpl`: A place to put template helpers that you can re-use throughout the chart
+
+
+{{% notice tip %}}
+For details on Chart templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/getting_started/)
+{{% /notice %}}
 
 ### values.yaml
 
@@ -99,6 +110,12 @@ affinity: {}
 
 When instantiating a Release from a Chart, you can overwrite these values, which allows you to specify you environment specific values.
 
+
+
+{{% notice tip %}}
+For details on the values file, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/values_files/)
+{{% /notice %}}
+
 ### Templates
 
 All your Kubernetes Resource Files are in the `templates` folder. Let's have a look at `templates\deployment.yml`:
@@ -163,4 +180,6 @@ spec:
 
 As you see, they look similar to the well known Kubernetes resource files, but have some control elements starting&ending with: `{{ }}`. These template files are rendered trough a [Go Template](https://golang.org/pkg/text/template/) rendering engine.
 
-For details on Chart templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/getting_started/)
+{{% notice tip %}}
+For details on templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/)
+{{% /notice %}}

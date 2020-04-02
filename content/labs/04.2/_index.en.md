@@ -97,7 +97,7 @@ spec:
 
 Have a look at the already existing file `service.yaml` and use this as a help for your `springboot-mysl` Service.
 
-When your changes are ready, upgrade your already deployed release this the new version.
+When your changes are ready, upgrade your already deployed release with your new version.
 
 
 {{% collapse solution-1 "Solution Task 1" %}}
@@ -322,7 +322,7 @@ database:
 
 {{% notice tip %}}
 
-Make your the `url` contains the correct Service Name. The Service Name is build based on the chartname `{{ include "mychart.fullname" . }}-mysql` (see template for the Service aboce)
+Make sure the `url` contains the correct Service Name. The Service Name is build based on the chartname `{{ include "mychart.fullname" . }}-mysql` (see template for the Service above)
 
 {{% /notice %}}
 
