@@ -59,9 +59,11 @@ kubectl create rolebinding "tiller-rolebinding-[USER]" --role="tiller-role-[USER
 helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
 ```
 
-{{% notice Special Notes for Die Mobiliar %}}
+{{% notice tip %}}
 
-The Tiller init command does install tiller on your Namespace and uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. If your Kubernetes nodes cannot dirrectly pull from the gcr.io registry, you can overwrite the images used by setting the image via `--tiller-image` argument.
+**Die Mobiliar**
+
+The Tiller init command does install tiller on your Namespace and uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. If your Kubernetes nodes cannot dirrectly pull from the gcr.io registry, you can overwrite the images used by setting the image via `--tiller-image` argument. You can use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5` as your Tiller image.
 
 ```
 helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade

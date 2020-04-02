@@ -50,6 +50,33 @@ If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blo
 
 Now deploy the application with (we choose the Helm Chart version 9.0.4 as we wan't to update later)
 
+{{% notice tip %}}
+
+**Die Mobiliar**
+
+The chart in this version uses as the container images for wordpress and mariadb:
+
+* `docker.io/bitnami/wordpress:5.3.2-debian-10-r48`
+* `docker.io/bitnami/mariadb:10.3.22-debian-10-r44`
+
+We have to overwrite these. Add the following to your `values.yaml` file:
+
+```yaml
+[...]
+
+image:
+  registry: registry.mobicorp.ch
+  repository: puzzle/helm-techlab/wordpress
+
+mariadb:
+  registry: registry.mobicorp.ch
+  repository: puzzle/helm-techlab/mariadb
+
+[...]
+```
+
+{{% /notice %}}
+
 ```
 helm install wordpress -f values.yaml --version 9.0.4 bitnami/wordpress
 ```
