@@ -40,8 +40,8 @@ Make sure you have access to a Kubernetes Cluster and `kubectl` is configured th
 kubectl create ns [USER]
 ``` 
 
-{{% notice tip %}}
+{{% notice warning %}}
 
-Create the Namespace with your Mobiliar Rancher WebGUI inside a Feature Team on your dev Cluster.
+**Die Mobiliar** Create the Namespace with your Mobiliar Rancher WebGUI inside a Feature Team on your dev Cluster.
 
 {{% /notice %}}

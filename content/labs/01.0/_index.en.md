@@ -16,6 +16,14 @@ v3.1.2 https://github.com/helm/helm/releases/tag/v3.1.2
 
 From there, you should be able to run the client and [add the stable repo](https://helm.sh/docs/intro/quickstart/#initialize-a-helm-chart-repository): `helm help`.
 
+### Task 1
+
+Install the `helm` cli on your system. To verify run:
+
+```bash
+$ helm version            
+version.BuildInfo{Version:"v3.1.1", GitCommit:"afe70585407b420d0097d07b21c47dc511525ac8", GitTreeState:"clean", GoVersion:"go1.13.8"}
+```
 
 
 ### Helm v2 vs v3

@@ -110,8 +110,6 @@ affinity: {}
 
 When instantiating a Release from a Chart, you can overwrite these values, which allows you to specify you environment specific values.
 
-
-
 {{% notice tip %}}
 For details on the values file, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/values_files/)
 {{% /notice %}}
@@ -183,3 +181,42 @@ As you see, they look similar to the well known Kubernetes resource files, but h
 {{% notice tip %}}
 For details on templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/)
 {{% /notice %}}
+
+
+### Task 1: Change charts.yaml
+
+Check out the [Helm Documentation](https://helm.sh/docs/topics/charts/#the-chartyaml-file) for the `charts.yaml` file and then change the `description` to `My Awesome App` and add yourself as a `maintainers`:
+
+
+{{% collapse solution-1 "Solution Task 1" %}}
+
+
+```yaml 
+apiVersion: v2
+name: mychart
+description: My awesome App
+
+# A chart can be either an 'application' or a 'library' chart.
+#
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+version: 0.1.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+appVersion: 1.16.0
+
+maintainers: 
+  - name: YOUR NAME
+    email: YOUR E-MAIL ADDRESS
+```
+
+{{% /collapse %}}
