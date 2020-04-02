@@ -60,7 +60,7 @@ Every [release](https://github.com/helm/helm/releases) of Helm provides binary r
 
 v2.16.5 https://github.com/helm/helm/releases/tag/v2.16.5
 
-1. Download your desired version
+* Download your desired version
 * Unpack it (`tar -zxvf helm-v2.16.5-linux-amd64.tar.gz`)
 * Find the helm binary in the unpacked directory, and move it to its desired destination (`mv linux-amd64/helm /usr/local/bin/helm`)
 
