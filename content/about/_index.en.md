@@ -1,14 +1,14 @@
 ---
 title: "About"
 icon: "ti-info-alt"
-description: "About HELM Techlab"
+description: "About Helm Techlab"
 type : "pages"
 weight: 10
 ---
 
-This **Techlab** is based on HELM v3.1.2.
+This **Techlab** is based on Helm v3.1.2.
 
 
 ### Additional information
 
-* [Official HELM Docs](https://helm.sh/docs/)
+* [Official Helm Docs](https://helm.sh/docs/)

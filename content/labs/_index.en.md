@@ -1,7 +1,7 @@
 ---
 title: "Labs"
 icon: "ti-panel"
-description: "HELM Techlabs"
+description: "Helm Techlabs"
 type : "pages"
 weight: 2
 ---

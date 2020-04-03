@@ -6,7 +6,7 @@ enableGitInfo = true
 languageCode = "en-us"
 
 # site title
-title = "Puzzle HELM Techlabs"
+title = "Puzzle Helm Techlabs"
 
 # theme
 theme = "dot"
@@ -73,8 +73,8 @@ link = "https://linkedin.com/company/puzzle-itc"
 
     # banner
     [Languages.en.params.banner]
-      title = "HELM Techlabs"
-      description = "Learning HELM from the ground up"
+      title = "Helm Techlabs"
+      description = "Learning Helm from the ground up"
       image = "images/pic_puzzle_man.png"
       placeholder = "Just enter terms to query our labs content"
 
