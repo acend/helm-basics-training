@@ -19,4 +19,4 @@ RUN hugo --baseURL=${HUGO_BASE_URL:-http://localhost/} \
 
 FROM nginxinc/nginx-unprivileged:alpine
 
-COPY --from=builder  /opt/app/src/public /usr/share/nginx/html
+COPY --from=builder /opt/app/src/public /usr/share/nginx/html

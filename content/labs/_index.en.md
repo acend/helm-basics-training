@@ -13,8 +13,8 @@ weight: 2
 
 ### Prerequisites
 
-* We assume you have knowlege about Kubernetes and do understand the concepts behind [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/), [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Services](https://kubernetes.io/docs/concepts/services-networking/service/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Secrets](https://kubernetes.io/docs/concepts/services-networking/service/)
-* You also should have `kubectl` installed and a working context to access a Kubernetes Cluster.
+* We assume you have knowlege about Kubernetes and understand the concepts behind [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/), [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Services](https://kubernetes.io/docs/concepts/services-networking/service/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) and [Secrets](https://kubernetes.io/docs/concepts/services-networking/service/)
+* You also should have `kubectl` installed and a working context to access a Kubernetes Cluster
 
 
 ### Helm Overview
@@ -32,9 +32,10 @@ With these concepts in mind, we can now explain Helm like this:
 
 Helm installs charts into Kubernetes, creating a new release for each installation. And to find new charts, you can search Helm chart repositories.
 
+
 ### Task: Techlab Setup
 
-Make sure you have access to a Kubernetes Cluster and `kubectl` is configured the right context. For the following labs we are going to create a Namespace. You can choose any name, we suggest using e.g. your Username. In the labs we are going to use `[USER]` as a placeholder for your created Namespace.
+Make sure you have access to a Kubernetes cluster and `kubectl` is configured to use the right context. For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username. In the labs we are going to use `[USER]` as a placeholder for your created namespace.
 
 ```bash
 kubectl create ns [USER]
@@ -42,6 +43,6 @@ kubectl create ns [USER]
 
 {{% notice warning %}}
 
-**Die Mobiliar** Create the Namespace with your Mobiliar Rancher WebGUI inside a Feature Team on your dev Cluster.
+**Die Mobiliar** Create the namespace with your Mobiliar Rancher WebGUI inside a Feature Team on your dev cluster.
 
 {{% /notice %}}

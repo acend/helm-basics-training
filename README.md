@@ -1,6 +1,6 @@
 # Helm Techlab
 
-In the guided hands-on techlab, we show the participants the Helm basics.
+In this guided hands-on techlab, we show participants the Helm's basics.
 
 For more see [Helm Techlabs online](https://helm-techlab.k8s.puzzle.ch/).
 
@@ -14,7 +14,7 @@ The main part are the labs, which can be found at [content/labs](content/labs).
 
 ## Hugo
 
-Helm Techlab is built using the static page generator [Hugo](https://gohugo.io/) and published under [helm-techlab.k8s.puzzle.ch](https://helm-techlab.k8s.puzzle.ch/).
+Helm Techlab is built using the static page generator [Hugo](https://gohugo.io/) and published at [helm-techlab.k8s.puzzle.ch](https://helm-techlab.k8s.puzzle.ch/).
 
 The page uses the [dot theme](https://github.com/themefisher/dot) which is included as a Git Submodule.
 
