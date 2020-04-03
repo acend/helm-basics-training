@@ -22,7 +22,8 @@ After cloning the main repo, you need to initialize the submodule like this:
 git submodule update --init --recursive
 ``` 
 
-## Build using Docker
+## How to test locally
+### Using Docker
 
 Build the image:
 
@@ -35,6 +36,22 @@ Run it locally:
 ```bash
 docker run -i -p 8080:8080 dreng/helm-techlab
 ```
+
+
+### Using Buildah and Podman
+
+Build the image:
+
+```bash
+buildah build-using-dockerfile --build-arg HUGO_BASE_URL=http://localhost:8080/ -t dreng/helm-techlab:latest .
+```
+
+Run it locally:
+
+```bash
+podman run -i -p 8080:8080 localhost/dreng/helm-techlab
+```
+
 
 ## Contributions
 
