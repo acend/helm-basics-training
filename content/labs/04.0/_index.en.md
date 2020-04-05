@@ -3,7 +3,7 @@ title: "4.0 - Create your own Helm Chart"
 weight: 40
 ---
 
-Remember "Lab 2.0 - Create a simple Chart"? Lets have a closer look. The chart consists of the following files and folders:
+Remember "Lab 2.0 - Create a simple Chart" where you created your first chart? Lets have a closer look at its directory structure and comonents. A typical chart consists of the following files and folders:
 
 ```
 ./
@@ -21,21 +21,21 @@ Remember "Lab 2.0 - Create a simple Chart"? Lets have a closer look. The chart c
 └── values.yaml
 ```
 
-If you take a look at the mychart/templates/ directory, you’ll notice a few files already there.
+Let's take a closer look at the `mychart/templates/` directory. There's already a few files there:
 
-* `NOTES.txt`: The “help text” for your chart. This will be displayed to your users when they run helm install.
+* `NOTES.txt`: The "help text" for your chart which will be displayed to your users when they run `helm install`
 * `deployment.yaml`: A basic manifest for creating a Kubernetes deployment
 * `service.yaml`: A basic manifest for creating a service endpoint for your deployment
 * `_helpers.tpl`: A place to put template helpers that you can re-use throughout the chart
 
-
 {{% notice tip %}}
-For details on Chart templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/getting_started/)
+For details on chart templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/getting_started/).
 {{% /notice %}}
+
 
 ### values.yaml
 
-In the `values.yaml` file you define your values used in your templates:
+In the `values.yaml` file we define our values used in our templates:
 
 ```yaml
 # Default values for test.
@@ -108,15 +108,16 @@ tolerations: []
 affinity: {}
 ```
 
-When instantiating a Release from a Chart, you can overwrite these values, which allows you to specify you environment specific values.
+When instantiating a release from a chart, we can overwrite these values which allows us to specify our environment-specific values.
 
 {{% notice tip %}}
-For details on the values file, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/values_files/)
+For details on the values file, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/values_files/):
 {{% /notice %}}
+
 
 ### Templates
 
-All your Kubernetes Resource Files are in the `templates` folder. Let's have a look at `templates\deployment.yml`:
+All our Kubernetes resource files are in the `templates` folder. Let's have a closer look at `templates\deployment.yml`:
 
 ```yaml
 apiVersion: apps/v1
@@ -176,7 +177,7 @@ spec:
     {{- end }}
 ```
 
-As you see, they look similar to the well known Kubernetes resource files, but have some control elements starting&ending with: `{{ }}`. These template files are rendered trough a [Go Template](https://golang.org/pkg/text/template/) rendering engine.
+We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go Template](https://golang.org/pkg/text/template/) rendering engine.
 
 {{% notice tip %}}
 For details on templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/)
@@ -185,11 +186,9 @@ For details on templating, check out the [Helm Documentation](https://helm.sh/do
 
 ### Task 1: Change charts.yaml
 
-Check out the [Helm Documentation](https://helm.sh/docs/topics/charts/#the-chartyaml-file) for the `charts.yaml` file and then change the `description` to `My Awesome App` and add yourself as a `maintainers`:
-
+Check out the [Helm Documentation](https://helm.sh/docs/topics/charts/#the-chartyaml-file) for the `charts.yaml` file, then change the description to `My Awesome App` and add yourself to the list of maintainers:
 
 {{% collapse solution-1 "Solution Task 1" %}}
-
 
 ```yaml 
 apiVersion: v2

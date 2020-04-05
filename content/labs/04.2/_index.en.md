@@ -3,9 +3,9 @@ title: "4.2 - Add a database to your app"
 weight: 42
 ---
 
-### Task 1: Create Template Files for MySQL Deployment
+### Task 1: Create Template Files for the MySQL Deployment
 
-We want to add a MySQL database and us it as a backend for our `example-spring-boot` application. Using the following Kubernetes resource file for a MySQL database, create a new template file for the MySQL database:
+We want to add a MySQL database and use it as a backend for our `example-spring-boot` application. Using the following Kubernetes resource file for a MySQL database, create a new template file for the MySQL database:
 
 ```yaml
 ---
@@ -55,14 +55,13 @@ spec:
       volumes:
       - name: mysql-persistent-storage
         emptyDir: {}
-
 ```
 
 {{% notice warning %}}
-**Die Mobiliar**: You can use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mysql:5.6` container image
+**Die Mobiliar**: Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mysql:5.6` as the container image.
 {{% /notice %}}
 
-You also have to create a template for the `mysql-root-password` Secret:
+You also have to create a template for the `mysql-root-password` secret:
 
 ```yaml
 apiVersion: v1
@@ -76,7 +75,7 @@ data:
 
 When creating the template files, make sure that a user can specify the `password` and `root-password` from the secret using a variable.
 
-To connect to the database, you also need a Service:
+To connect to the database, we also need a service:
 
 ```yaml
 apiVersion: v1
@@ -95,13 +94,11 @@ spec:
   clusterIP: None
 ```
 
-Have a look at the already existing file `service.yaml` and use this as a help for your `springboot-mysl` Service.
+Have a look at the already existing file `service.yaml` and use this as a starting point for your `springboot-mysql` service.
 
-When your changes are ready, upgrade your already deployed release with your new version.
-
+When your changes are ready, upgrade the already deployed release with the new version.
 
 {{% collapse solution-1 "Solution Task 1" %}}
-
 The template file for the MySQL database `templates/deploy-mysql.yaml` could look like this:
 
 ```yaml
@@ -168,13 +165,11 @@ metadata:
 data:
   password: {{ .Values.database.password | b64enc }}
   rootpassword: {{ .Values.database.rootpassword | b64enc}}
-
 ```
 
-Notice the `| b64enc`, which is a builtin function to encode string with base64
+Notice the `| b64enc`, which is a builtin function to encode strings with base64.
 
-
-The Service for your MySQL database should look like this:
+The service for our MySQL database should look like this:
 
 ```yaml
 apiVersion: v1
@@ -192,10 +187,9 @@ spec:
   selector:
     {{- include "mychart.selectorLabels" . | nindent 4 }}
     tier: mysql
-
 ```
 
-and then in your `values.yaml` you need to add:
+And then in our `values.yaml` we need to add:
 
 ```yaml
 database:
@@ -209,20 +203,17 @@ database:
   rootpassword: mysuperrootpassword123
 ```
 
-To upgrade your existing release run: 
+Finally, to upgrade the existing release run:
 
 ```bash
-helm upgrade myreleasename .
+$ helm upgrade myreleasename .
 ```
-
-
 {{% /collapse %}}
-
 
 
 ### Task 2: Add Environment Variables to use the MySQL Database in your App
 
-We need some environment variables in our Deployment. The goal of this Task is to allow a user to set them via values.
+We need some environment variables in our deployment. The goal of this task is to allow a user to set them via values.
 
 Add the following environment variables:
 
@@ -231,9 +222,7 @@ Add the following environment variables:
 * `SPRING_DATASOURCE_DRIVER_CLASS_NAME` with value `com.mysql.jdbc.Driver`
 * `SPRING_DATASOURCE_URL` with value `jdbc:mysql://springboot-mysql/springboot?autoReconnect=true`
 
-
 {{% collapse solution-2 "Solution Task 2" %}}
-
 Change your `template/deployment.yml` and include the new environment variables:
 
 ```yaml
@@ -306,7 +295,7 @@ spec:
     {{- end }}
 ```
 
-and your `values.yaml` should contain now (including the previously defined values from task 2)
+Your `values.yaml` should now contain (including the previously defined values from task 2):
 
 ```yaml
 database:
@@ -321,16 +310,12 @@ database:
 ```
 
 {{% notice tip %}}
-
-Make sure the `url` contains the correct Service Name. The Service Name is build based on the chartname `{{ include "mychart.fullname" . }}-mysql` (see template for the Service above)
-
+Make sure the `url` contains the correct service name. The service name is based on the chart name `{{ include "mychart.fullname" . }}-mysql` (see the service template above).
 {{% /notice %}}
 
-To upgrade your existing release run: 
+To upgrade your existing release run:
 
 ```bash
-helm upgrade myreleasename .
+$ helm upgrade myreleasename .
 ```
-
 {{% /collapse %}}
-

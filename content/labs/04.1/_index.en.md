@@ -3,29 +3,26 @@ title: "4.1 - Deploy your awesome Application"
 weight: 41
 ---
 
-Using the generated Helm Chart, we are going to deploy our own application.
+Using the generated and modified Helm chart, we are going to deploy our own awesome application.
 
 
-### Task 1: Change deployment.yml Template and values.yml File
+### Task 1: Change the deployment.yml Template and the values.yml File
 
-Our Container Image has the name `appuio/example-spring-boot:latest` and is a very basic Springboot application. Change the content of your `deployment.yml` and `values.yml` so a Pod with the `example-spring-boot` image is started instead of the `nginx` image from the default chart your created with `helm create mychart` in lab 2.
+Our container image has the name `appuio/example-spring-boot:latest` and is a very basic python application. Change the content of your `deployment.yml` and `values.yml` so a pod with the `example-spring-boot` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
 
-The `appuio/example-spring-boot:latest` application is running on port `8080`. Change the existing `deployment.yaml` to suit for this.
+The `appuio/example-spring-boot:latest` application is running on port `8080`. Change the existing `deployment.yaml` accordingly.
 
 After the changes, create or upgrade a release from your template.
 
 {{% notice warning %}}
-**Die Mobiliar**: You can use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` container image
+**Die Mobiliar**: Use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` container image.
 {{% /notice %}}
-
-
 
 {{% collapse solution-1 "Solution Task 1" %}}
 
-In your `values.yaml` you currently only have to change `image.repository` with the new image name.
+In our `values.yaml` we only have to change the value of `image.repository`:
 
 ```yaml
-
 # Default values for test.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
@@ -96,7 +93,7 @@ tolerations: []
 affinity: {}
 ```
 
-And then your `deployment.yaml` should look like this:
+And then our `deployment.yaml` should look like this:
 
 ```yaml
 apiVersion: apps/v1
@@ -157,7 +154,7 @@ spec:
 
 ``` 
 
-As you see, the Deployment uses `{{ .Chart.AppVersion }}` for the image tage name. So you have to change this to `latest` in your `charts.yaml`:
+We can see the deployment uses `{{ .Chart.AppVersion }}` for the image tag name. We have to change that to `latest` in our `charts.yaml`:
 
 ```yaml
 apiVersion: v2
@@ -184,33 +181,30 @@ appVersion: latest
 
 ```
 
-To create a release from your chart, run this within your chart directory:
+To create a release from our chart, we run the following command within our chart directory:
 
 ```bash
-helm install myapp .
+$ helm install myapp .
 ```
 
-this will create a new release with the name `myapp`. If you already have installed a release and want to update the existing one, use the following command:
+This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
 
 ```bash
-helm upgrade myreleasename .
+$ helm upgrade myreleasename .
 ```
-
 {{% /collapse %}}
 
 
-### Task 2: Create Ingress to access the App
+### Task 2: Create Ingress to access the app
 
-The template folder does already have a file for an ingress and there are some variables in `values.yaml` to configure the ingress. Set the correct values for your app and upgrade it.
+The template folder already has a file for an ingress resource. There are even some variables in `values.yaml` to configure it. Set the correct values for our app and upgrade it.
 
 {{% notice tip %}}
-The corrent values for your ingress depends on your Kubernetes Cluster, ask your teacher for correct values.
+The corrent values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
 {{% /notice %}}
 
-
 {{% collapse solution-2 "Solution Task 2" %}}
-
-Your `values.yaml` should look like this:
+The `values.yaml` should look like this:
 
 ```yaml
 ingress:
@@ -228,10 +222,9 @@ ingress:
   #      - chart-example.local
 ```
 
-So `ingress.enabled` is set to `true` and you have to define a `host` for your ingress. Furthermore, we have to define a `path` to your app. Lets have a look into your ingress template file to understand whats happening with the `host` & `path` array.
+So `ingress.enabled` is set to `true` and we have to define a `host` for the ingress resource. Furthermore, we have to define a `path` to our app. Lets have a look into the ingress template file to understand what's happening with the `host` & `path` array.
 
 ```yaml
-
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "test.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
@@ -273,13 +266,12 @@ spec:
         {{- end }}
   {{- end }}
 {{- end }}
-
 ```
 
-As you see, there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` which loops trough all the values in the `host` array. The same happens to the `path` value.
+As we can see there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` which loops trough all the values in the `host` array. The same happens to the `path` value.
 
 {{% notice tip %}}
-For details on Flow Control, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/control_structures/)
+For details on flow control, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/control_structures/).
 {{% /notice %}}
 
 {{% /collapse %}}
