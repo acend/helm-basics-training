@@ -36,7 +36,7 @@ docker build --build-arg HUGO_BASE_URL=http://localhost:8080/ -t dreng/helm-tech
 Run it locally:
 
 ```bash
-docker run -i -p 8080:8080 dreng/helm-techlab
+docker run --rm --interactive --publish 8080:8080 dreng/helm-techlab
 ```
 
 
@@ -48,10 +48,10 @@ Build the image:
 buildah build-using-dockerfile --build-arg HUGO_BASE_URL=http://localhost:8080/ -t dreng/helm-techlab:latest .
 ```
 
-Run it locally:
+Run it locally with the following command. Beware that `--rmi` automatically removes the built image when the container stops, so you either have to rebuild it or remove the parameter from the command.
 
 ```bash
-podman run -i -p 8080:8080 localhost/dreng/helm-techlab
+podman run --rm --rmi --interactive --publish 8080:8080 localhost/dreng/helm-techlab
 ```
 
 
