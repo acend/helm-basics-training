@@ -54,6 +54,7 @@ If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blo
 **Die Mobiliar**: Have a look at the following special instructions.
 {{% /notice %}}
 
+{{% collapse mobi "Mobi-specific insructions" %}}
 The WordPress and MariaDB charts use (at the time of writing) the following container images:
 
 * `docker.io/bitnami/wordpress:5.3.2-debian-10-r48`
@@ -85,6 +86,7 @@ ingress:
   hostname: helmtechlab-wordpress-[USER].phoenix.mobicorp.ch
 [...]
 ```
+{{% /collapse %}}
 
 We're now going to deploy the application in a specific version (which is not the latest release on purpose):
 

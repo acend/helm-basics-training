@@ -21,6 +21,7 @@ You'll now find a `mychart` directory with the newly created chart. It already i
 **Die Mobiliar**: Have a look at the following special instructions.
 {{% /notice %}}
 
+{{% collapse mobi "Mobi-specific insructions" %}}
 You can use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image instead of `nginx` which you cannot pull on your Kubernetes cluster.
 
 Change your `values.yaml` to match the following:
@@ -32,6 +33,7 @@ image:
   pullPolicy: IfNotPresent
 [...]
 ```
+{{% /collapse %}}
 
 
 ### Task 2
