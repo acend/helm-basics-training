@@ -3,27 +3,33 @@ title: "3.0 - Deploy a more complex Application"
 weight: 30
 ---
 
-In this extended lab, we are going to deploy an existing application with a Helm chart
+In this extended lab, we are going to deploy an existing, more complex application with a Helm chart from the Helm Hub.
+
 
 ### Helm Hub
 
-Check out [Helm Hub](https://hub.helm.sh/), there you find a lot of Helm charts. For this lab, we choose [Wordpress](https://hub.helm.sh/charts/bitnami/wordpress), a publishing platform for building blogs and websites.
+Check out [Helm Hub](https://hub.helm.sh/) where you'll find a huge number of different Helm charts. For this lab, we'll use the [WordPress chart by Bitnami](https://hub.helm.sh/charts/bitnami/wordpress), a publishing platform for building blogs and websites.
 
-### Wordpress
 
-This Wordpress Helm Chart ist published in the bitnami Helm repository. First, add the bitnami repo to your local repo list:
+### WordPress
+
+As this WordPress Helm chart is published in Bitnami's Helm repository, we're first going to add it to our local repo list:
 
 ```
 $ helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+
+Let's check if that worked:
+
+```
 $ helm repo list
 NAME           	URL                                              
 bitnami         https://charts.bitnami.com/bitnami 
-
 ```
 
-Let's check the available configuration for this Helm chart. Normally you find them in the `values.yaml` File inside the repository or described in the charts readme. You can also check them on the Helm Hub page: https://hub.helm.sh/charts/bitnami/wordpress
+Let's look at the available configuration for this Helm chart. Usually you can find them in the `values.yaml` or in the charts' readme file. You can also check them on its [Helm Hub page](https://hub.helm.sh/charts/bitnami/wordpress).
 
-We are going to override some of the values, for that purpose, create a new `values.yaml` file locally on your workstation with the following content:
+We are going to override some of the values. For that purpose, create a new `values.yaml` file locally on your workstation with the following content:
 
 ```yaml
 ---
@@ -42,23 +48,21 @@ mariadb:
       size: 1Gi
 ```
 
-
-If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/requirements.yaml) file of the Workdpress Chart you see a dependency to the mariadb Helm chart. All the mariadb values are used by this dependent Helm chart and the chart is automaticly deployed when installing Wordpress.
+If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/requirements.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
 
 {{% notice warning %}}
-**Die Mobiliar**: Have a look at the following special instructions
+**Die Mobiliar**: Have a look at the following special instructions.
 {{% /notice %}}
 
-The chart in this version uses as the container images for wordpress and mariadb:
+The WordPress and MariaDB charts use (at the time of writing) the following container images:
 
 * `docker.io/bitnami/wordpress:5.3.2-debian-10-r48`
 * `docker.io/bitnami/mariadb:10.3.22-debian-10-r44`
 
-We have to overwrite these. Add the following to your `values.yaml` file:
+As we cannot access these images, we'll have to overwrite these. Add the following to your `values.yaml` file in order to do so:
 
 ```yaml
 [...]
-
 image:
   registry: registry.mobicorp.ch
   repository: puzzle/helm-techlab/wordpress
@@ -67,13 +71,12 @@ mariadb:
   image:
     registry: registry.mobicorp.ch
     repository: puzzle/helm-techlab/mariadb
-
 [...]
 ```
 
-the Image tag remains as defined in the Chart `values.yaml` file.
+The image tag remains as already defined in the chart `values.yaml` file.
 
-and you can use the following settings for your ingress if you wan't to open the Wordpress instance after deployment (altought this is not really necessary for this lab).
+You can use the following snippet for your ingress configuration if you want to be able to access the WordPress instance after deploying it (although this is not really necessary for this lab).
 
 ```yaml
 [...]
@@ -83,13 +86,13 @@ ingress:
 [...]
 ```
 
-Now deploy the application with (we choose the Helm Chart version 9.0.4 as we wan't to update later)
+We're now going to deploy the application in a specific version (which is not the latest release on purpose):
 
 ```
 $ helm install wordpress -f values.yaml --namespace [USER] --version 9.0.4 bitnami/wordpress
 ```
 
-Watch the deployed application with `helm ls` and `kubectl get deploy,pod,ingress,pvc` for the newly created Deployments, the Ingress and also the PersistenceVolumeClaim.
+Watch for the newly created resources with `helm ls` and `kubectl get deploy,pod,ingress,pvc`:
 
 ```bash
 $ helm ls --namespace [USER]                                                            
@@ -114,21 +117,22 @@ persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86
 persistentvolumeclaim/wordpress                  Bound    pvc-83ebf739-0b0e-45a2-936e-e925141a0d35   1Gi        RWO            cloudscale-volume-ssd   2m7s
 ```
 
-As soon as all Deployments are ready (wordpress and mariadb) you can open the application with the URL from your Ingress defined in `values.yaml`.
+As soon as all deployments are ready (`wordpress` and `mariadb`) you can open the application with the URL from your Ingress defined in `values.yaml`.
 
 
 ### Upgrade
 
-We are now going to upgrade the application to a newer Helm Chart version. You can do this with:
+We are now going to upgrade the application to a newer Helm chart version. You can do this with:
 
 ```
-helm upgrade -f values.yaml --namespace [USER] --version 9.1.1 wordpress bitnami/wordpress
+$ helm upgrade -f values.yaml --namespace [USER] --version 9.1.1 wordpress bitnami/wordpress
 ```
 
-And then observe the changes in your Wordpress and MariaDB Apps
+And then observe the changes in your WordPress and MariaDB Apps
+
 
 ### Cleanup
 
 ```
-helm uninstall wordpress --namespace [USER]
+$ helm uninstall wordpress --namespace [USER]
 ```
