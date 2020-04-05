@@ -8,7 +8,25 @@ weight: 2
 
 [Helm](https://github.com/helm/helm) is a [Cloud Native Foundation](https://www.cncf.io/) project to define, install and manage applications in Kubernetes.
 
-![Hem](helm-horizontal-color.png)
+![Helm Logo](helm-horizontal-color.png)
+
+
+### Lab Conventions
+
+In order for you to know what is command line input and what is output, we use the following conventions:
+
+Command line input is prefixed by a dollar sign (`$`), e.g.:
+
+```
+$ helm version
+```
+
+Whereas output is appended directly beneath the command that is supposed to generate it, e.g.:
+
+```
+$ helm version
+version.BuildInfo{Version:"v3.1.2", GitCommit:"d878d4d45863e42fd5cff6743294a11d28a9abce", GitTreeState:"clean", GoVersion:"go1.13.8"}
+```
 
 
 ### Prerequisites
@@ -38,7 +56,7 @@ Helm installs charts into Kubernetes, creating a new release for each installati
 Make sure you have access to a Kubernetes cluster and `kubectl` is configured to use the right context. For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username. In the labs we are going to use `[USER]` as a placeholder for your created namespace.
 
 ```bash
-kubectl create ns [USER]
+$ kubectl create ns [USER]
 ``` 
 
 {{% notice warning %}}

@@ -56,14 +56,14 @@ Install the `helm` cli on your system:
 To verify run the following command and check if `Version` is what you expected:
 
 ```bash
-helm version
+$ helm version
 version.BuildInfo{Version:"v3.1.2", GitCommit:"d878d4d45863e42fd5cff6743294a11d28a9abce", GitTreeState:"clean", GoVersion:"go1.13.8"}
 ```
 
 From here you should be able to run the client and [add the stable repo](https://helm.sh/docs/intro/quickstart/#initialize-a-helm-chart-repository):
 
 ```bash
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 ```
 {{% /collapse %}}
 {{% collapse helm-v2 "Helm v2" %}}
@@ -83,17 +83,17 @@ The latest v2 release v2.16.5 can be found at https://github.com/helm/helm/relea
 To verify run the following command and check if `Version` is what you expected:
 
 ```bash
-helm version
+$ helm version
 Client: &version.Version{SemVer:"v2.16.5", GitCommit:"89bd14c1541fa93a09492010030fd3699ca65a97", GitTreeState:"clean"}
 ```
 
 In order to do these labs you're going to need Tiller. It's easiest to install it in your own namespace. We'll also need to create a ServiceAccount, a Role and a RoleBinding for Helm to work correctly:
 
 ```
-kubectl create sa "tiller-[USER]"
-kubectl create role "tiller-role-[USER]" --namespace [USER] --verb=* --resource=*.,*.apps,*.batch,*.extensions
-kubectl create rolebinding "tiller-rolebinding-[USER]" --role="tiller-role-[USER]" --serviceaccount="[USER]:tiller-[USER]"
-helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
+$ kubectl create sa "tiller-[USER]"
+$ kubectl create role "tiller-role-[USER]" --namespace [USER] --verb=* --resource=*.,*.apps,*.batch,*.extensions
+$ kubectl create rolebinding "tiller-rolebinding-[USER]" --role="tiller-role-[USER]" --serviceaccount="[USER]:tiller-[USER]"
+$ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
 ```
 
 {{% notice warning %}}
@@ -103,6 +103,6 @@ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
 The Tiller `init` command installs Tiller in your namespace and by default uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. If your Kubernetes nodes cannot directly pull from the `gcr.io` registry, you can overwrite the image by setting the `--tiller-image` parameter. Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5` as your Tiller image:
 
 ```
-helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade
+$ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade
 ```
 {{% /collapse %}}

@@ -86,7 +86,7 @@ ingress:
 Now deploy the application with (we choose the Helm Chart version 9.0.4 as we wan't to update later)
 
 ```
-helm install wordpress -f values.yaml --namespace [USER] --version 9.0.4 bitnami/wordpress
+$ helm install wordpress -f values.yaml --namespace [USER] --version 9.0.4 bitnami/wordpress
 ```
 
 Watch the deployed application with `helm ls` and `kubectl get deploy,pod,ingress,pvc` for the newly created Deployments, the Ingress and also the PersistenceVolumeClaim.
@@ -98,7 +98,7 @@ wordpress	[USER]        	1       	2020-03-31 13:23:17.213961038 +0200 CEST	deplo
 ```
 
 ```bash
-kubectl -n [USER] get deploy,pod,ingress,pvc
+$ kubectl -n [USER] get deploy,pod,ingress,pvc
 NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/wordpress   1/1     1            1           2m6s
 

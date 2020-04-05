@@ -11,7 +11,7 @@ In this lab we're going to create our very first Helm Chart and deploy it.
 First let's create our chart:
 
 ```bash
-helm create mychart
+$ helm create mychart
 ```
 
 You'll now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys nginx. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
@@ -39,19 +39,19 @@ image:
 Before actually deploying our generated chart, we can check the (to be) generated Kubernetes ressources with the following command:
 
 ```bash
-helm install --dry-run --debug --namespace [USER] mychart
+$ helm install --dry-run --debug --namespace [USER] mychart
 ```
 
 Finally, the following command creates a new Release with the Helm Chart and deploys the application:
 
 ```bash
-helm install mychart --namespace [USER]
+$ helm install mychart --namespace [USER]
 ```
 
 With `kubectl get pods --namespace [USER]` you should see a new pod. You can list the newly created Helm release with the following command:
 
 ```bash
-helm ls --namespace [USER]
+$ helm ls --namespace [USER]
 ```
 
 
@@ -82,13 +82,13 @@ service:
 Apply the change by upgrading our release:
 
 ```bash
-helm upgrade [RELEASE] --namespace [USER] mychart
+$ helm upgrade [RELEASE] --namespace [USER] mychart
 ```
 
 As soon as the service has a NodePort you will see in the output of the following command (as we use `--watch` you have to terminate the command with CTRL-C):
 
 ```bash
-kubectl get svc --namespace [USER] --watch
+$ kubectl get svc --namespace [USER] --watch
 ```
 
 nginx is now available at the given NodePort and should display a welcome page when accessing it with `curl` or your browser of choice.
@@ -99,7 +99,7 @@ nginx is now available at the given NodePort and should display a welcome page w
 To remove an application, simply remove the Helm Release with the following command:
 
 ```bash
-helm delete [RELEASE]
+$ helm delete [RELEASE]
 ```
 
 Do this with our deployed release. With `kubectl get pods --namespace [USER]` you should no longer see your application pod.
