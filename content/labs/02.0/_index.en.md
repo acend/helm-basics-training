@@ -56,6 +56,14 @@ With `kubectl get pods --namespace [USER]` you should see a new pod. You can lis
 $ helm ls --namespace [USER] --tiller-namespace [USER]
 ```
 
+{{% notice tip %}}
+To not always add the Namespace when calling `helm` (with `--tiller-namespace [USER]`), you can set the following Environment Variable:
+
+```
+export TILLER_NAMESPACE=[USER]
+```
+{{% /notice %}}
+
 ### Task 3
 
 Our freshly deployed nginx is not yet accessible from outside of the Kubernetes cluster. To expose it, we have to change the service type to `NodePort`.
