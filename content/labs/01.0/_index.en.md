@@ -89,10 +89,10 @@ Client: &version.Version{SemVer:"v2.16.5", GitCommit:"89bd14c1541fa93a0949201003
 
 In order to do these labs you're going to need Tiller. It's easiest to install it in your own namespace. We'll also need to create a ServiceAccount, a Role and a RoleBinding for Helm to work correctly:
 
-```
-$ kubectl create sa "tiller-[USER]"
+```bash
+$ kubectl create sa "tiller-[USER]" --namespace [USER]
 $ kubectl create role "tiller-role-[USER]" --namespace [USER] --verb=* --resource=*.,*.apps,*.batch,*.extensions
-$ kubectl create rolebinding "tiller-rolebinding-[USER]" --role="tiller-role-[USER]" --serviceaccount="[USER]:tiller-[USER]"
+$ kubectl create rolebinding "tiller-rolebinding-[USER]" --namespace [USER] --role="tiller-role-[USER]" --serviceaccount="[USER]:tiller-[USER]"
 $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
 ```
 {{% /collapse %}}
@@ -104,7 +104,7 @@ $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrad
 {{% collapse mobi "Mobi-specific insructions" %}}
 The Tiller `init` command installs Tiller in your namespace and by default uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. If your Kubernetes nodes cannot directly pull from the `gcr.io` registry, you can overwrite the image by setting the `--tiller-image` parameter. Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5` as your Tiller image:
 
-```
+```bash
 $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade
 ```
 {{% /collapse %}}
