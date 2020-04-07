@@ -32,7 +32,7 @@ The official Helm documentation explains a few hints to mitigate these problems.
 
 * Reducing Tiller permissions may be an obvious option. That doesn't fit our needs though. You’ll probably still want cluster administrators to be able to install charts with cluster-wide components.
 * Securing Tiller communication with TLS mutual authentication. Configuring mutual authentication, users not only need to have a valid user on Kubernetes but also need a client certificate signed by a CA that is trusted by Tiller. A compromised pod isn’t able to access Tiller since you should restrict access to the client certificate by default. The problem is that managing access to the certificate is difficult to maintain. Now cluster administrators need to apply rules to allow or deny access for every new user.
-* Running a Tiller instance per namespace. This way you can reduce Tiller permissions for certain instances, while leaving others privileged. Again, the downside with this solution is that it's difficult to maintain and now you are wasting resources, having duplicated deployments.
+* Running a Tiller instance per namespace. This way you can reduce Tiller permissions for certain instances, while leaving others privileged. Again, the downside with this solution is that it's difficult to maintain and now you are wasting resources, having duplicated deployments. However for the purpose of this Techlab that's how we're going to set it up. This will also mean, that you'll have to add the tiller-namespace Parameter to every helm command eg. `helm ls --namespace [USER] --tiller-namespace [USER]`
 
 
 ### Install the Helm cli client
