@@ -127,6 +127,25 @@ persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86
 persistentvolumeclaim/wordpress                  Bound    pvc-83ebf739-0b0e-45a2-936e-e925141a0d35   1Gi        RWO            cloudscale-volume-ssd   2m7s
 ```
 
+And use `helm get values wordpress` to deploy the values for a given release.
+
+```bash
+$ helm get values wordpress
+mariadb:
+  db:
+    password: mysuperpassword123
+  master:
+    persistence:
+      size: 1Gi
+persistence:
+  size: 1Gi
+service:
+  type: ClusterIP
+updateStrategy:
+  type: Recreate
+
+```
+
 As soon as all deployments are ready (`wordpress` and `mariadb`) you can open the application with the URL from your Ingress defined in `values.yaml`.
 
 
