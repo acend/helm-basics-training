@@ -206,7 +206,7 @@ database:
 Finally, to upgrade the existing release run:
 
 ```bash
-$ helm upgrade myreleasename .
+$ helm upgrade myapp --namespace [USER] mychart
 ```
 {{% /collapse %}}
 
@@ -253,7 +253,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: SPRING_DATASOURCE_URL
@@ -316,6 +316,6 @@ Make sure the `url` contains the correct service name. The service name is based
 To upgrade your existing release run:
 
 ```bash
-$ helm upgrade myreleasename .
+$ helm upgrade myapp --namespace [USER] mychart
 ```
 {{% /collapse %}}
