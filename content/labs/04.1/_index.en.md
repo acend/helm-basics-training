@@ -5,7 +5,6 @@ weight: 41
 
 Using the generated and modified Helm chart, we are going to deploy our own awesome application.
 
-
 ### Task 1: Change the deployment.yml Template and the values.yml File
 
 Our container image has the name `appuio/example-spring-boot:latest` and is a very basic python application. Change the content of your `deployment.yml` and `values.yml` so a pod with the `example-spring-boot` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
@@ -31,6 +30,7 @@ replicaCount: 1
 
 image:
   repository: appuio/example-spring-boot
+  tag: latest
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -123,7 +123,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -152,45 +152,18 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
 
-``` 
-
-We can see the deployment uses `{{ .Chart.AppVersion }}` for the image tag name. We have to change that to `latest` in our `charts.yaml`:
-
-```yaml
-apiVersion: v2
-name: mychart
-description: A Helm chart for Kubernetes
-
-# A chart can be either an 'application' or a 'library' chart.
-#
-# Application charts are a collection of templates that can be packaged into versioned archives
-# to be deployed.
-#
-# Library charts provide useful utilities or functions for the chart developer. They're included as
-# a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
-type: application
-
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-version: 0.1.0
-
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application.
-appVersion: latest
-
 ```
 
 To create a release from our chart, we run the following command within our chart directory:
 
 ```bash
-$ helm install myapp .
+$ helm install mychart --name myapp --namespace [USER]
 ```
 
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
 
 ```bash
-$ helm upgrade myreleasename .
+$ helm upgrade myreleasename --namespace [USER] mychart
 ```
 {{% /collapse %}}
 
