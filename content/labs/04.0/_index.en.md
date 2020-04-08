@@ -110,6 +110,8 @@ affinity: {}
 
 When instantiating a release from a chart, we can overwrite these values which allows us to specify our environment-specific values.
 
+So for instance we can create a `values-dev.yaml` where we keep our development environment values and then use `helm upgrade/install -f values-dev.yaml` to update or instantiate a release for the given environment. A different approach is to keep the files under version control and use branches for the different stages.
+
 {{% notice tip %}}
 For details on the values file, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/values_files/):
 {{% /notice %}}
@@ -117,7 +119,7 @@ For details on the values file, check out the [Helm Documentation](https://helm.
 
 ### Templates
 
-All our Kubernetes resource files are in the `templates` folder. Let's have a closer look at `templates\deployment.yml`:
+All our Kubernetes resource files are in the `templates` folder. Let's have a closer look at `templates\deployment.yaml`:
 
 ```yaml
 apiVersion: apps/v1
@@ -186,33 +188,16 @@ For details on templating, check out the [Helm Documentation](https://helm.sh/do
 
 ### Task 1: Change charts.yaml
 
-Check out the [Helm Documentation](https://helm.sh/docs/topics/charts/#the-chartyaml-file) for the `charts.yaml` file, then change the description to `My Awesome App` and add yourself to the list of maintainers:
+Check out the [Helm Documentation](https://v2.helm.sh/docs/charts/#the-chart-yaml-file) for the `charts.yaml` file, then change the description to `My Awesome App` and add yourself to the list of maintainers:
 
 {{% collapse solution-1 "Solution Task 1" %}}
 
-```yaml 
-apiVersion: v2
-name: mychart
+```yaml
+apiVersion: v1
+appVersion: "1.0"
 description: My awesome App
-
-# A chart can be either an 'application' or a 'library' chart.
-#
-# Application charts are a collection of templates that can be packaged into versioned archives
-# to be deployed.
-#
-# Library charts provide useful utilities or functions for the chart developer. They're included as
-# a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
-type: application
-
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
+name: mychart
 version: 0.1.0
-
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application.
-appVersion: 1.16.0
-
 maintainers: 
   - name: YOUR NAME
     email: YOUR E-MAIL ADDRESS
