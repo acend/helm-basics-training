@@ -5,6 +5,9 @@ weight: 30
 
 In this extended lab, we are going to deploy an existing, more complex application with a Helm chart from the Helm Hub.
 
+{{% notice tip %}}
+Make sure the Tiller Namespace Environment Variable (`export TILLER_NAMESPACE=[USER]`) is set to your Namespace or add the `--tiller-namespace [USER]` argument to the helm commands
+{{% /notice %}}
 
 ### Helm Hub
 
@@ -15,13 +18,13 @@ Check out [Helm Hub](https://hub.helm.sh/) where you'll find a huge number of di
 
 As this WordPress Helm chart is published in Bitnami's Helm repository, we're first going to add it to our local repo list:
 
-```
+```bash
 $ helm repo add bitnami https://charts.bitnami.com/bitnami
 ```
 
 Let's check if that worked:
 
-```
+```bash
 $ helm repo list
 NAME           	URL                                              
 bitnami         https://charts.bitnami.com/bitnami 
@@ -88,10 +91,15 @@ ingress:
 ```
 {{% /collapse %}}
 
+{{% notice tip %}}
+For more details on how to manage dependencies, check out the [Helm Dependencies Documentation](https://v2.helm.sh/docs/charts/#chart-dependencies). Subcharts are an alternative way to define dependencies within a chart: `A chart may contain (inside of its charts/ directory) another chart upon which it depends. In this case, installing the chart will install all of its dependencies. In this case, a chart and its dependencies are managed as a collection.`
+{{% /notice %}}
+
+
 We're now going to deploy the application in a specific version (which is not the latest release on purpose):
 
-```
-$ helm install wordpress -f values.yaml --namespace [USER] --version 9.0.4 bitnami/wordpress
+```bash
+$ helm install --name=wordpress -f values.yaml --namespace [USER] --version 9.0.4 bitnami/wordpress
 ```
 
 Watch for the newly created resources with `helm ls` and `kubectl get deploy,pod,ingress,pvc`:
@@ -126,7 +134,7 @@ As soon as all deployments are ready (`wordpress` and `mariadb`) you can open th
 
 We are now going to upgrade the application to a newer Helm chart version. You can do this with:
 
-```
+```bash
 $ helm upgrade -f values.yaml --namespace [USER] --version 9.1.1 wordpress bitnami/wordpress
 ```
 
@@ -135,6 +143,10 @@ And then observe the changes in your WordPress and MariaDB Apps
 
 ### Cleanup
 
-```
+```bash
 $ helm uninstall wordpress --namespace [USER]
 ```
+
+### Additional Task
+
+Study the Helm [Best Practices](https://v2.helm.sh/docs/chart_best_practices/#the-chart-best-practices-guide) as an optinal and additional Task.
