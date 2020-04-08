@@ -144,7 +144,7 @@ And then observe the changes in your WordPress and MariaDB Apps
 ### Cleanup
 
 ```bash
-$ helm uninstall wordpress --namespace [USER]
+$ helm delete wordpress
 ```
 
 ### Additional Task
