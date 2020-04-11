@@ -186,7 +186,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: YOUR_INRESS_NAME
+    - host: YOUR_INGRESS_NAME
       paths:
       - /
   tls: []
