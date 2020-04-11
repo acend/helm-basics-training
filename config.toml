@@ -36,7 +36,7 @@ textColorDark = "#242738"
 whiteColor = "#ffffff"
 
 # public Git Repo - used for "improve this page" links
-gitRepoUrl = "https://github.com/acend/helm-techlab"
+gitRepoUrl = "https://github.com/acend-ch/helm-techlab"
 
 ############################## social links ##############################
 [[params.social]]
