@@ -45,7 +45,7 @@ $ git clone https://github.com/acend-ch/error-chart.git
 The `error-chart` chart contains some deliberate errors. Try to find all of these errors and fix them, then install the chart using `myrelease` as release name. You can use one or several ways shown above to do so.
 The goal of this task is a successfully running `myrelease-error-chart` pod in your own namespace.
 
-{{% collapse hints "Hints" %}}
+{{< collapse hints "Hints" >}}
 #### YAML
 
 YAML has some strict formatting rules. Check if all files conform to these rules.
@@ -60,9 +60,9 @@ Find out what resource files are not correct resource definitions.
 
 Check if all defined values in `values.yaml` look ok to you. Also check if those values used in the templates reference the correct ones.
 
-{{% /collapse %}}
+{{< /collapse >}}
 
-{{% collapse solution "Solution" %}}
+{{< collapse solution "Solution" >}}
 #### Ingress path
 
 The first error we get when trying to install the chart or when using the `helm lint` command is this:
@@ -147,4 +147,4 @@ There's no variable `tags`, instead it's named `tag`. Fix that in the template s
 You might also have to change the `repository:` value because Docker Hub might not be accessible from the used environment.
 
 
-{{% /collapse %}}
+{{< /collapse >}}

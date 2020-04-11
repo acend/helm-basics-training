@@ -21,9 +21,9 @@ That leads to a now-obvious security issue: escalation of privileges. Suddenly, 
 
 With the v3 release, Helm got rid of Tiller.
 
-{{% notice tip %}}
+{{< notice tip >}}
 Check out the [Helm Documentation](https://helm.sh/docs/topics/v2_v3_migration/) for more details about changes between v2 and v3.
-{{% /notice %}}
+{{< /notice >}}
 
 
 #### Mitigating the issues
@@ -37,7 +37,8 @@ The official Helm documentation explains a few hints to mitigate these problems.
 
 ### Install the Helm cli client
 
-{{% collapse helm-v3 "Helm v3" %}}
+{{< tabs >}}
+{{< tab-md "Helm 2" >}}
 
 Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
 
@@ -65,8 +66,9 @@ From here you should be able to run the client and [add the stable repo](https:/
 ```bash
 $ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 ```
-{{% /collapse %}}
-{{% collapse helm-v2 "Helm v2" %}}
+
+{{< /tab-md >}}
+{{< tab-md "Helm 3" >}}
 
 Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
 
@@ -95,16 +97,17 @@ $ kubectl create role "tiller-role-[USER]" --namespace [USER] --verb=* --resourc
 $ kubectl create rolebinding "tiller-rolebinding-[USER]" --namespace [USER] --role="tiller-role-[USER]" --serviceaccount="[USER]:tiller-[USER]"
 $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
 ```
-{{% /collapse %}}
+{{< /tab-md >}}
+{{</ tabs >}}
 
-{{% notice warning %}}
+{{< notice warning >}}
 **Die Mobiliar**: Please have a look at the following special instructions.
-{{% /notice %}}
+{{< /notice >}}
 
-{{% collapse mobi "Mobi-specific insructions" %}}
+{{< collapse mobi "Mobi-specific insructions" >}}
 The Tiller `init` command installs Tiller in your namespace and by default uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. If your Kubernetes nodes cannot directly pull from the `gcr.io` registry, you can overwrite the image by setting the `--tiller-image` parameter. Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5` as your Tiller image:
 
 ```bash
 $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade
 ```
-{{% /collapse %}}
+{{< /collapse >}}

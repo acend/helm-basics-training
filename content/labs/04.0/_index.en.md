@@ -28,9 +28,9 @@ Let's take a closer look at the `mychart/templates/` directory. There's already 
 * `service.yaml`: A basic manifest for creating a service endpoint for your deployment
 * `_helpers.tpl`: A place to put template helpers that you can re-use throughout the chart
 
-{{% notice tip %}}
+{{< notice tip >}}
 For details on chart templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/getting_started/).
-{{% /notice %}}
+{{< /notice >}}
 
 
 ### values.yaml
@@ -112,9 +112,9 @@ When instantiating a release from a chart, we can overwrite these values which a
 
 So for instance we can create a `values-dev.yaml` where we keep our development environment values and then use `helm upgrade/install -f values-dev.yaml` to update or instantiate a release for the given environment. A different approach is to keep the files under version control and use branches for the different stages.
 
-{{% notice tip %}}
+{{< notice tip >}}
 For details on the values file, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/values_files/):
-{{% /notice %}}
+{{< /notice >}}
 
 
 ### Templates
@@ -181,16 +181,16 @@ spec:
 
 We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go Template](https://golang.org/pkg/text/template/) rendering engine.
 
-{{% notice tip %}}
+{{< notice tip >}}
 For details on templating, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/)
-{{% /notice %}}
+{{< /notice >}}
 
 
 ### Task 1: Change charts.yaml
 
 Check out the [Helm Documentation](https://v2.helm.sh/docs/charts/#the-chart-yaml-file) for the `charts.yaml` file, then change the description to `My Awesome App` and add yourself to the list of maintainers:
 
-{{% collapse solution-1 "Solution Task 1" %}}
+{{< collapse solution-1 "Solution Task 1" >}}
 
 ```yaml
 apiVersion: v1
@@ -203,4 +203,4 @@ maintainers:
     email: YOUR E-MAIL ADDRESS
 ```
 
-{{% /collapse %}}
+{{< /collapse >}}

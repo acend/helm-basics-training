@@ -9,13 +9,13 @@ In this lab we are going to learn how to use go templating in the Helm templates
 
 Let's create a new Helm Chart with the name `gotemplatechart` and remove all default templates from the `templates` folder.
 
-{{% collapse solution-1 "Solution Task 1" %}}
+{{< collapse solution-1 "Solution Task 1" >}}
 
 ```bash
 $ helm create gotemplatechart
 $ rm -rf gotemplatechart/templates/*
 ```
-{{% /collapse %}}
+{{< /collapse >}}
 
 ### Task 2: Create a new ConfigMap Template
 
@@ -42,9 +42,9 @@ Or since it's a simple ConfigMap and how we learned in Lab 2 also deploy a relea
 $ helm install gotemplatechart --name gotemplaterelease --namespace [USER]
 ```
 
-{{% notice tip %}}
+{{< notice tip >}}
 Make sure the Tiller Namespace Environment Variable (`export TILLER_NAMESPACE=[USER]`) is set to your Namespace or add the `--tiller-namespace [USER]` argument to the helm commands
-{{% /notice %}}
+{{< /notice >}}
 
 
 ### Task 3: Add the first Go Template Directive
@@ -98,7 +98,7 @@ and then also add your Favorite Color to be rendered in the ConfigMap as data un
 
 Use again `$ helm template gotemplatechart -x templates/configmap.yaml` to see what the output of your rendered K8S resource will look like.
 
-{{% notice tip %}}
+{{< notice tip >}}
 The Output should look like this
 ```yaml
 ---
@@ -110,9 +110,9 @@ data:
   ...
   myFavoriteColor: blue
 ```
-{{% /notice %}}
+{{< /notice >}}
 
-{{% collapse solution-4 "Solution Task 4" %}}
+{{< collapse solution-4 "Solution Task 4" >}}
 
 ```yaml
 apiVersion: v1
@@ -124,7 +124,7 @@ data:
   chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
   myFavoriteColor: {{ .Values.favoriteColor }}
 ```
-{{% /collapse %}}
+{{< /collapse >}}
 
 ### Task 5: Structured Data
 
@@ -137,7 +137,7 @@ favorite:
   color: blue
 ```
 
-{{% collapse solution-5 "Solution Task 5" %}}
+{{< collapse solution-5 "Solution Task 5" >}}
 
 ```yaml
 apiVersion: v1
@@ -149,12 +149,12 @@ data:
   chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
   myFavoriteColor: {{ .Values.favorite.color }}
 ```
-{{% /collapse %}}
+{{< /collapse >}}
 
 
-{{% notice tip %}}
+{{< notice tip >}}
 But ... the official [Helm Bestpractices](https://v2.helm.sh/docs/chart_best_practices/#values) suggest using flat values over nested: "In most cases, flat should be favored over nested. The reason for this is that it is simpler for template developers and users."
-{{% /notice %}}
+{{< /notice >}}
 
 ### Template Functions and Pipelines
 
@@ -196,7 +196,7 @@ data:
   chartnameversion: "gotemplatechart-0.1.0"
   myFavoriteColor: "blue"
 ```
-{{% collapse solution-6 "Solution Task 6" %}}
+{{< collapse solution-6 "Solution Task 6" >}}
 
 ```yaml
 apiVersion: v1
@@ -208,7 +208,7 @@ data:
   chartnameversion: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
   myFavoriteColor: {{ .Values.favorite.color | quote }}
 ```
-{{% /collapse %}}
+{{< /collapse >}}
 
 ### If - else if - else
 
@@ -224,12 +224,12 @@ If then else control structures are very common in templating languages like Go 
 {{ end }}
 ```
 
-{{% notice warning %}}
+{{< notice warning >}}
 
 **Conditional Operators** Like `and`, `or`, `not`, `eq` are functions, conditions therefore look like this `{{ if and .Values.favorite.band (eq .Values.favorite.band "The Rolling Stones") }}`
 For this condition to be true, the value `.Values.favorite.band` must be set and is set to "The Rolling Stones"
 
-{{% /notice %}}
+{{< /notice >}}
 
 ### Task 7: Add a Condition to the ConfigMap Template
 
@@ -248,7 +248,7 @@ favorite:
 
 Now edit the ConfigMap template accordingly
 
-{{% collapse solution-7 "Solution Task 7" %}}
+{{< collapse solution-7 "Solution Task 7" >}}
 
 ```yaml
 apiVersion: v1
@@ -286,7 +286,7 @@ data:
 
 The `with` Operator allows you to set the current scope (`.`) to a particular object, in our case the favorite object.
 
-{{% /collapse %}}
+{{< /collapse >}}
 
 ### Loops in Helm Templates
 

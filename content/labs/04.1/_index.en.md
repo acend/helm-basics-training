@@ -13,11 +13,11 @@ The `appuio/example-spring-boot:latest` application is running on port `8080`. C
 
 After the changes, create or upgrade a release from your template.
 
-{{% notice warning %}}
+{{< notice warning >}}
 **Die Mobiliar**: Use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` container image.
-{{% /notice %}}
+{{< /notice >}}
 
-{{% collapse solution-1 "Solution Task 1" %}}
+{{< collapse solution-1 "Solution Task 1" >}}
 
 In our `values.yaml` we only have to change the value of `image.repository`:
 
@@ -165,18 +165,18 @@ This will create a new release with the name `myapp`. If we already had installe
 ```bash
 $ helm upgrade myreleasename --namespace [USER] mychart
 ```
-{{% /collapse %}}
+{{< /collapse >}}
 
 
 ### Task 2: Create Ingress to access the app
 
 The template folder already has a file for an ingress resource. There are even some variables in `values.yaml` to configure it. Set the correct values for our app and upgrade it.
 
-{{% notice tip %}}
+{{< notice tip >}}
 The corrent values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
-{{% /notice %}}
+{{< /notice >}}
 
-{{% collapse solution-2 "Solution Task 2" %}}
+{{< collapse solution-2 "Solution Task 2" >}}
 The `values.yaml` should look like this:
 
 ```yaml
@@ -243,8 +243,8 @@ spec:
 
 As we can see there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` which loops trough all the values in the `host` array. The same happens to the `path` value.
 
-{{% notice tip %}}
+{{< notice tip >}}
 For details on flow control, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/control_structures/).
-{{% /notice %}}
+{{< /notice >}}
 
-{{% /collapse %}}
+{{< /collapse >}}

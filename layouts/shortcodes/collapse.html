@@ -5,6 +5,6 @@
 </p>
 <div class="collapse" id="{{ .Get 0 }}">
   <div class="card card-body">
-    {{ .Inner }}
+    {{ .Inner | markdownify }}
   </div>
 </div>

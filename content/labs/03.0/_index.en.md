@@ -5,9 +5,9 @@ weight: 30
 
 In this extended lab, we are going to deploy an existing, more complex application with a Helm chart from the Helm Hub.
 
-{{% notice tip %}}
+{{< notice tip >}}
 Make sure the Tiller Namespace Environment Variable (`export TILLER_NAMESPACE=[USER]`) is set to your Namespace or add the `--tiller-namespace [USER]` argument to the helm commands
-{{% /notice %}}
+{{< /notice >}}
 
 ### Helm Hub
 
@@ -53,11 +53,11 @@ mariadb:
 
 If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/requirements.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
 
-{{% notice warning %}}
+{{< notice warning >}}
 **Die Mobiliar**: Have a look at the following special instructions.
-{{% /notice %}}
+{{< /notice >}}
 
-{{% collapse mobi "Mobi-specific insructions" %}}
+{{< collapse mobi "Mobi-specific insructions" >}}
 The WordPress and MariaDB charts use (at the time of writing) the following container images:
 
 * `docker.io/bitnami/wordpress:5.3.2-debian-10-r48`
@@ -89,11 +89,11 @@ ingress:
   hostname: helmtechlab-wordpress-[USER].phoenix.mobicorp.ch
 [...]
 ```
-{{% /collapse %}}
+{{< /collapse >}}
 
-{{% notice tip %}}
+{{< notice tip >}}
 For more details on how to manage dependencies, check out the [Helm Dependencies Documentation](https://v2.helm.sh/docs/charts/#chart-dependencies). Subcharts are an alternative way to define dependencies within a chart: `A chart may contain (inside of its charts/ directory) another chart upon which it depends. In this case, installing the chart will install all of its dependencies. In this case, a chart and its dependencies are managed as a collection.`
-{{% /notice %}}
+{{< /notice >}}
 
 
 We're now going to deploy the application in a specific version (which is not the latest release on purpose):

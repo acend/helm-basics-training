@@ -57,9 +57,9 @@ spec:
         emptyDir: {}
 ```
 
-{{% notice warning %}}
+{{< notice warning >}}
 **Die Mobiliar**: Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mysql:5.6` as the container image.
-{{% /notice %}}
+{{< /notice >}}
 
 You also have to create a template for the `mysql-root-password` secret:
 
@@ -98,7 +98,7 @@ Have a look at the already existing file `service.yaml` and use this as a starti
 
 When your changes are ready, upgrade the already deployed release with the new version.
 
-{{% collapse solution-1 "Solution Task 1" %}}
+{{< collapse solution-1 "Solution Task 1" >}}
 The template file for the MySQL database `templates/deploy-mysql.yaml` could look like this:
 
 ```yaml
@@ -208,7 +208,7 @@ Finally, to upgrade the existing release run:
 ```bash
 $ helm upgrade myapp --namespace [USER] mychart
 ```
-{{% /collapse %}}
+{{< /collapse >}}
 
 
 ### Task 2: Add Environment Variables to use the MySQL Database in your App
@@ -222,7 +222,7 @@ Add the following environment variables:
 * `SPRING_DATASOURCE_DRIVER_CLASS_NAME` with value `com.mysql.jdbc.Driver`
 * `SPRING_DATASOURCE_URL` with value `jdbc:mysql://springboot-mysql/springboot?autoReconnect=true`
 
-{{% collapse solution-2 "Solution Task 2" %}}
+{{< collapse solution-2 "Solution Task 2" >}}
 Change your `template/deployment.yml` and include the new environment variables:
 
 ```yaml
@@ -309,13 +309,13 @@ database:
   driver: com.mysql.jdbc.Driver
 ```
 
-{{% notice tip %}}
+{{< notice tip >}}
 Make sure the `url` contains the correct service name. The service name is based on the chart name `{{ include "mychart.fullname" . }}-mysql` (see the service template above).
-{{% /notice %}}
+{{< /notice >}}
 
 To upgrade your existing release run:
 
 ```bash
 $ helm upgrade myapp --namespace [USER] mychart
 ```
-{{% /collapse %}}
+{{< /collapse >}}

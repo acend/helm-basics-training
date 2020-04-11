@@ -16,11 +16,11 @@ $ helm create mychart
 You'll now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys nginx. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
 
 
-{{% notice warning %}}
+{{< notice warning >}}
 **Die Mobiliar**: Have a look at the following special instructions.
-{{% /notice %}}
+{{< /notice >}}
 
-{{% collapse mobi "Mobi-specific insructions" %}}
+{{< collapse mobi "Mobi-specific insructions" >}}
 You can use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image instead of `nginx` which you cannot pull on your Kubernetes cluster.
 
 Change your `values.yaml` to match the following:
@@ -32,15 +32,25 @@ image:
   pullPolicy: IfNotPresent
 [...]
 ```
-{{% /collapse %}}
+{{< /collapse >}}
 
 ### Task 2
 
 Before actually deploying our generated chart, we can check the (to be) generated Kubernetes ressources with the following command:
 
+{{< tabs >}}
+{{< tab-md "Helm 2" >}}
 ```bash
 $ helm install --dry-run --debug --namespace [USER] --tiller-namespace [USER] mychart
 ```
+{{< /tab-md >}}
+
+{{< tab-md "Helm 3" >}}
+```bash
+$ helm install --dry-run --debug --namespace [USER] myfirstrelease mychart
+```
+{{< /tab-md >}}
+{{</ tabs >}}
 
 Finally, the following command creates a new Release with the Helm Chart and deploys the application:
 
@@ -56,20 +66,20 @@ With `kubectl get pods --namespace [USER]` you should see a new pod. You can lis
 $ helm ls --namespace [USER] --tiller-namespace [USER]
 ```
 
-{{% notice tip %}}
+{{< notice tip >}}
 To not always add the Namespace when calling `helm` (with `--tiller-namespace [USER]`), you can set the following Environment Variable:
 
 ```
 export TILLER_NAMESPACE=[USER]
 ```
-{{% /notice %}}
+{{< /notice >}}
 
 ### Task 3
 
 Our freshly deployed nginx is not yet accessible from outside of the Kubernetes cluster. To expose it, we have to change the service type to `NodePort`.
 Search now for the Service type definition in your Chart and make the change.
 
-{{% collapse solution-servicetype "Solution" %}}
+{{< collapse solution-servicetype "Solution" >}}
 A look into the file `templates/service.yaml` reveals that the service type is set by value:
 ```yaml
 [...]
@@ -86,7 +96,7 @@ service:
   port: 80
 [...]
 ```
-{{% /collapse %}}
+{{< /collapse >}}
 
 Apply the change by upgrading our release:
 
@@ -108,13 +118,13 @@ An alternative way to set or overwrite values for charts we want to deploy is th
 
 Update the replica count of your nginx Deployment to 2 using `--set name=value`
 
-{{% collapse solution-servicetype "Solution" %}}
+{{< collapse solution-servicetype "Solution" >}}
 ```bash
 $ helm upgrade myfirstrelease --set replicaCount=2 --namespace [USER] --tiller-namespace [USER] mychart
 ```
 
 Values that have been set using `--set` can be reset by helm upgrade with `--reset-values`.
-{{% /collapse %}}
+{{< /collapse >}}
 
 ### Task 5
 
