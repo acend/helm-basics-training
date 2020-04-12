@@ -54,6 +54,15 @@ Run it locally with the following command. Beware that `--rmi` automatically rem
 podman run --rm --rmi --interactive --publish 8080:8080 localhost/dreng/helm-techlab
 ```
 
+## How to develop locally
+
+To develop locally we don't want to rebuild the entire container image every time something changed, and it is also important to use the same hugo versions like in production.
+We simply mount the working directory into a running container, where hugo is started in the server mode.
+
+```bash
+$ docker run --rm --interactive --publish 8080:8080 -v ${HOME}/projects/helm/helm-techlab:/opt/app/src -w /opt/app/src registry.puzzle.ch/puzzle/hugo:0.68.3 hugo server -p 8080 --bind 0.0.0.0
+```
+
 
 ## Contributions
 
