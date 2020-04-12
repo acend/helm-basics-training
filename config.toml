@@ -2,6 +2,8 @@
 # provide your domain here
 baseurl = "/"
 
+
+
 enableGitInfo = true
 languageCode = "en-us"
 
@@ -27,6 +29,9 @@ logo = "images/puzzle_classic_rgb.png"
 # logo white is for homepage logo, you can use colorful logo too...
 logoWhite = "images/puzzle_classic_bg_rgb.png"
 # when logo is empty, it will shown your site title
+
+# current version, to indicate which parts are displayed and which not
+acendversion = 2
 
 # customize color
 primaryColor = "#02007e"
