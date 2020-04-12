@@ -41,7 +41,7 @@ gitRepoUrl = "https://github.com/acend-ch/helm-techlab"
 ############################## social links ##############################
 [[params.social]]
 icon = "ti-github" # themify icon pack : https://themify.me/themify-icons
-link = "https://github.com/puzzle/helm-techlab"
+link = "https://github.com/acend-ch/helm-techlab"
 
 [[params.social]]
 icon = "ti-twitter-alt" # themify icon pack : https://themify.me/themify-icons
