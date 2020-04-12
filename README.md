@@ -30,7 +30,7 @@ git submodule update --init --recursive
 Build the image:
 
 ```bash
-docker build --build-arg HUGO_BASE_URL=http://localhost:8080/ -t dreng/helm-techlab:latest .
+docker build -t dreng/helm-techlab:latest .
 ```
 
 Run it locally:
@@ -45,7 +45,7 @@ docker run --rm --interactive --publish 8080:8080 dreng/helm-techlab
 Build the image:
 
 ```bash
-buildah build-using-dockerfile --build-arg HUGO_BASE_URL=http://localhost:8080/ -t dreng/helm-techlab:latest .
+buildah build-using-dockerfile -t dreng/helm-techlab:latest .
 ```
 
 Run it locally with the following command. Beware that `--rmi` automatically removes the built image when the container stops, so you either have to rebuild it or remove the parameter from the command.
