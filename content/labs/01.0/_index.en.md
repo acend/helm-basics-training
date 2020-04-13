@@ -42,36 +42,6 @@ The official Helm documentation explains a few hints to mitigate these problems.
 
 Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
 
-The latest v3 release v3.1.2 can be found at https://github.com/helm/helm/releases/tag/v3.1.2.
-
-
-#### Task 1
-
-Install the `helm` cli on your system:
-
-1. Download your desired version
-1. Unpack it (`tar -zxvf helm-v3.1.2-linux-amd64.tar.gz`)
-1. Find the helm binary in the unpacked directory and move it to its desired destination (e.g. `mv linux-amd64/helm /usr/local/bin/`)
-  * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
-
-To verify run the following command and check if `Version` is what you expected:
-
-```bash
-$ helm version
-version.BuildInfo{Version:"v3.1.2", GitCommit:"d878d4d45863e42fd5cff6743294a11d28a9abce", GitTreeState:"clean", GoVersion:"go1.13.8"}
-```
-
-From here you should be able to run the client and [add the stable repo](https://helm.sh/docs/intro/quickstart/#initialize-a-helm-chart-repository):
-
-```bash
-$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-```
-
-{{< /tab-md >}}
-{{< tab-md "Helm 3" >}}
-
-Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
-
 The latest v2 release v2.16.5 can be found at https://github.com/helm/helm/releases/tag/v2.16.5.
 
 
@@ -97,6 +67,37 @@ $ kubectl create role "tiller-role-[USER]" --namespace [USER] --verb=* --resourc
 $ kubectl create rolebinding "tiller-rolebinding-[USER]" --namespace [USER] --role="tiller-role-[USER]" --serviceaccount="[USER]:tiller-[USER]"
 $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
 ```
+
+{{< /tab-md >}}
+{{< tab-md "Helm 3" >}}
+
+Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
+
+The latest v3 release v3.1.2 can be found at https://github.com/helm/helm/releases/tag/v3.1.2.
+
+
+#### Task 1
+
+Install the `helm` cli on your system:
+
+1. Download your desired version
+1. Unpack it (`tar -zxvf helm-v3.1.2-linux-amd64.tar.gz`)
+1. Find the helm binary in the unpacked directory and move it to its desired destination (e.g. `mv linux-amd64/helm /usr/local/bin/`)
+  * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
+
+To verify run the following command and check if `Version` is what you expected:
+
+```bash
+$ helm version
+version.BuildInfo{Version:"v3.1.2", GitCommit:"d878d4d45863e42fd5cff6743294a11d28a9abce", GitTreeState:"clean", GoVersion:"go1.13.8"}
+```
+
+From here you should be able to run the client and [add the stable repo](https://helm.sh/docs/intro/quickstart/#initialize-a-helm-chart-repository):
+
+```bash
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+```
+
 {{< /tab-md >}}
 {{</ tabs >}}
 
