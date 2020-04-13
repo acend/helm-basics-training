@@ -32,15 +32,27 @@ data:
 ```
 
 We can now render the template with the following command:
+{{< tabs >}}{{< tab-md "Helm 2" >}}
 ```bash
 $ helm template gotemplatechart -x templates/configmap.yaml
 ```
+{{< /tab-md >}}{{< tab-md "Helm 3" >}}
+```bash
+$ helm template gotemplatechart -s templates/configmap.yaml
+```
+{{< /tab-md >}}{{</ tabs >}}
 
 Or since it's a simple ConfigMap and how we learned in Lab 2 also deploy a release of it in our Namespace.
 
+{{< tabs >}}{{< tab-md "Helm 2" >}}
 ```bash
 $ helm install gotemplatechart --name gotemplaterelease --namespace [USER]
 ```
+{{< /tab-md >}}{{< tab-md "Helm 3" >}}
+```bash
+$ helm install gotemplaterelease gotemplatechart --namespace [USER]
+```
+{{< /tab-md >}}{{</ tabs >}}
 
 {{< notice tip >}}
 Make sure the Tiller Namespace Environment Variable (`export TILLER_NAMESPACE=[USER]`) is set to your Namespace or add the `--tiller-namespace [USER]` argument to the helm commands
@@ -63,7 +75,7 @@ data:
   simplevalue: "Hello Helm"
   chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
 ```
-Rendering the new template with `$ helm template gotemplatechart -x templates/configmap.yaml` will therefore result in the following output:
+Rendering the new template again with `helm template gotemplatechart ...` (see task 2) will therefore result in the following output:
 
 ```yaml
 ---
@@ -96,7 +108,7 @@ favoriteColor: blue
 
 and then also add your Favorite Color to be rendered in the ConfigMap as data under the key `myFavoriteColor`, edit the `gotemplatechart/templates/configmap.yaml` File accordingly.
 
-Use again `$ helm template gotemplatechart -x templates/configmap.yaml` to see what the output of your rendered K8S resource will look like.
+Use `helm template gotemplatechart ...` again (task 2) to see what the output of your rendered K8s resource will look like.
 
 {{< notice tip >}}
 The Output should look like this
