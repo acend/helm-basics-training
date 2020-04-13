@@ -104,7 +104,7 @@ $ helm install --name=wordpress -f values.yaml --namespace [USER] --version 9.0.
 ```
 {{< /tab-md >}}{{< tab-md "Helm 3" >}}
 ```bash
-$ helm install -f values.yaml --namespace default --version 9.0.4 wordpress bitnami/wordpress
+$ helm install -f values.yaml --namespace [USER] --version 9.0.4 wordpress bitnami/wordpress
 ```
 {{< /tab-md >}}{{</ tabs >}}
 
