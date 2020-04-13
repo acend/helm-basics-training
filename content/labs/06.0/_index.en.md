@@ -165,7 +165,7 @@ data:
 
 
 {{< notice tip >}}
-But ... the official [Helm Bestpractices](https://v2.helm.sh/docs/chart_best_practices/#values) suggest using flat values over nested: "In most cases, flat should be favored over nested. The reason for this is that it is simpler for template developers and users."
+But ... the official [Helm Best Practices](https://v2.helm.sh/docs/chart_best_practices/#values) suggest using flat values over nested: "In most cases, flat should be favored over nested. The reason for this is that it is simpler for template developers and users."
 {{< /notice >}}
 
 ### Template Functions and Pipelines

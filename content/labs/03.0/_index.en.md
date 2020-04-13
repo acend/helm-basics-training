@@ -57,7 +57,7 @@ If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blo
 **Die Mobiliar**: Have a look at the following special instructions.
 {{< /notice >}}
 
-{{< collapse mobi "Mobi-specific insructions" >}}
+{{< collapse mobi "Mobi-specific instructions" >}}
 The WordPress and MariaDB charts use (at the time of writing) the following container images:
 
 * `docker.io/bitnami/wordpress:5.3.2-debian-10-r48`
@@ -174,4 +174,4 @@ $ helm delete wordpress
 
 ### Additional Task
 
-Study the Helm [Best Practices](https://v2.helm.sh/docs/chart_best_practices/#the-chart-best-practices-guide) as an optinal and additional Task.
+Study the Helm [Best Practices](https://v2.helm.sh/docs/chart_best_practices/#the-chart-best-practices-guide) as an optional and additional Task.

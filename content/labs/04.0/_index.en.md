@@ -3,7 +3,7 @@ title: "4.0 - Create your own Helm Chart"
 weight: 40
 ---
 
-Remember "Lab 2.0 - Create a simple Chart" where you created your first chart? Lets have a closer look at its directory structure and comonents. A typical chart consists of the following files and folders:
+Remember "Lab 2.0 - Create a simple Chart" where you created your first chart? Lets have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
 
 ```
 ./

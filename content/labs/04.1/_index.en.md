@@ -179,7 +179,7 @@ $ helm upgrade myfirstrelease --namespace [USER] mychart
 The template folder already has a file for an ingress resource. There are even some variables in `values.yaml` to configure it. Set the correct values for our app and upgrade it.
 
 {{< notice tip >}}
-The corrent values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
+The current values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
 {{< /notice >}}
 
 {{< collapse solution-2 "Solution Task 2" >}}

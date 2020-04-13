@@ -36,7 +36,7 @@ image:
 
 ### Task 2
 
-Before actually deploying our generated chart, we can check the (to be) generated Kubernetes ressources with the following command:
+Before actually deploying our generated chart, we can check the (to be) generated Kubernetes resources with the following command:
 
 {{< tabs >}}{{< tab-md "Helm 2" >}}
 ```bash
