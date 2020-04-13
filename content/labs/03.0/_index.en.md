@@ -98,9 +98,15 @@ For more details on how to manage dependencies, check out the [Helm Dependencies
 
 We're now going to deploy the application in a specific version (which is not the latest release on purpose):
 
+{{< tabs >}}{{< tab-md "Helm 2" >}}
 ```bash
 $ helm install --name=wordpress -f values.yaml --namespace [USER] --version 9.0.4 bitnami/wordpress
 ```
+{{< /tab-md >}}{{< tab-md "Helm 3" >}}
+```bash
+$ helm install -f values.yaml --namespace default --version 9.0.4 wordpress bitnami/wordpress
+```
+{{< /tab-md >}}{{</ tabs >}}
 
 Watch for the newly created resources with `helm ls` and `kubectl get deploy,pod,ingress,pvc`:
 
