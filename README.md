@@ -24,6 +24,8 @@ After cloning the main repo, you need to initialize the submodule like this:
 git submodule update --init --recursive
 ``` 
 
+Supported elements by the dot theme: [rendered](http://demo.themefisher.com/dot-hugo/installation/elements/), [source](https://raw.githubusercontent.com/themefisher/dot/master/exampleSite/content/installation/elements/_index.en.md)
+
 ## How to test locally
 ### Using Docker
 
@@ -60,9 +62,8 @@ To develop locally we don't want to rebuild the entire container image every tim
 We simply mount the working directory into a running container, where hugo is started in the server mode.
 
 ```bash
-$ docker run --rm --interactive --publish 8080:8080 -v ${HOME}/projects/helm/helm-techlab:/opt/app/src -w /opt/app/src registry.puzzle.ch/puzzle/hugo:0.68.3 hugo server -p 8080 --bind 0.0.0.0
+$ docker run --rm --interactive --publish 8080:8080 -v $(pwd):/opt/app/src -w /opt/app/src registry.puzzle.ch/puzzle/hugo:0.68.3 hugo server -p 8080 --bind 0.0.0.0
 ```
-
 
 ## Contributions
 
