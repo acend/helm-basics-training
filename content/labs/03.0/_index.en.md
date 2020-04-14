@@ -68,12 +68,12 @@ As we cannot access these images, we'll have to overwrite these. Add the followi
 ```yaml
 [...]
 image:
-  registry: registry.mobicorp.ch
+  registry: docker-registry.mobicorp.ch
   repository: puzzle/helm-techlab/wordpress
 
 mariadb:
   image:
-    registry: registry.mobicorp.ch
+    registry: docker-registry.mobicorp.ch
     repository: puzzle/helm-techlab/mariadb
 [...]
 ```
@@ -86,7 +86,7 @@ You can use the following snippet for your ingress configuration if you want to 
 [...]
 ingress:
   enabled: true
-  hostname: helmtechlab-wordpress-[USER].phoenix.mobicorp.ch
+  hostname: helmtechlab-wordpress-[USER].phoenix.mobicorp.test
 [...]
 ```
 {{< /collapse >}}
