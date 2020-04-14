@@ -63,7 +63,7 @@ In order to do these labs you're going to need Tiller. It's easiest to install i
 
 ```bash
 $ kubectl create sa "tiller-[USER]" --namespace [USER]
-$ kubectl create role "tiller-role-[USER]" --namespace [USER] --verb=* --resource=*.,*.apps,*.batch,*.extensions
+$ kubectl create role "tiller-role-[USER]" --namespace [USER] --verb=* --resource=*.,*.apps,*.batch,*.extensions,*.networking.k8s.io
 $ kubectl create rolebinding "tiller-rolebinding-[USER]" --namespace [USER] --role="tiller-role-[USER]" --serviceaccount="[USER]:tiller-[USER]"
 $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
 ```
