@@ -1,6 +1,6 @@
 ARG HUGO_VERSION=0.68.3
 
-FROM acend/hugo:tagname:${HUGO_VERSION} AS builder
+FROM acend/hugo:${HUGO_VERSION} AS builder
 
 EXPOSE 8080
 
