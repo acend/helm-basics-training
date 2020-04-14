@@ -53,6 +53,8 @@ mariadb:
 
 If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/requirements.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
 
+
+
 {{< notice warning >}}
 **Die Mobiliar**: Have a look at the following special instructions.
 {{< /notice >}}
@@ -91,10 +93,27 @@ ingress:
 ```
 {{< /collapse >}}
 
-{{< notice tip >}}
-For more details on how to manage dependencies, check out the [Helm Dependencies Documentation](https://v2.helm.sh/docs/charts/#chart-dependencies). Subcharts are an alternative way to define dependencies within a chart: `A chart may contain (inside of its charts/ directory) another chart upon which it depends. In this case, installing the chart will install all of its dependencies. In this case, a chart and its dependencies are managed as a collection.`
-{{< /notice >}}
+The `requirements.yaml` file allows us to define dependencies on other Charts. In our Wordpress Chart we use the `requirements.yaml` to add a `mariadb` to store the Wordpress data in.
+```yaml
+dependencies:
+  - name: mariadb
+    version: 7.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: mariadb.enabled
+    tags:
+      - wordpress-database
+```
+The Best Practices suggest to use version ranges when ever possible, instead of a fixed version.
+The suggested default therefore is patch-level version match:
 
+```
+version: ~3.5.7 
+```
+This for example is equivalent to `>= 3.5.7, < 3.6.0`
+Check [Semver](https://github.com/Masterminds/semver#checking-version-constraints) for more information about version ranges.
+
+For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://v2.helm.sh/docs/charts/#chart-dependencies). 
+Subcharts are an alternative way to define dependencies within a chart: `A chart may contain (inside of its charts/ directory) another chart upon which it depends. In this case, installing the chart will install all of its dependencies. In this case, a chart and its dependencies are managed as a collection.`
 
 We're now going to deploy the application in a specific version (which is not the latest release on purpose):
 
