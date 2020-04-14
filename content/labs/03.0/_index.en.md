@@ -60,8 +60,8 @@ If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blo
 {{< collapse mobi "Mobi-specific instructions" >}}
 The WordPress and MariaDB charts use (at the time of writing) the following container images:
 
-* `docker.io/bitnami/wordpress:5.3.2-debian-10-r48`
-* `docker.io/bitnami/mariadb:10.3.22-debian-10-r44`
+* `docker.io/bitnami/wordpress:5.4.0-debian-10-r6`
+* `docker.io/bitnami/mariadb:10.3.22-debian-10-r60 `
 
 As we cannot access these images, we'll have to overwrite these. Add the following to your `values.yaml` file in order to do so:
 
@@ -100,11 +100,11 @@ We're now going to deploy the application in a specific version (which is not th
 
 {{< tabs >}}{{< tab-md "Helm 2" >}}
 ```bash
-$ helm install --name=wordpress -f values.yaml --namespace [USER] --version 9.0.4 bitnami/wordpress
+$ helm install --name=wordpress -f values.yaml --namespace [USER] --version 9.1.3 bitnami/wordpress
 ```
 {{< /tab-md >}}{{< tab-md "Helm 3" >}}
 ```bash
-$ helm install -f values.yaml --namespace [USER] --version 9.0.4 wordpress bitnami/wordpress
+$ helm install -f values.yaml --namespace [USER] --version 9.1.3 wordpress bitnami/wordpress
 ```
 {{< /tab-md >}}{{</ tabs >}}
 
@@ -160,7 +160,7 @@ As soon as all deployments are ready (`wordpress` and `mariadb`) you can open th
 We are now going to upgrade the application to a newer Helm chart version. You can do this with:
 
 ```bash
-$ helm upgrade -f values.yaml --namespace [USER] --version 9.1.1 wordpress bitnami/wordpress
+$ helm upgrade -f values.yaml --namespace [USER] --version 9.1.4 wordpress bitnami/wordpress
 ```
 
 And then observe the changes in your WordPress and MariaDB Apps
