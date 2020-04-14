@@ -33,10 +33,10 @@ This provides a quick way of viewing the generated content without YAML parse er
 
 ### Task 1: Get the Chart
 
-Get the `error-chart` chart by either [downloading the repository's ZIP file](https://github.com/acend-ch/error-chart/archive/master.zip) or by cloning it from GitHub:
+Get the `error-chart` chart by either [downloading the repository's ZIP file](https://github.com/acend/error-chart/archive/master.zip) or by cloning it from GitHub:
 
 ```
-$ git clone https://github.com/acend-ch/error-chart.git
+$ git clone https://github.com/acend/error-chart.git
 ```
 
 
