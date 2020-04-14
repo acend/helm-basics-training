@@ -23,7 +23,7 @@ spec:
         app: helm-techlab
     spec:
       containers:
-      - image: docker.io/acend/helm-techlab:latest
+      - image: acend/helm-techlab:latest
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
