@@ -32,13 +32,13 @@ Supported elements by the dot theme: [rendered](http://demo.themefisher.com/dot-
 Build the image:
 
 ```bash
-docker build -t dreng/helm-techlab:latest .
+docker build -t acend/helm-techlab:latest .
 ```
 
 Run it locally:
 
 ```bash
-docker run --rm --interactive --publish 8080:8080 dreng/helm-techlab
+docker run --rm --interactive --publish 8080:8080 acend/helm-techlab
 ```
 
 
@@ -47,13 +47,13 @@ docker run --rm --interactive --publish 8080:8080 dreng/helm-techlab
 Build the image:
 
 ```bash
-buildah build-using-dockerfile -t dreng/helm-techlab:latest .
+buildah build-using-dockerfile -t acend/helm-techlab:latest .
 ```
 
 Run it locally with the following command. Beware that `--rmi` automatically removes the built image when the container stops, so you either have to rebuild it or remove the parameter from the command.
 
 ```bash
-podman run --rm --rmi --interactive --publish 8080:8080 localhost/dreng/helm-techlab
+podman run --rm --rmi --interactive --publish 8080:8080 localhost/acend/helm-techlab
 ```
 
 ## How to develop locally
@@ -62,7 +62,7 @@ To develop locally we don't want to rebuild the entire container image every tim
 We simply mount the working directory into a running container, where hugo is started in the server mode.
 
 ```bash
-$ docker run --rm --interactive --publish 8080:8080 -v $(pwd):/opt/app/src -w /opt/app/src registry.puzzle.ch/puzzle/hugo:0.68.3 hugo server -p 8080 --bind 0.0.0.0
+$ docker run --rm --interactive --publish 8080:8080 -v $(pwd):/opt/app/src -w /opt/app/src acend/hugo:0.68.3 hugo server -p 8080 --bind 0.0.0.0
 ```
 
 ## Contributions
