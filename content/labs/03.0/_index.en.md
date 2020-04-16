@@ -92,17 +92,24 @@ ingress:
 [...]
 ```
 
-And you have to set your `HTTP_PROXY` environment variable in ordner to access the bitname repo:
+And you have to set your `HTTP_PROXY` environment variable in ordner to access the bitnami helm repository:
 
 ```bash
 # Linux
 export HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+export HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 
 # Windows cmd
 setx HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+setx HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+setx http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+setx https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 
-# Powershell
+# Windows Powershell
 $env:HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+$env:HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+$env:http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+$env:https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 ``` 
 
 {{< /collapse >}}

@@ -29,12 +29,10 @@ Change your `values.yaml` to match the following:
 [...]
 image:
   repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx
+  tag: stable
   pullPolicy: IfNotPresent
 [...]
 ```
-
-Change the `appVersion` in your `charts.yaml` to `stable` as the image is build based on `"{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"`.
-
 {{< /collapse >}}
 
 ### Task 2
