@@ -28,6 +28,13 @@ $ helm version
 Client: &version.Version{SemVer:"v2.16.5", GitCommit:"89bd14c1541fa93a09492010030fd3699ca65a97", GitTreeState:"clean"}
 ```
 
+Whenever you see a colored box like the following, you can click on in to open and get more instructions, information or a solution:
+
+{{< collapse box "click here to open & close the box" success>}}
+here you find more instructions, the solution or other information.
+
+click again to close the box.
+{{< /collapse >}}
 
 ### Prerequisites
 
