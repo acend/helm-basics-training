@@ -53,14 +53,14 @@ Helm installs charts into Kubernetes, creating a new release for each installati
 
 ### Task: Techlab Setup
 
-Make sure you have access to a Kubernetes cluster and `kubectl` is configured to use the right context. For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username. In the labs we are going to use `[USER]` as a placeholder for your created namespace.
+Make sure you have access to a Kubernetes cluster and `kubectl` is configured to use the right context. For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username. In the labs we are going to use `[USER]` as a placeholder for your created namespace. So this means, each time you see a `[USER]` somewhere in a command, replace it with your chosen namespace name.
 
 ```bash
 $ kubectl create ns [USER]
 ``` 
 
+
+
 {{< notice warning >}}
-
 **Die Mobiliar** Create the namespace with your Mobiliar Rancher WebGUI inside a Feature Team on your dev cluster.
-
 {{< /notice >}}
