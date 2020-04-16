@@ -67,5 +67,5 @@ $ kubectl create ns [USER]
 ``` 
 
 {{< collapse mobi "Mobi-specific instructions" danger>}}
-**Die Mobiliar** Create the namespace with your Mobiliar Rancher WebGUI inside a Feature Team on your dev cluster.
+Create the namespace with your Mobiliar Rancher WebGUI inside a Feature Team on your dev cluster.
 {{< /collapse >}}
