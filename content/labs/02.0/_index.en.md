@@ -33,7 +33,7 @@ image:
 [...]
 ```
 
-Change the `appVersion` in your `charts.yaml` to stable.
+Change the `appVersion` in your `charts.yaml` to `stable` as the image is build based on `"{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"`.
 
 {{< /collapse >}}
 
