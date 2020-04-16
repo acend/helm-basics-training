@@ -9,7 +9,7 @@ In this lab we are going to learn how to use go templating in the Helm templates
 
 Let's create a new Helm Chart with the name `gotemplatechart` and remove all default templates from the `templates` folder.
 
-{{< collapse solution-1 "Solution Task 1" >}}
+{{< collapse solution-1 "Solution Task 1" success >}}
 
 ```bash
 $ helm create gotemplatechart
@@ -124,7 +124,7 @@ data:
 ```
 {{< /notice >}}
 
-{{< collapse solution-4 "Solution Task 4" >}}
+{{< collapse solution-4 "Solution Task 4" success >}}
 
 ```yaml
 apiVersion: v1
@@ -149,7 +149,7 @@ favorite:
   color: blue
 ```
 
-{{< collapse solution-5 "Solution Task 5" >}}
+{{< collapse solution-5 "Solution Task 5" success >}}
 
 ```yaml
 apiVersion: v1
@@ -208,7 +208,7 @@ data:
   chartnameversion: "gotemplatechart-0.1.0"
   myFavoriteColor: "blue"
 ```
-{{< collapse solution-6 "Solution Task 6" >}}
+{{< collapse solution-6 "Solution Task 6" success >}}
 
 ```yaml
 apiVersion: v1
@@ -260,7 +260,7 @@ favorite:
 
 Now edit the ConfigMap template accordingly
 
-{{< collapse solution-7 "Solution Task 7" >}}
+{{< collapse solution-7 "Solution Task 7" success >}}
 
 ```yaml
 apiVersion: v1

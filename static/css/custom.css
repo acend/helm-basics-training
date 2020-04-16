@@ -2,3 +2,16 @@
 .nav-tabs .nav-link {
     color: #abc;
 }
+
+.code-tabs li.active {
+    background-color: #abc;
+
+}
+
+.content i {
+    margin-bottom: 0;
+  }
+
+.card-body {
+    background-color: #eee;
+}

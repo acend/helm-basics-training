@@ -190,7 +190,7 @@ For details on templating, check out the [Helm Documentation](https://helm.sh/do
 
 Check out the [Helm Documentation](https://v2.helm.sh/docs/charts/#the-chart-yaml-file) for the `charts.yaml` file, then change the description to `My Awesome App` and add yourself to the list of maintainers:
 
-{{< collapse solution-1 "Solution Task 1" >}}
+{{< collapse solution-1 "Solution Task 1" success >}}
 
 ```yaml
 apiVersion: v1

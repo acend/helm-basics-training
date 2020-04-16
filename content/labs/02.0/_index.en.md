@@ -16,12 +16,8 @@ $ helm create mychart
 You'll now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys nginx. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
 
 
-{{< notice warning >}}
-**Die Mobiliar**: Have a look at the following special instructions.
-{{< /notice >}}
-
-{{< collapse mobi "Mobi-specific instructions" >}}
-You can use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image instead of `nginx` which you cannot pull on your Kubernetes cluster.
+{{< collapse mobi "Mobi-specific instructions" danger >}}
+You have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image instead of `nginx` which you cannot pull on your Kubernetes cluster.
 
 Change your `values.yaml` to match the following:
 
@@ -84,7 +80,7 @@ $ helm ls --namespace [USER]
 Our freshly deployed nginx is not yet accessible from outside of the Kubernetes cluster. To expose it, we have to change the service type to `NodePort`.
 Search now for the Service type definition in your Chart and make the change.
 
-{{< collapse solution-servicetype "Solution" >}}
+{{< collapse solution-servicetype "Solution" success >}}
 A look into the file `templates/service.yaml` reveals that the service type is set by value:
 ```yaml
 [...]
@@ -129,7 +125,7 @@ An alternative way to set or overwrite values for charts we want to deploy is th
 
 Update the replica count of your nginx Deployment to 2 using `--set name=value`
 
-{{< collapse solution-replicacount "Solution" >}}
+{{< collapse solution-replicacount "Solution" success >}}
 
 **Helm 2:**
 ```bash

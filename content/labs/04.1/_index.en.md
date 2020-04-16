@@ -13,11 +13,11 @@ The `appuio/example-spring-boot:latest` application is running on port `8080`. C
 
 After the changes, create or upgrade a release from your template.
 
-{{< notice warning >}}
-**Die Mobiliar**: Use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` container image.
-{{< /notice >}}
+{{< collapse mobi "Mobi-specific instructions" danger >}}
+Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` as your container image instead of `appuio/example-spring-boot:latest`.
+{{< /collapse >}}
 
-{{< collapse solution-1 "Solution Task 1" >}}
+{{< collapse solution-1 "Solution Task 1" success >}}
 
 In our `values.yaml` we only have to change the value of `image.repository`:
 
@@ -182,7 +182,7 @@ The template folder already has a file for an ingress resource. There are even s
 The current values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
 {{< /notice >}}
 
-{{< collapse solution-2 "Solution Task 2" >}}
+{{< collapse solution-2 "Solution Task 2" success >}}
 The `values.yaml` should look like this:
 
 ```yaml

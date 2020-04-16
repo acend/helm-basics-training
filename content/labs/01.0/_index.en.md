@@ -123,11 +123,7 @@ $ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 {{< /tab-md >}}
 {{</ tabs >}}
 
-{{< notice warning >}}
-**Die Mobiliar**: Please have a look at the following special instructions.
-{{< /notice >}}
-
-{{< collapse mobi "Mobi-specific instructions" >}}
+{{< collapse mobi "Mobi-specific instructions" danger>}}
 The Tiller `init` command installs Tiller in your namespace and by default uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. If your Kubernetes nodes cannot directly pull from the `gcr.io` registry, you can overwrite the image by setting the `--tiller-image` parameter. Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5` as your Tiller image:
 
 ```bash

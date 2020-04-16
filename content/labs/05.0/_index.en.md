@@ -62,7 +62,7 @@ Check if all defined values in `values.yaml` look ok to you. Also check if those
 
 {{< /collapse >}}
 
-{{< collapse solution "Solution" >}}
+{{< collapse solution "Solution" success >}}
 #### Ingress path
 
 The first error we get when trying to install the chart or when using the `helm lint` command is this:

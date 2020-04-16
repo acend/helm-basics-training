@@ -57,9 +57,9 @@ spec:
         emptyDir: {}
 ```
 
-{{< notice warning >}}
-**Die Mobiliar**: Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mysql:5.6` as the container image.
-{{< /notice >}}
+{{< collapse mobi "Mobi-specific instructions" danger>}}
+You have to use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mysql:5.6` as the container image.
+{{< /collapse >}}
 
 You also have to create a template for the `mysql-root-password` secret:
 
@@ -98,7 +98,7 @@ Have a look at the already existing file `service.yaml` and use this as a starti
 
 When your changes are ready, upgrade the already deployed release with the new version.
 
-{{< collapse solution-1 "Solution Task 1" >}}
+{{< collapse solution-1 "Solution Task 1" success >}}
 The template file for the MySQL database `templates/deploy-mysql.yaml` could look like this:
 
 ```yaml
@@ -222,7 +222,7 @@ Add the following environment variables:
 * `SPRING_DATASOURCE_DRIVER_CLASS_NAME` with value `com.mysql.jdbc.Driver`
 * `SPRING_DATASOURCE_URL` with value `jdbc:mysql://springboot-mysql/springboot?autoReconnect=true`
 
-{{< collapse solution-2 "Solution Task 2" >}}
+{{< collapse solution-2 "Solution Task 2" success >}}
 Change your `template/deployment.yml` and include the new environment variables:
 
 ```yaml

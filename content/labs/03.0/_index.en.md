@@ -54,12 +54,7 @@ mariadb:
 If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/requirements.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
 
 
-
-{{< notice warning >}}
-**Die Mobiliar**: Have a look at the following special instructions.
-{{< /notice >}}
-
-{{< collapse mobi "Mobi-specific instructions" >}}
+{{< collapse mobi "Mobi-specific instructions" danger>}}
 The WordPress and MariaDB charts use (at the time of writing) the following container images:
 
 * `docker.io/bitnami/wordpress:5.4.0-debian-10-r6`
