@@ -47,10 +47,13 @@ The latest v2 release v2.16.5 can be found at https://github.com/helm/helm/relea
 
 #### Task 1
 
-1. Download your desired version
+1. Download your desired version (https://get.helm.sh/helm-v2.16.5-linux-amd64.tar.gz)
 1. Unpack it (`tar -zxvf helm-v2.16.5-linux-amd64.tar.gz`)
 1. Find the helm binary in the unpacked directory and move it to its desired destination (e.g. `mv linux-amd64/helm /usr/local/bin/helm`)
   * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
+
+**Windows Users:** Please make sure to select the Windows version https://get.helm.sh/helm-v2.16.5-windows-amd64.zip. Put the binary into your working directory or make sure the directory containing the `helm.exe` binary is in your `Path` environment variable.
+
 
 To verify run the following command and check if `Version` is what you expected:
 
@@ -80,10 +83,12 @@ The latest v3 release v3.1.2 can be found at https://github.com/helm/helm/releas
 
 Install the `helm` cli on your system:
 
-1. Download your desired version
+1. Download your desired version (https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz)
 1. Unpack it (`tar -zxvf helm-v3.1.2-linux-amd64.tar.gz`)
 1. Find the helm binary in the unpacked directory and move it to its desired destination (e.g. `mv linux-amd64/helm /usr/local/bin/`)
   * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
+
+**Windows Users:** Please make sure to select the Windows version https://get.helm.sh/helm-v3.1.2-windows-amd64.zip. Put the binary into your working directory or make sure the directory containing the `helm.exe` binary is in your `Path` environment variable.
 
 To verify run the following command and check if `Version` is what you expected:
 
