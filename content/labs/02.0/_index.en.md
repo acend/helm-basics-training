@@ -32,6 +32,9 @@ image:
   pullPolicy: IfNotPresent
 [...]
 ```
+
+Change the `appVersion` in your `charts.yaml` to stable.
+
 {{< /collapse >}}
 
 ### Task 2
