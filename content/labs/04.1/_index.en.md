@@ -158,18 +158,18 @@ To create a release from our chart, we run the following command within our char
 
 **Helm 2:**
 ```bash
-$ helm install mychart --name myapp --namespace [USER]
+$ helm install --name myapp --namespace [USER] ./mychart
 ```
 
 **Helm 3:**
 ```bash
-$ helm install --namespace [USER] myapp mychart
+$ helm install --namespace [USER] myapp ./mychart
 ```
 
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
 
 ```bash
-$ helm upgrade myfirstrelease --namespace [USER] mychart
+$ helm upgrade myfirstrelease --namespace [USER] ./mychart
 ```
 {{< /collapse >}}
 

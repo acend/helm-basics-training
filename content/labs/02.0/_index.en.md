@@ -41,11 +41,11 @@ Before actually deploying our generated chart, we can check the (to be) generate
 
 {{< tabs >}}{{< tab-md "Helm 2" >}}
 ```bash
-$ helm install --dry-run --debug --namespace [USER] --tiller-namespace [USER] mychart
+$ helm install --dry-run --debug --namespace [USER] --tiller-namespace [USER] ./mychart
 ```
 {{< /tab-md >}}{{< tab-md "Helm 3" >}}
 ```bash
-$ helm install --dry-run --debug --namespace [USER] myfirstrelease mychart
+$ helm install --dry-run --debug --namespace [USER] myfirstrelease ./mychart
 ```
 {{< /tab-md >}}{{</ tabs >}}
 
@@ -53,11 +53,11 @@ Finally, the following command creates a new Release with the Helm Chart and dep
 
 {{< tabs >}}{{< tab-md "Helm 2" >}}
 ```bash
-$ helm install mychart --name myfirstrelease --namespace [USER] --tiller-namespace [USER]
+$ helm install --name myfirstrelease --namespace [USER] --tiller-namespace [USER] ./mychart 
 ```
 {{< /tab-md >}}{{< tab-md "Helm 3" >}}
 ```bash
-$ helm install --namespace [USER] myfirstrelease mychart
+$ helm install --namespace [USER] myfirstrelease ./mychart
 ```
 {{< /tab-md >}}{{</ tabs >}}
 
@@ -107,11 +107,11 @@ Apply the change by upgrading our release:
 
 {{< tabs >}}{{< tab-md "Helm 2" >}}
 ```bash
-$ helm upgrade myfirstrelease --namespace [USER] --tiller-namespace [USER] mychart
+$ helm upgrade myfirstrelease --namespace [USER] --tiller-namespace [USER] ./mychart
 ```
 {{< /tab-md >}}{{< tab-md "Helm 3" >}}
 ```bash
-$ helm upgrade --namespace [USER] myfirstrelease mychart 
+$ helm upgrade --namespace [USER] myfirstrelease ./mychart 
 ```
 {{< /tab-md >}}{{</ tabs >}}
 
