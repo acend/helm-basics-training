@@ -64,10 +64,27 @@ Client: &version.Version{SemVer:"v2.16.5", GitCommit:"89bd14c1541fa93a0949201003
 
 In order to do these labs you're going to need Tiller. It's easiest to install it in your own namespace. We'll also need to create a ServiceAccount, a Role and a RoleBinding for Helm to work correctly:
 
+**Note:** Make sure you have created your namespace as explained on the previous page (`kubectl create ns [USER]`)
+
 ```bash
+# if not already created by your teacher, create sa,role,rolebinding
+# you can check with `kubectl get sa,role,rolebinding` if you have these resources
 $ kubectl create sa "tiller-[USER]" --namespace [USER]
 $ kubectl create role "tiller-role-[USER]" --namespace [USER] --verb=* --resource=*.,*.apps,*.batch,*.extensions,*.networking.k8s.io
 $ kubectl create rolebinding "tiller-rolebinding-[USER]" --namespace [USER] --role="tiller-role-[USER]" --serviceaccount="[USER]:tiller-[USER]"
+
+# verify with:
+$ kubectl get sa,role,rolebinding
+NAME                     SECRETS   AGE
+serviceaccount/tiller-[USER]    1         56s
+
+NAME                                         AGE
+role.rbac.authorization.k8s.io/tiller-role-[USER]   52s
+
+NAME                                                                                             AGE
+rolebinding.rbac.authorization.k8s.io/tiller-rolebinding-[USER]                                         6s
+
+# then initialize helm with
 $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
 ```
 
