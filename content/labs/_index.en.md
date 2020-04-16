@@ -59,8 +59,6 @@ Make sure you have access to a Kubernetes cluster and `kubectl` is configured to
 $ kubectl create ns [USER]
 ``` 
 
-
-
-{{< notice warning >}}
+{{< collapse mobi "Mobi-specific instructions" danger>}}
 **Die Mobiliar** Create the namespace with your Mobiliar Rancher WebGUI inside a Feature Team on your dev cluster.
-{{< /notice >}}
+{{< /collapse >}}
