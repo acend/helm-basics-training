@@ -91,6 +91,20 @@ ingress:
   hostname: helmtechlab-wordpress-[USER].phoenix.mobicorp.test
 [...]
 ```
+
+And you have to set your `HTTP_PROXY` environment variable in ordner to access the bitname repo:
+
+```bash
+# Linux
+export HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+
+# Windows cmd
+setx HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+
+# Powershell
+$env:HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+``` 
+
 {{< /collapse >}}
 
 The `requirements.yaml` file allows us to define dependencies on other Charts. In our Wordpress Chart we use the `requirements.yaml` to add a `mariadb` to store the Wordpress data in.
