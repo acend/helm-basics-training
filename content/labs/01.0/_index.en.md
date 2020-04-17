@@ -74,7 +74,7 @@ $ kubectl create role "tiller-role-[USER]" --namespace [USER] --verb=* --resourc
 $ kubectl create rolebinding "tiller-rolebinding-[USER]" --namespace [USER] --role="tiller-role-[USER]" --serviceaccount="[USER]:tiller-[USER]"
 
 # verify with:
-$ kubectl get sa,role,rolebinding
+$ kubectl get sa,role,rolebinding --namespace [USER]
 NAME                     SECRETS   AGE
 serviceaccount/tiller-[USER]    1         56s
 
