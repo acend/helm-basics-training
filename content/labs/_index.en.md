@@ -80,10 +80,14 @@ With these concepts in mind, we can now explain Helm like this:
 
 ### Task: Techlab Setup
 
-Make sure you have access to a Kubernetes cluster and `kubectl` is configured to use the right context. For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username. In the labs we are going to use `[USER]` as a placeholder for your created namespace. So this means, each time you see a `[USER]` somewhere in a command, replace it with your chosen namespace name.
+Make sure you have access to a Kubernetes cluster and `kubectl` is configured to use the right context. For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username. In the labs we are going to use `[USER]` as a placeholder for your created namespace. 
+
+{{< notice tip >}}
+Each time you see a `[USER]` somewhere in a command, replace it with your chosen namespace name.
+{{< /notice >}}
 
 ```bash
-$ kubectl create ns [USER]
+$ kubectl create namespace [USER]
 ``` 
 
 {{< collapse mobi "Mobi-specific instructions" danger>}}
