@@ -62,7 +62,7 @@ $ helm version
 Client: &version.Version{SemVer:"v2.16.5", GitCommit:"89bd14c1541fa93a09492010030fd3699ca65a97", GitTreeState:"clean"}
 ```
 
-In order to do these labs you're going to need Tiller. It's easiest to install it in your own namespace. We'll also need to create a ServiceAccount, a Role and a RoleBinding for Helm to work correctly:
+In order to do these labs you're going to need Tiller. It's easiest to install it in your own namespace. We'll also need to create a [ServiceAccount](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/), a [Role](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole) and a [RoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#default-roles-and-role-bindings) for Helm to work correctly:
 
 **Note:** Make sure you have created your namespace as explained on the previous page (`kubectl create ns [USER]`)
 
