@@ -119,6 +119,10 @@ $ kubectl get svc --namespace [USER] --watch
 
 nginx is now available at the given NodePort and should display a welcome page when accessing it with `curl` or your browser of choice.
 
+{{< notice tip >}}
+Use `kubectl get node -o wide` to get a node ip address. Remember, [NodePort's](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) are open on any kubernetes node
+{{< /notice >}}
+
 ### Task 4
 
 An alternative way to set or overwrite values for charts we want to deploy is the `--set name=value` parameter. `--set name=value` can be used when installing a Chart as well as upgrading.
