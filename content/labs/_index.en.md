@@ -10,6 +10,20 @@ weight: 2
 
 ![Helm Logo](helm-horizontal-color.png)
 
+### tl;dr
+
+Helm is a Package Manager for Kubernetes
+* package multiple K8s resources into a single logical deployment unit
+* ... but it's not just a Package Manager
+
+Helm is a Deployment Management for Kubernetes
+* do a repeatable deployment
+* manage dependencies: reuse and share
+* manage multiple configurations
+* update, rollback and test application deployments
+
+As a recap for after the labs, you can watch *[Amy Chen](https://twitter.com/TheAmyCode)* and her talk at Kubecon North America in 2017.
+{{< youtube vQX5nokoqrQ >}}
 
 ### Lab Conventions
 
@@ -36,10 +50,14 @@ here you find more instructions, the solution or other information.
 click again to close the box.
 {{< /collapse >}}
 
+{{< notice tip >}}
+Carefully read all the labs with its instructions. We suggest to not just simply copy&paste commands, but type them in order to fully understand what you are doing.
+{{< /notice >}}
+
 ### Prerequisites
 
 * We assume you have knowledge about Kubernetes and understand the concepts behind [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/), [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Services](https://kubernetes.io/docs/concepts/services-networking/service/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) and [Secrets](https://kubernetes.io/docs/concepts/services-networking/service/)
-* You also should have `kubectl` installed and a working context to access a Kubernetes Cluster
+* You should also have `kubectl` installed and a working context to access a Kubernetes cluster. Check the [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) for the most common commands.
 
 
 ### Helm Overview
@@ -55,8 +73,10 @@ A **Release** is an instance of a chart running in a Kubernetes cluster. One cha
 
 With these concepts in mind, we can now explain Helm like this:
 
-Helm installs charts into Kubernetes, creating a new release for each installation. And to find new charts, you can search Helm chart repositories.
+> Helm installs charts into Kubernetes, creating a new release for each installation. And to find new charts, you can search Helm chart repositories.
 
+![Helm Architecture](architecture.png)
+*[Image Source](https://www.slideshare.net/alexLM/helm-application-deployment-management-for-kubernetes)*
 
 ### Task: Techlab Setup
 
