@@ -87,7 +87,7 @@ ingress:
 [...]
 ```
 
-And you have to set your `HTTP_PROXY` environment variable in ordner to access the bitnami helm repository:
+And you have to set your `HTTP_PROXY` environment variable in order to access the bitnami helm repository:
 
 ```bash
 # Linux
@@ -129,7 +129,8 @@ This for example is equivalent to `>= 3.5.7, < 3.6.0`
 Check [Semver](https://github.com/Masterminds/semver#checking-version-constraints) for more information about version ranges.
 
 For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://v2.helm.sh/docs/charts/#chart-dependencies). 
-Subcharts are an alternative way to define dependencies within a chart: `A chart may contain (inside of its charts/ directory) another chart upon which it depends. In this case, installing the chart will install all of its dependencies. In this case, a chart and its dependencies are managed as a collection.`
+
+Subcharts are an alternative way to define dependencies within a chart: A chart may contain (inside of its `charts/` directory) another chart upon which it depends. As a result, when installing the chart, it will install all of its dependencies from the `charts/` directory.
 
 We're now going to deploy the application in a specific version (which is not the latest release on purpose):
 
