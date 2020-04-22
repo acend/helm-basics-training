@@ -184,7 +184,7 @@ spec:
     - port: 3306
       protocol: TCP
   selector:
-    app.kubernetes.io/name: {{ include "mychart.name" . }}
+    app.kubernetes.io/name: {{ include "mychart.name" . }}-mysql
     app.kubernetes.io/instance: {{ .Release.Name }}
 ```
 
