@@ -123,7 +123,7 @@ nginx is now available at the given NodePort and should display a welcome page w
 Use `kubectl get node -o wide` to get a node ip address. Remember, [NodePort's](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) are open on any kubernetes node
 {{< /notice >}}
 
-{{< collapse mobi "Mobi-specific instructions" danger>}}
+{{< collapse mobi "Mobi-specific instructions" danger >}}
 In case you don't have permissions to list the nodes with `kubectl get node -o wide` simply use `kubedev-worker-00bb7020c0eb.phoenix.mobicorp.test` as the node address to access the welcome page.
 {{< /collapse >}}
 
