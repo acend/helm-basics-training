@@ -178,15 +178,14 @@ metadata:
   name: {{ include "mychart.fullname" . }}-mysql
   labels:
     {{- include "mychart.labels" . | nindent 4 }}
-    tier: mysql
 spec:
   type: ClusterIP
   ports:
     - port: 3306
       protocol: TCP
   selector:
-    {{- include "mychart.selectorLabels" . | nindent 4 }}
-    tier: mysql
+    app.kubernetes.io/name: {{ include "mychart.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 ```
 
 And then in our `values.yaml` we need to add:
@@ -236,11 +235,13 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "mychart.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ include "mychart.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        {{- include "mychart.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ include "mychart.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
