@@ -175,7 +175,7 @@ The service for our MySQL database should look like this:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "mychart.fullname" . }}-mysql
+  name: springboot-mysql
   labels:
     {{- include "mychart.labels" . | nindent 4 }}
 spec:
@@ -274,11 +274,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /health
+              path: /
               port: http
           readinessProbe:
             httpGet:
-              path: /health
+              path: /
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
