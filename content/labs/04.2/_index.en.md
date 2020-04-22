@@ -194,7 +194,7 @@ And then in our `values.yaml` we need to add:
 database:
   host: myhost
   user: springboot
-  dbname: sprintboot
+  dbname: springboot
   secretName: mysql-root-password
   secretKey: password
   secretKeyroot: rootpassword
