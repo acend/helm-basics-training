@@ -108,20 +108,20 @@ kind: Deployment
 metadata:
   name: {{ include "mychart.fullname" . }}-mysql
   labels:
-    {{- include "mychart.labels" . | nindent 4 }}
-    tier: mysql
+        app.kubernetes.io/name: {{ include "mychart.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   selector:
     matchLabels:
-      {{- include "mychart.selectorLabels" . | nindent 6 }}
-      tier: mysql
+        app.kubernetes.io/name: {{ include "mychart.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        {{- include "mychart.selectorLabels" . | nindent 8 }}
-        tier: mysql
+        app.kubernetes.io/name: {{ include "mychart.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
       - image: mysql:5.6
