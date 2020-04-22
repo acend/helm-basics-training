@@ -228,7 +228,7 @@ Change your `template/deployment.yml` and include the new environment variables:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "test.fullname" . }}
+  name: {{ include "mychart.fullname" . }}
   labels:
     {{- include "mychart.labels" . | nindent 4 }}
 spec:
