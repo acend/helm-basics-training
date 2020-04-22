@@ -205,7 +205,7 @@ So `ingress.enabled` is set to `true` and we have to define a `host` for the ing
 
 ```yaml
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "test.fullname" . -}}
+{{- $fullName := include "mychart.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
@@ -216,7 +216,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "test.labels" . | nindent 4 }}
+    {{- include "mychart.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
