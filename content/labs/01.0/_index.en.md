@@ -66,6 +66,10 @@ In order to do these labs you're going to need Tiller. It's easiest to install i
 
 **Note:** Make sure you have created your namespace as explained on the previous page (`kubectl create ns [USER]`)
 
+{{< collapse mobi "Mobi-specific instructions" danger>}}
+The namespace, the service account, the role and the role binding for Helm have already been created for you. But don't miss the helm init command in the next section.
+{{< /collapse >}}
+
 ```bash
 # if not already created by your teacher, create sa,role,rolebinding
 # you can check with `kubectl get sa,role,rolebinding` if you have these resources

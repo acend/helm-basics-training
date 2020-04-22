@@ -92,5 +92,5 @@ $ kubectl create namespace [USER]
 ``` 
 
 {{< collapse mobi "Mobi-specific instructions" danger>}}
-Create the namespace with your Mobiliar Rancher WebGUI inside a Feature Team on your dev cluster.
+A namespace was already created for you.
 {{< /collapse >}}
