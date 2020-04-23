@@ -93,7 +93,7 @@ tolerations: []
 affinity: {}
 ```
 
-And then our `deployment.yaml` should look like this:
+And then our `deployment.yaml` should look like this, note the changed `.spec.containers[0].ports[0].containerPort`:
 
 ```yaml
 apiVersion: apps/v1
