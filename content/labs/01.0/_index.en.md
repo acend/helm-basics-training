@@ -58,7 +58,7 @@ The latest v2 release v2.16.5 can be found at https://github.com/helm/helm/relea
 To verify run the following command and check if `Version` is what you expected:
 
 ```bash
-$ helm version
+$ helm version --client
 Client: &version.Version{SemVer:"v2.16.5", GitCommit:"89bd14c1541fa93a09492010030fd3699ca65a97", GitTreeState:"clean"}
 ```
 
@@ -86,6 +86,12 @@ rolebinding.rbac.authorization.k8s.io/tiller-rolebinding-[USER]                 
 
 # then initialize helm with
 $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --upgrade
+
+# Wait until tiller deployment is ready. 
+kubectl get deploy tiller --namespace [USER]
+
+# Verify helm 
+helm version --tiller-namespace [USER]
 ```
 
 {{< /tab-md >}}
