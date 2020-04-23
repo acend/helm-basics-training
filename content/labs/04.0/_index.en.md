@@ -250,7 +250,7 @@ Create the name of the service account to use
 {{- end -}}
 ```
 
-As you see, you can also define functions in helm templates and then use these functions in your own templates.
+As you see, you can also define [named templates](https://helm.sh/docs/chart_template_guide/named_templates/) in helm and then use these named templates.
 
 Have a look at:
 
