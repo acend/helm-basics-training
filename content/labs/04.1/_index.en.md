@@ -93,7 +93,7 @@ tolerations: []
 affinity: {}
 ```
 
-And then our `deployment.yaml` should look like this:
+And then our `deployment.yaml` should look like this, note the changed `.spec.containers[0].ports[0].containerPort`:
 
 ```yaml
 apiVersion: apps/v1
@@ -101,22 +101,24 @@ kind: Deployment
 metadata:
   name: {{ include "mychart.fullname" . }}
   labels:
-    {{- include "mychart.labels" . | nindent 4 }}
+{{ include "mychart.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "mychart.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ include "mychart.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        {{- include "mychart.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ include "mychart.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
+      serviceAccountName: {{ template "mychart.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -151,7 +153,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-
 ```
 
 To create a release from our chart, we run the following command within our chart directory:
