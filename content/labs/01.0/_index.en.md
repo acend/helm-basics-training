@@ -146,6 +146,6 @@ $ export HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade
 ```
 
-If you have specials chars in your password, you have to escape them with `\`
+If you have specials chars in your password, you have to escape them with hexadecimal value according to https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
 
 {{< /collapse >}}

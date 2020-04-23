@@ -107,7 +107,7 @@ $env:http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 $env:https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 ``` 
 
-If you have specials chars in your password, you have to escape them with `\`
+If you have specials chars in your password, you have to escape them with hexadecimal value according to https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
 
 {{< /collapse >}}
 
