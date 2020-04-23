@@ -183,6 +183,10 @@ The template folder already has a file for an ingress resource. There are even s
 The current values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
 {{< /notice >}}
 
+{{< collapse mobi "Mobi-specific instructions" danger >}}
+You can use `helmtechlab-springboot-[USER].phoenix.mobicorp.test` as your hostname if you wan't to access your deployed application. It might take some minute until your ingress hostname is accessable as the DNS name first have to be propagated correctly.
+{{< /collapse >}}
+
 {{< collapse solution-2 "Solution Task 2" success >}}
 The `values.yaml` should look like this:
 
