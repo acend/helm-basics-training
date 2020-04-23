@@ -123,9 +123,9 @@ nginx is now available at the given NodePort and should display a welcome page w
 Use `kubectl get node -o wide` to get a node ip address. Remember, [NodePort's](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) are open on any kubernetes node
 {{< /notice >}}
 
-fillertext
+fillertext1
 
-{{< collapse mobi "Mobi-specific instructions" danger >}}
+{{< collapse mobi-nodes "Mobi-specific instructions" danger >}}
 You have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image instead of `nginx` which you cannot pull on your Kubernetes cluster.
 
 Change your `values.yaml` to match the following:
