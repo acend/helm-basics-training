@@ -124,7 +124,18 @@ Use `kubectl get node -o wide` to get a node ip address. Remember, [NodePort's](
 {{< /notice >}}
 
 {{< collapse mobi "Mobi-specific instructions" danger >}}
-In case you do not have permissions to list the nodes with `kubectl get node` simply use `kubedev-worker-00bb7020c0eb.phoenix.mobicorp.test` as the node address to access the welcome page.
+You have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image instead of `nginx` which you cannot pull on your Kubernetes cluster.
+
+Change your `values.yaml` to match the following:
+
+```yaml
+[...]
+image:
+  repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx
+  tag: stable
+  pullPolicy: IfNotPresent
+[...]
+```
 {{< /collapse >}}
 
 ### Task 4
