@@ -107,6 +107,8 @@ $env:http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 $env:https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 ``` 
 
+If you have specials chars in your password, you have to escape them with `\`
+
 {{< /collapse >}}
 
 The `requirements.yaml` file allows us to define dependencies on other Charts. In our Wordpress Chart we use the `requirements.yaml` to add a `mariadb` to store the Wordpress data in.
