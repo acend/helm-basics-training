@@ -230,7 +230,7 @@ kind: Deployment
 metadata:
   name: {{ include "mychart.fullname" . }}
   labels:
-    {{- include "mychart.labels" . | nindent 4 }}
+{{- include "mychart.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -247,7 +247,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
+      serviceAccountName: {{ template "mychart.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

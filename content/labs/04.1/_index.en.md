@@ -101,8 +101,7 @@ kind: Deployment
 metadata:
   name: {{ include "mychart.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "mychart.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "mychart.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -119,7 +118,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
+      serviceAccountName: {{ template "mychart.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -154,7 +153,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-
 ```
 
 To create a release from our chart, we run the following command within our chart directory:
