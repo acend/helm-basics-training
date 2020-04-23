@@ -101,16 +101,19 @@ kind: Deployment
 metadata:
   name: {{ include "mychart.fullname" . }}
   labels:
-    {{- include "mychart.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "mychart.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "mychart.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: {{ include "mychart.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        {{- include "mychart.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/name: {{ include "mychart.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
