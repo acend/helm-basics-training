@@ -13,7 +13,7 @@ The `appuio/example-spring-boot:latest` application is running on port `8080`. C
 
 After the changes, create or upgrade a release from your template.
 
-{{< collapse mobi "Mobi-specific instructions" danger >}}
+{{< collapse mobi-1 "Mobi-specific instructions" danger >}}
 Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` as your container image instead of `appuio/example-spring-boot:latest`.
 {{< /collapse >}}
 
@@ -183,7 +183,7 @@ The template folder already has a file for an ingress resource. There are even s
 The current values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
 {{< /notice >}}
 
-{{< collapse mobi "Mobi-specific instructions" danger >}}
+{{< collapse mobi-2 "Mobi-specific instructions" danger >}}
 You can use `helmtechlab-springboot-[USER].phoenix.mobicorp.test` as your hostname if you wan't to access your deployed application. It might take some minute until your ingress hostname is accessable as the DNS name first have to be propagated correctly.
 {{< /collapse >}}
 
