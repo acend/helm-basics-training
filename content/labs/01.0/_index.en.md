@@ -138,7 +138,11 @@ The namespace, the service account, the role and the role binding for Helm have 
 
 The Tiller `helm init` command installs Tiller in your namespace and by default uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. If your Kubernetes nodes cannot directly pull from the `gcr.io` registry, you can overwrite the image by setting the `--tiller-image` parameter. Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5` as your Tiller image:
 
+Also make sure to set your http proxy environment variables so the stable chart repository can be added
+
 ```bash
+$ export HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+$ export HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 $ helm init --service-account "tiller-[USER]" --tiller-namespace [USER] --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade
 ```
 {{< /collapse >}}
