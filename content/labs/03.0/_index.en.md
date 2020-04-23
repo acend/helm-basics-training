@@ -75,6 +75,8 @@ mariadb:
 [...]
 ```
 
+You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above.
+
 The image tag remains as already defined in the chart `values.yaml` file.
 
 You can use the following snippet for your ingress configuration if you want to be able to access the WordPress instance after deploying it (although this is not really necessary for this lab).
