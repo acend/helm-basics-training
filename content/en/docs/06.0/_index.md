@@ -113,7 +113,7 @@ and then also add your Favorite Color to be rendered in the ConfigMap as data un
 
 Use `helm template gotemplatechart ...` again (task 2) to see what the output of your rendered K8s resource will look like.
 
-{{< notice tip >}}
+{{% alert title="Tip" color="warning" %}}
 The Output should look like this
 ```yaml
 ---
@@ -125,9 +125,9 @@ data:
   ...
   myFavoriteColor: blue
 ```
-{{< /notice >}}
+{{% /alert %}}
 
-{{< collapse solution-4 "Solution Task 4" success >}}
+### Solution
 
 ```yaml
 apiVersion: v1
@@ -139,7 +139,6 @@ data:
   chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
   myFavoriteColor: {{ .Values.favoriteColor }}
 ```
-{{< /collapse >}}
 
 ## Task 5: Structured Data
 
@@ -209,7 +208,7 @@ data:
   chartnameversion: "gotemplatechart-0.1.0"
   myFavoriteColor: "blue"
 ```
-{{< collapse solution-6 "Solution Task 6" success >}}
+### Solution
 
 ```yaml
 apiVersion: v1
@@ -221,7 +220,6 @@ data:
   chartnameversion: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
   myFavoriteColor: {{ .Values.favorite.color | quote }}
 ```
-{{< /collapse >}}
 
 ## If - else if - else
 

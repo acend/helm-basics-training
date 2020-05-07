@@ -88,7 +88,7 @@ You can omit the parameter `--tiller-namespace [NAMESPACE]` if you set the follo
 Our freshly deployed nginx is not yet accessible from outside of the Kubernetes cluster. To expose it, we have to change the service type to `NodePort`.
 Search now for the Service type definition in your Chart and make the change.
 
-{{< collapse solution-servicetype "Solution" success >}}
+### Solution
 A look into the file `templates/service.yaml` reveals that the service type is set by value:
 ```yaml
 [...]
@@ -105,7 +105,6 @@ service:
   port: 80
 [...]
 ```
-{{< /collapse >}}
 
 Apply the change by upgrading our release:
 
