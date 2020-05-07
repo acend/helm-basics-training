@@ -66,11 +66,14 @@ url = "https://www.puzzle.ch"
 
 [params]
 
-copyright = "The Techlabs are copyright &copy; [Puzzle ITC](https://puzzle.ch) 2020."
+copyright = "Puzzle ITC GmbH"
 github_repo = "https://github.com/acend/helm-techlab"
 
 
 enabledModule = "base helm3"
+
+# Enable Lunr.js offline search
+offlineSearch = true
 
 [params.ui]
 # Enable to show the side bar menu in its compact state.
