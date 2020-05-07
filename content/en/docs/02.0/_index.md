@@ -37,13 +37,13 @@ Before actually deploying our generated chart, we can check the (to be) generate
 
 {{< onlyWhen helm2 >}}
 ```bash
-helm install --dry-run --debug --namespace [USER] --tiller-namespace [USER] ./mychart
+helm install --dry-run --debug --namespace [NAMESPACE] --tiller-namespace [NAMESPACE] ./mychart
 ```
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3 >}}
 ```bash
-helm install --dry-run --debug --namespace [USER] myfirstrelease ./mychart
+helm install --dry-run --debug --namespace [NAMESPACE] myfirstrelease ./mychart
 ```
 {{< /onlyWhen >}}
 
@@ -52,13 +52,13 @@ Finally, the following command creates a new Release with the Helm Chart and dep
 
 {{< onlyWhen helm2 >}}
 ```bash
-helm install --name myfirstrelease --namespace [USER] --tiller-namespace [USER] ./mychart 
+helm install --name myfirstrelease --namespace [NAMESPACE] --tiller-namespace [NAMESPACE] ./mychart 
 ```
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3 >}}
 ```bash
-helm install --namespace [USER] myfirstrelease ./mychart
+helm install --namespace [NAMESPACE] myfirstrelease ./mychart
 ```
 {{< /onlyWhen >}}
 
@@ -68,13 +68,13 @@ With `kubectl get pods --namespace [NAMESPACE]` you should see a new pod. You ca
 
 {{< onlyWhen helm2 >}}
 ```bash
-helm ls --namespace [USER] --tiller-namespace [USER]
+helm ls --namespace [NAMESPACE] --tiller-namespace [NAMESPACE]
 ```
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3 >}}
 ```bash
-helm ls --namespace [USER]
+helm ls --namespace [NAMESPACE]
 ```
 {{< /onlyWhen >}}
 
@@ -110,7 +110,7 @@ Apply the change by upgrading our release:
 
 {{< onlyWhen helm2 >}}
 ```bash
-helm upgrade myfirstrelease --namespace [USER] --tiller-namespace [USER] ./mychart
+helm upgrade myfirstrelease --namespace [NAMESPACE] --tiller-namespace [NAMESPACE] ./mychart
 ```
 {{< /onlyWhen >}}
 
