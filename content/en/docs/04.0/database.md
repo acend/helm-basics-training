@@ -7,7 +7,6 @@ weight: 42
 
 We want to add a MySQL database and use it as a backend for our `example-spring-boot` application. Using the following Kubernetes resource file for a MySQL database, create a new template file for the MySQL database:
 
-
 {{< onlyWhenNot mobi  >}}
 ```yaml
 ---
@@ -59,10 +58,8 @@ spec:
         emptyDir: {}
 ```
 {{< /onlyWhenNot >}}
-
 {{< onlyWhen mobi  >}}
 You have to use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mysql:5.6` as the container image.
-
 
 ```yaml
 ---
@@ -113,7 +110,6 @@ spec:
       - name: mysql-persistent-storage
         emptyDir: {}
 ```
-
 {{< /onlyWhen >}}
 
 You also have to create a template for the `mysql-root-password` secret:
@@ -209,7 +205,6 @@ spec:
 ```
 
 The secret `templates/mysql-secret.yaml` file should look like this:
-
 
 ```yaml
 ---

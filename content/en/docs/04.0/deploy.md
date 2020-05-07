@@ -25,6 +25,7 @@ The `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` app
 
 In our `values.yaml` we only have to change the value of `image.repository`:
 
+{{< onlyWhenNot mobi >}}
 ```yaml
 # Default values for test.
 # This is a YAML-formatted file.
@@ -96,6 +97,80 @@ tolerations: []
 
 affinity: {}
 ```
+{{< /onlyWhenNot >}}
+{{< onlyWhen mobi >}}
+```yaml
+# Default values for test.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+```
+{{< /onlyWhen >}}
 
 And then our `deployment.yaml` should look like this, note the changed `.spec.containers[0].ports[0].containerPort`:
 
@@ -163,20 +238,20 @@ To create a release from our chart, we run the following command within our char
 
 {{< onlyWhen helm2  >}}
 ```bash
-helm install --name myapp --namespace [USER] ./mychart
+helm install --name myapp --namespace [NAMESPACE] ./mychart
 ```
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3  >}}
 ```bash
-helm install --namespace [USER] myapp ./mychart
+helm install --namespace [NAMESPACE] myapp ./mychart
 ```
 {{< /onlyWhen >}}
 
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
 
 ```bash
-helm upgrade myfirstrelease --namespace [USER] ./mychart
+helm upgrade myfirstrelease --namespace [NAMESPACE] ./mychart
 ```
 
 

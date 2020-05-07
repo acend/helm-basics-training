@@ -47,13 +47,13 @@ Or since it's a simple ConfigMap and how we learned in Lab 2 also deploy a relea
 
 {{< onlyWhen helm2  >}}
 ```bash
-helm install gotemplatechart --name gotemplaterelease --namespace [USER]
+helm install gotemplatechart --name gotemplaterelease --namespace [NAMESPACE]
 ```
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3  >}}
 ```bash
-helm install gotemplaterelease gotemplatechart --namespace [USER]
+helm install gotemplaterelease gotemplatechart --namespace [NAMESPACE]
 ```
 {{< /onlyWhen >}}
 

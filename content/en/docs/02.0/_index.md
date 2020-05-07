@@ -17,7 +17,7 @@ You'll now find a `mychart` directory with the newly created chart. It already i
 
 
 {{< onlyWhen mobi >}}
-Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to match the following:
+Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your now `values.yaml` to match the following:
 
 ```yaml
 [...]
@@ -27,9 +27,7 @@ image:
   pullPolicy: IfNotPresent
 [...]
 ```
-
 {{< /onlyWhen >}}
-
 
 ## Task 2
 
@@ -148,13 +146,13 @@ Update the replica count of your nginx Deployment to 2 using `--set name=value`
 
 {{< onlyWhen helm2 >}}
 ```bash
-helm upgrade myfirstrelease --set replicaCount=2 --namespace [NAMESPACE] --tiller-namespace [NAMESPACE] mychart
+helm upgrade myfirstrelease --set replicaCount=2 --namespace [NAMESPACE] --tiller-namespace [NAMESPACE] ./mychart
 ```
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3 >}}
 ```bash
-helm upgrade --namespace [NAMESPACE] --set replicaCount=2 myfirstrelease mychart 
+helm upgrade --namespace [NAMESPACE] --set replicaCount=2 myfirstrelease ./mychart 
 ```
 {{< /onlyWhen >}}
 

@@ -74,11 +74,11 @@ export HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 export HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 ```
 
-If you have specials chars in your password, you have to escape them with hexadecimal value according to https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
+Replace `u...:PASSWORD` with your account details. If you have specials chars in your password, you have to escape them with hexadecimal value according to https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
 
 The namespace, the service account, the role and the role binding for Helm have already been created for you.
 
-The Tiller `helm init` command installs Tiller in your namespace and by default uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. If your Kubernetes nodes cannot directly pull from the `gcr.io` registry, you can overwrite the image by setting the `--tiller-image` parameter. Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5` as your Tiller image:
+The Tiller `helm init` command installs Tiller in your namespace and by default uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. Your Mobiliar Kubernetes nodes cannot directly pull from the `gcr.io` registry, you have to overwrite the image by setting the `--tiller-image` parameter. Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5` as your Tiller image:
 
 ```bash
 helm init --service-account "tiller-[NAMESPACE]" --tiller-namespace [NAMESPACE] --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade
