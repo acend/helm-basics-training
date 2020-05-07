@@ -55,7 +55,7 @@ weight = 1
 
 [[Languages.en.menu.main]]
 weight = 3
-name = "Puzzle Website"
+name = "Puzzle ITC GmbH"
 url = "https://www.puzzle.ch"
 
 [markup]
@@ -93,14 +93,14 @@ footer_about_disable = true
 [[params.links.developer]]
 name = "Github"
 icon = "fab fa-github" 
-link = "https://github.com/acend/helm-techlab"
+url = "https://github.com/acend/helm-techlab"
 
 [[params.links.user]]
 name = "Twitter"
 icon = "fab fa-twitter"
-link = "https://twitter.com/puzzleitc"
+url = "https://twitter.com/puzzleitc"
   
 [[params.links.user]]
 name = "LinkedIn"
 icon = "fab fa-linkedin-in"
-link = "https://linkedin.com/company/puzzle-itc"
+url = "https://linkedin.com/company/puzzle-itc"

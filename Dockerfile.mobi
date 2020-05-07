@@ -11,9 +11,9 @@ WORKDIR /opt/app/src
 
 COPY . /opt/app/src
 
-RUN npm install -D --save autoprefixer postcss-cli
+RUN npm install -D --save autoprefixer postcss-cli 
 
-RUN hugo --theme ${HUGO_THEME:-docsy} --config config-mobi --minify
+RUN hugo --theme ${HUGO_THEME:-docsy} --config config-mobi --minify 
 
 FROM nginxinc/nginx-unprivileged:alpine
 
