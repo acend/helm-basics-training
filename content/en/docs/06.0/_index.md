@@ -1,5 +1,5 @@
 ---
-title: "6 - Go Templating"
+title: "6. Go Templating"
 weight: 6
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "3- Deploy a more complex Application"
+title: "3. Deploy a more complex Application"
 weight: 3
 ---
 
@@ -80,9 +80,35 @@ mariadb:
 [...]
 ```
 
-You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above.
+You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above. So your final `values.yaml` should look like:
 
-The image tag remains as already defined in the chart `values.yaml` file.
+```yaml
+---
+
+image:
+  registry: docker-registry.mobicorp.ch
+  repository: puzzle/helm-techlab/wordpress
+
+persistence:
+  size: 1Gi
+service:
+  type: ClusterIP
+updateStrategy: 
+  type: Recreate
+
+mariadb:
+  image:
+    registry: docker-registry.mobicorp.ch
+    repository: puzzle/helm-techlab/mariadb
+  db:
+    password: mysuperpassword123
+  master:
+    persistence:
+      size: 1Gi
+```
+
+
+The image tag remains as already defined in the chart orginial `values.yaml` file from the chart.
 
 You can use the following snippet for your ingress configuration if you want to be able to access the WordPress instance after deploying it (although this is not really necessary for this lab).
 
@@ -115,7 +141,6 @@ $env:https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 ``` 
 
 If you have specials chars in your password, you have to escape them with hexadecimal value according to https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
-
 {{< /onlyWhen >}}
 
 The `requirements.yaml` file allows us to define dependencies on other Charts. In our Wordpress Chart we use the `requirements.yaml` to add a `mariadb` to store the Wordpress data in.

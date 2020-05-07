@@ -1,5 +1,5 @@
 ---
-title: "2 - Create a simple Chart"
+title: "2. Create a simple Chart"
 weight: 2
 ---
 

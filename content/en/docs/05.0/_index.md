@@ -1,5 +1,5 @@
 ---
-title: "5 - Debugging Helm"
+title: "5. Debugging Helm"
 weight: 5
 ---
 

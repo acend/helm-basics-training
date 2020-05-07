@@ -1,5 +1,5 @@
 ---
-title: "4 - Create your own Helm Chart"
+title: "4. Create your own Helm Chart"
 weight: 4
 ---
 
