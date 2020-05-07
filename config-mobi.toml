@@ -70,7 +70,7 @@ copyright = "The Techlabs are copyright &copy; [Puzzle ITC](https://puzzle.ch) 2
 github_repo = "https://github.com/acend/helm-techlab"
 
 
-enabledModule = "base helm3"
+enabledModule = "base helm2 mobi"
 
 [params.ui]
 # Enable to show the side bar menu in its compact state.
