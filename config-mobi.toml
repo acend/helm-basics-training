@@ -70,7 +70,8 @@ copyright = "Puzzle ITC GmbH"
 github_repo = "https://github.com/acend/helm-techlab"
 
 
-enabledModule = "base helm3"
+enabledModule = "base helm2 mobi"
+
 
 # Enable Lunr.js offline search
 offlineSearch = true
