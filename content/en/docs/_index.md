@@ -1,6 +1,5 @@
 ---
 title: "Labs"
-icon: "ti-panel"
 weight: 2
 menu:
   main:
