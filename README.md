@@ -9,12 +9,12 @@ For more see [Helm Techlabs online](https://helm-techlab.k8s.puzzle.ch/).
 
 The Techlab content resides within the [content](content) directory.
 
-The main part are the labs, which can be found at [content/labs](content/labs).
+The main part are the labs, which can be found at [content/en/docs](content/en/docs).
 
 
 ## Hugo
 
-Helm Techlab is built using the static page generator [Hugo](https://gohugo.io/) and published at [helm-techlab.k8s.puzzle.ch](https://helm-techlab.k8s.puzzle.ch/).
+Helm Techlab is built using the static page generator [Hugo](https://gohugo.io/) and is published at [helm-techlab.k8s.puzzle.ch](https://helm-techlab.k8s.puzzle.ch/).
 
 The page uses the [dot theme](https://github.com/themefisher/dot) which is included as a Git Submodule.
 
@@ -55,6 +55,7 @@ Run it locally with the following command. Beware that `--rmi` automatically rem
 ```bash
 podman run --rm --rmi --interactive --publish 8080:8080 localhost/acend/helm-techlab
 ```
+
 
 ## How to develop locally
 

@@ -1,5 +1,5 @@
 ---
-title: "3. Deploy a more complex Application"
+title: "3. A more complex application"
 weight: 3
 ---
 
@@ -88,7 +88,7 @@ The WordPress and MariaDB charts use (at the time of writing) the following cont
 * `docker.io/bitnami/wordpress:5.4.0-debian-10-r6`
 * `docker.io/bitnami/mariadb:10.3.22-debian-10-r60 `
 
-As we cannot access these images, we'll have to overwrite these. Add the following to your `values.yaml` file in order to do so:
+As we cannot access these images, we'll have to overwrite them. Add the following to your `values.yaml` file in order to do so:
 
 ```yaml
 [...]
@@ -131,7 +131,7 @@ mariadb:
 
 The image tag remains as already defined in the orginial [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) file from the chart.
 
-You can use the following snippet for your ingress configuration if you want to be able to access the WordPress instance after deploying it (although this is not really necessary for this lab).
+You can use the following snippet for your Ingress configuration if you want to be able to access the WordPress instance after deploying it (although this is not really necessary for this lab).
 
 ```yaml
 [...]
@@ -142,7 +142,7 @@ ingress:
 ```
 {{< /onlyWhen >}}
 
-The `requirements.yaml` file allows us to define dependencies on other Charts. In our Wordpress Chart we use the `requirements.yaml` to add a `mariadb` to store the Wordpress data in.
+The `requirements.yaml` file allows us to define dependencies on other charts. In our Wordpress chart we use the `requirements.yaml` to add a `mariadb` to store the WordPress data in.
 ```yaml
 dependencies:
   - name: mariadb
@@ -152,14 +152,14 @@ dependencies:
     tags:
       - wordpress-database
 ```
-The Best Practices suggest to use version ranges when ever possible, instead of a fixed version.
+[Helm's best practices](https://v2.helm.sh/docs/chart_best_practices/#the-chart-best-practices-guide) suggest to use version ranges instead of a fixed version whenever possible.
 The suggested default therefore is patch-level version match:
 
 ```
 version: ~3.5.7 
 ```
-This for example is equivalent to `>= 3.5.7, < 3.6.0`
-Check [Semver](https://github.com/Masterminds/semver#checking-version-constraints) for more information about version ranges.
+This is e.g. equivalent to `>= 3.5.7, < 3.6.0`
+Check [this SemVer readme chapter](https://github.com/Masterminds/semver#checking-version-constraints) for more information about version ranges.
 
 {{% alert title="Tip" color="warning" %}}
 For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://v2.helm.sh/docs/charts/#chart-dependencies).
@@ -167,7 +167,7 @@ For more details on how to manage **dependencies**, check out the [Helm Dependen
 
 Subcharts are an alternative way to define dependencies within a chart: A chart may contain (inside of its `charts/` directory) another chart upon which it depends. As a result, when installing the chart, it will install all of its dependencies from the `charts/` directory.
 
-We're now going to deploy the application in a specific version (which is not the latest release on purpose):
+We are now going to deploy the application in a specific version (which is not the latest release on purpose):
 
 {{< onlyWhen helm2 >}}
 ```bash
@@ -217,7 +217,7 @@ persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86
 persistentvolumeclaim/wordpress                  Bound    pvc-83ebf739-0b0e-45a2-936e-e925141a0d35   1Gi        RWO            cloudscale-volume-ssd   2m7s
 ```
 
-And use `helm get values wordpress` to deploy the values for a given release.
+And use `helm get values wordpress` to deploy the values for a given release:
 
 ```bash
 helm get values wordpress
@@ -240,7 +240,7 @@ updateStrategy:
 
 ```
 
-As soon as all deployments are ready (`wordpress` and `mariadb`) you can open the application with the URL from your Ingress defined in `values.yaml`.
+As soon as all deployments are ready (meaning pods `wordpress` and `mariadb` are running) you can open the application with the URL from your Ingress resource defined in `values.yaml`.
 
 
 ## Upgrade
@@ -262,4 +262,4 @@ helm delete wordpress
 
 ## Additional Task
 
-Study the Helm [Best Practices](https://v2.helm.sh/docs/chart_best_practices/#the-chart-best-practices-guide) as an optional and additional Task.
+Study the Helm [best practices](https://v2.helm.sh/docs/chart_best_practices/#the-chart-best-practices-guide) as an optional and additional task.

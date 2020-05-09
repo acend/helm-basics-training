@@ -31,7 +31,7 @@ apiVersion: v2
 This provides a quick way of viewing the generated content without YAML parse errors blocking.
 
 
-## Task 1: Get the Chart
+## Task 1: Get the chart
 
 Get the `error-chart` chart by either [downloading the repository's ZIP file](https://github.com/acend/error-chart/archive/master.zip) or by cloning it from GitHub:
 
@@ -40,10 +40,11 @@ git clone https://github.com/acend/error-chart.git
 ```
 
 
-## Task 2: Fix the Chart
+## Task 2: Fix the chart
 
 The `error-chart` chart contains some deliberate errors. Try to find all of these errors and fix them, then install the chart using `myrelease` as release name. You can use one or several ways shown above to do so.
 The goal of this task is a successfully running `myrelease-error-chart` pod in your own namespace.
+
 
 ### Hints
 #### YAML
@@ -99,6 +100,7 @@ Those two key-value pairs `app.kubernetes.io/name` and `app.kubernetes.io/instan
       app.kubernetes.io/name: {{ include "error-chart.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
 ```
+
 
 #### Ingress host
 
