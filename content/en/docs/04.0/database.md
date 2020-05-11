@@ -1,11 +1,11 @@
 ---
-title: "Add a database to your app"
+title: "A new backend"
 weight: 42
 ---
 
-## Task 1: Create Template Files for the MySQL Deployment
+## Task 1: Create template files
 
-We want to add a MySQL database and use it as a backend for our `example-spring-boot` application. Using the following Kubernetes resource file for a MySQL database, create a new template file for the MySQL database:
+We want to add a MySQL database and use it as a backend for our `example-spring-boot` application. Using the following Kubernetes resource file, create a new template file for the MySQL database:
 
 {{< onlyWhenNot mobi  >}}
 ```yaml
@@ -149,7 +149,9 @@ Have a look at the already existing file `service.yaml` and use this as a starti
 
 When your changes are ready, upgrade the already deployed release with the new version.
 
+
 ### Solution
+
 The template file for the MySQL database `templates/deploy-mysql.yaml` could look like this:
 
 ```yaml
@@ -258,7 +260,8 @@ Finally, to upgrade the existing release run:
 helm upgrade myapp --namespace [USER] ./mychart
 ```
 
-## Task 2: Add Environment Variables to use the MySQL Database in your App
+
+## Task 2: Add environment variables
 
 We need some environment variables in our deployment. The goal of this task is to allow a user to set them via values.
 
@@ -268,6 +271,7 @@ Add the following environment variables:
 * `SPRING_DATASOURCE_PASSWORD` value from secret you created in task 1
 * `SPRING_DATASOURCE_DRIVER_CLASS_NAME` with value `com.mysql.jdbc.Driver`
 * `SPRING_DATASOURCE_URL` with value `jdbc:mysql://springboot-mysql/springboot?autoReconnect=true`
+
 
 ### Solution
 

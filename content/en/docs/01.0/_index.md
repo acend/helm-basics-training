@@ -1,12 +1,12 @@
 ---
-title: "1. Install Helm CLI"
+title: "1. Installation"
 weight: 1
 ---
 
 This guide shows you how to install the Helm CLI. Helm can be installed either from source or from pre-built binary releases.
 
 
-## Helm v2 vs v3
+### Helm v2 vs. v3
 
 Helm recently got a big update to v3 which saw some significant changes. However, Helm v2 is still in heavy use. Before downloading any Helm cli client, make sure you get the correct version.
 
@@ -35,11 +35,14 @@ The official Helm documentation explains a few hints to mitigate these problems.
 * Running a Tiller instance per namespace. This way you can reduce Tiller permissions for certain instances, while leaving others privileged. Again, the downside with this solution is that it's difficult to maintain and now you are wasting resources, having duplicated deployments. However for the purpose of this Techlab that's how we're going to set it up. This will also mean, that you'll have to add the tiller-namespace Parameter to every helm command eg. `helm ls --namespace [USER] --tiller-namespace [USER]` or as an alternative set the following Environment Variable `export TILLER_NAMESPACE=[USER]`
 
 {{< onlyWhen helm2 >}}
-## Install the Helm v2 cli client
+
+
+## Install the Helm v2 CLI client
 
 Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
 
 The latest v2 release v2.16.5 can be found at https://github.com/helm/helm/releases/tag/v2.16.5.
+
 
 ## Task 1
 
@@ -160,10 +163,11 @@ You can delete an existing tiller instance with `kubectl delete deployment tille
 {{< /onlyWhenNot >}}
 {{< /onlyWhen >}}
 {{< onlyWhen helm3 >}}
-## Install the Helm v3 cli client
+## Install the Helm v3 CLI client
 Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
 
 The latest v3 release v3.1.2 can be found at https://github.com/helm/helm/releases/tag/v3.1.2.
+
 
 ## Task 1
 

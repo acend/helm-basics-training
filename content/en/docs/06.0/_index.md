@@ -1,13 +1,15 @@
 ---
-title: "6. Go Templating"
+title: "6. Go templating"
 weight: 6
 ---
 
-In this lab we are going to learn how to use go templating in the Helm templates. 
+In this lab we are going to learn how to use Go templating in Helm templates. 
 
-## Task 1: Create a new Helm Chart
 
-Let's create a new Helm Chart with the name `gotemplatechart` and remove all default templates from the `templates` folder.
+## Task 1: Create a new Helm chart
+
+Let's create a new Helm chart with the name `gotemplatechart` and remove all default templates from the `templates` folder.
+
 
 ### Solution
 
@@ -16,11 +18,13 @@ helm create gotemplatechart
 rm -rf gotemplatechart/templates/*
 ```
 
-## Task 2: Create a new ConfigMap Template
 
-As the template directory is completely empty, it's time to create our first template. For the purpose of this lab we're going to use a simple ConfigMap template. If you don't exactly understand what a ConfigMap is, consider reading the [Kubernetes Docs](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/).
+## Task 2: Add a ConfigMap template
 
-Create the template called `gotemplatechart/templates/configmap.yaml`
+As the template directory is completely empty, it's time to create our first template. For the purpose of this lab we're going to use a simple ConfigMap template. If you don't exactly understand what a ConfigMap is, consider reading the [Kubernetes documentation on how to configure a pod to use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/).
+
+Create the template called `gotemplatechart/templates/configmap.yaml`:
+
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -31,6 +35,7 @@ data:
 ```
 
 We can now render the template with the following command:
+
 {{< onlyWhen helm2  >}}
 ```bash
 helm template gotemplatechart -x templates/configmap.yaml
@@ -43,7 +48,7 @@ helm template gotemplatechart -s templates/configmap.yaml
 ```
 {{< /onlyWhen >}}
 
-Or since it's a simple ConfigMap and how we learned in Lab 2 also deploy a release of it in our Namespace.
+As we learned in lab 2, we can now deploy a release of it in our namespace:
 
 {{< onlyWhen helm2  >}}
 ```bash
@@ -58,17 +63,18 @@ helm install gotemplaterelease gotemplatechart --namespace [NAMESPACE]
 {{< /onlyWhen >}}
 
 {{% alert title="Tip" color="warning" %}}
-Make sure the Tiller Namespace Environment Variable (`export TILLER_NAMESPACE=[NAMESPACE]`) is set to your Namespace or add the `--tiller-namespace [NAMESPACE]` argument to the helm commands
+Make sure the Tiller namespace environment variable (`export TILLER_NAMESPACE=[NAMESPACE]`) is set to your namespace or add the `--tiller-namespace [NAMESPACE]` argument to the `helm` commands.
 {{% /alert %}}
 
 
-## Task 3: Add the first Go Template Directive
+## Task 3: The first Go template directive
 
-As first Go Template Directives we're going to add so called Built-in Objects, the Chart Name and Version `{{ .Chart.Name }}-{{ .Chart.Version }}`
+As our first Go template directives we are going to add so-called built-in objects: the chart name and version `{{ .Chart.Name }}-{{ .Chart.Version }}`.
 
-The template directive is enclosed in double curly brackets `{{` and `}}`
+The template directive is enclosed in double curly braces `{{` and `}}`.
 
-Update the `gotemplatechart/templates/configmap.yaml`
+Update the `gotemplatechart/templates/configmap.yaml`:
+
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -78,6 +84,7 @@ data:
   simplevalue: "Hello Helm"
   chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
 ```
+
 Rendering the new template again with `helm template gotemplatechart ...` (see task 2) will therefore result in the following output:
 
 ```yaml
@@ -92,29 +99,32 @@ data:
   chartnameversion: gotemplatechart-0.1.0
 
 ```
-The directive `{{ .Chart.Name }}` and `{{ .Chart.Version }}` injects the Name and Version of the actual Chart. But where are those values coming from?
 
-Within those directives data is accessible through a data structure. The leading `.` represents the root of the object structure and is the Entrypoint to access data in templates.
-Built-in Objects as Chart, Release, File, Template, Values and more are therefore accessible in similar fashion. Check the official [Helm Docs](https://v2.helm.sh/docs/chart_template_guide/#built-in-objects) for further and more in depth info.
+The directives `{{ .Chart.Name }}` and `{{ .Chart.Version }}` inject the name and version of the actual chart. But where are those values coming from?
+
+Within those directives data is accessible through a data structure. The leading `.` represents the root of the object structure and is the entrypoint to access data in templates.
+Built-in objects as chart, release, file, template, values and more are therefore accessible in a similar fashion. Check the official [Helm documentation about built-in objects](https://v2.helm.sh/docs/chart_template_guide/#built-in-objects) for further and more in-depth information.
 
 The `.Chart` data structure obviously comes from the `Chart.yaml` file and represents the values of this file.
 
-## Task 4: Add Data from the values.yaml
 
-As you could have guessed by now, the `values.yaml` file allows us to configure values and parameter used during the rendering of the templates to replace Strings, Parameters, Functions or even to control whether a part of a template is rendered at all. Let's add a couple more directives to our ConfigMap.
+## Task 4: Add data from values.yaml
 
-Remove the default content of the `values.yaml` and replace it by the following:
+As you could have guessed by now, the `values.yaml` file allows us to configure values and parameters used during the rendering of the templates to replace strings, parameters, functions or even to control whether a part of a template is rendered at all. Let's add a couple more directives to our ConfigMap.
+
+Remove the default content of the `values.yaml` and replace it with the following:
 
 ```yaml
 favoriteColor: blue
 ```
 
-and then also add your Favorite Color to be rendered in the ConfigMap as data under the key `myFavoriteColor`, edit the `gotemplatechart/templates/configmap.yaml` File accordingly.
+Now also add your favorite color to be rendered in the ConfigMap as data under the key `myFavoriteColor`. Edit the `gotemplatechart/templates/configmap.yaml` file accordingly.
 
-Use `helm template gotemplatechart ...` again (task 2) to see what the output of your rendered K8s resource will look like.
+Use `helm template gotemplatechart ...` again (as in task 2) to see what your rendered Kubernetes resources will look like.
 
 {{% alert title="Tip" color="warning" %}}
-The Output should look like this
+The output should look like this:
+
 ```yaml
 ---
 # Source: gotemplatechart/templates/configmap.yaml
@@ -126,6 +136,7 @@ data:
   myFavoriteColor: blue
 ```
 {{% /alert %}}
+
 
 ### Solution
 
@@ -140,16 +151,18 @@ data:
   myFavoriteColor: {{ .Values.favoriteColor }}
 ```
 
-## Task 5: Structured Data
 
-As mentioned under Task 3, data within the Built-in Objects can be structured, values can be nested.
+## Task 5: Structured data
 
-Update the ConfigMap Template, so that the following `values.yaml` will result in the same rendered Resource as in Task 4.
+As mentioned in task 3, data within the built-in objects can be structured and values can be nested.
+
+Update the ConfigMap template so that the following `values.yaml` will result in the same rendered resource as in task 4.
 
 ```yaml
 favorite:
   color: blue
 ```
+
 
 ### Solution
 
@@ -165,24 +178,26 @@ data:
 ```
 
 {{% alert title="Tip" color="warning" %}}
-But ... the official [Helm Best Practices](https://v2.helm.sh/docs/chart_best_practices/#values) suggest using flat values over nested: "In most cases, flat should be favored over nested. The reason for this is that it is simpler for template developers and users."
+The official [Helm best practices](https://v2.helm.sh/docs/chart_best_practices/#values) suggest using flat values over nested ones:
+>In most cases, flat should be favored over nested. The reason for this is that it is simpler for template developers and users.
 {{% /alert %}}
 
-## Template Functions and Pipelines
 
-As for now we've learned how to place values unmodified within templates. There are cases where we want to do something with the value before we place it in a resource. With functions and pipelines we can exactly achieve that.
+## Template functions and pipelines
 
-When injecting Strings, like for example our favorite color in a template, we want to quote the Strings.
+As for now we have learned how to place values unmodified within templates. There are cases where we want to do something with the value before we place it in a resource. With functions and pipelines we can achieve exactly that.
+
+When injecting strings like e.g. our favorite color in a template, we want to quote the strings:
 
 ```
 {{ .Values.favorite.color }} --> blue
 {{ quote .Values.favorite.color }} --> "blue"
 ```
-The quote function therefore adds double quotes around the value. Functions follow the syntax `functionName arg1 arg2 ...`
+The quote function therefore adds double quotes around the value. Functions follow the syntax `functionName arg1 arg2 ...`.
 
-Helm has over 60 functions available. Some defined in the [Go Template Language](https://godoc.org/text/template) others in the [Sprig template library](https://godoc.org/github.com/Masterminds/sprig).
+Helm has over 60 functions available. Some are defined in the [Go template language](https://godoc.org/text/template), others in the [Spring template library](https://godoc.org/github.com/Masterminds/sprig).
 
-Similar to linux pipes known from shell commands eg. `ps -aux | grep ps` there are also pipelines available in Go Templates
+Similar to Linux pipes known from shell commands, e.g. `ps -aux | grep ps`, you can use pipes in Go templates as well:
 
 ```
 {{ .Values.favorite.color | upper | quote }} --> "BLUE"
@@ -192,9 +207,10 @@ Similar to linux pipes known from shell commands eg. `ps -aux | grep ps` there a
 {{ printf "%s%s" .Release.Name .Chart.Name | quote }} --> "release-namegotemplatechart"
 ```
 
-## Task 6: Update the ConfigMap Template with Functions and Pipelines
 
-Make the required changes to your ConfigMap Template so that it renders to the following output:
+## Task 6: Add functions and pipelines
+
+Make the required changes to your ConfigMap template so that it renders to the following output:
 
 ```yaml
 ---
@@ -208,6 +224,8 @@ data:
   chartnameversion: "gotemplatechart-0.1.0"
   myFavoriteColor: "blue"
 ```
+
+
 ### Solution
 
 ```yaml
@@ -221,7 +239,8 @@ data:
   myFavoriteColor: {{ .Values.favorite.color | quote }}
 ```
 
-## If - else if - else
+
+## Conditionals
 
 If then else control structures are very common in templating languages like Go Templating and basically look like this
 
@@ -241,11 +260,12 @@ For this condition to be true, the value `.Values.favorite.band` must be set and
 
 {{% /alert %}}
 
-## Task 7: Add a Condition to the ConfigMap Template
+
+## Task 7: Add a condition
 
 Let's add an example condition to our ConfigMap:
 
-* When the favorite drink is water, coke, beer or wine, add a new line to the configmap data part `glass: true`
+* When the favorite drink is water, coke, beer or wine, add a new line to the ConfigMap data part `glass: true`
 * When its coffee or tea: `mug: true`
 
 We start with adding the favorite drink to your `values.yaml`
@@ -256,7 +276,8 @@ favorite:
   drink: [replace with your favorite drink]
 ```
 
-Now edit the ConfigMap template accordingly
+Now edit the ConfigMap template accordingly.
+
 
 ### Solution
 
@@ -271,11 +292,13 @@ data:
   myFavoriteColor: {{ .Values.favorite.color | quote }}
   {{ if and .Values.favorite.drink (or (eq .Values.favorite.drink "water") (eq .Values.favorite.drink "coke") (eq .Values.favorite.drink "beer") (eq .Values.favorite.drink "wine")) }}glass: true{{ else if and .Values.favorite.drink (or (eq .Values.favorite.drink "coffee") (eq .Values.favorite.drink "tea")) }}mug: true{{ end }}
 ```
-This Condition is mostly unreadable, due to the fact, that we need to make sure the spaces for the next key and value set are correct.
 
-Check the [Helm Docs](https://v2.helm.sh/docs/chart_template_guide/#controlling-whitespace) for more details about how to control whitespaces and edit your Config Map.
+This condition is mostly unreadable due to the fact that we need to make sure the spaces for the next key and value set are correct.
 
-A more readable Version could look like this
+Check out [Helm's documentation about controlling whitespace](https://v2.helm.sh/docs/chart_template_guide/#controlling-whitespace) for more details about how to control whitespaces and adapt your ConfigMap.
+
+A more readable version could look like this:
+
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -296,9 +319,10 @@ data:
 
 The `with` Operator allows you to set the current scope (`.`) to a particular object, in our case the favorite object.
 
-## Loops in Helm Templates
 
-The `range` Operator allows you to implement loops in Helm Templates. To iterate over a list of cities for example
+## Loops in Helm templates
+
+The `range` Operator allows you to implement loops in Helm templates. E.g. to iterate over a list of cities:
 
 ```yaml
 favorite:
@@ -311,7 +335,8 @@ cities:
   - Geneva
   - ...
 ```
-we can implement the template as follows:
+
+We can implement the template as follows:
 
 ```yaml
 apiVersion: v1
@@ -335,12 +360,15 @@ data:
     {{- end }}
 ```
 
-checkout the [Helm Developing Templates Docs](https://v2.helm.sh/docs/chart_template_guide/#the-chart-template-developer-s-guide) for more detailed infos about Templating with Helm.
+Checkout [Helm's documentation about developing templates](https://v2.helm.sh/docs/chart_template_guide/#the-chart-template-developer-s-guide) for more details about templating with Helm.
 
-## Task 8: Make mariadb integration for Lab 4 optional
 
-Change the Helm Chart from Lab 4 so that the mariadb integration can be configured with a conditional parameter eg. `persistence.enabled`
-* mariadb Service, Deployment
-* PersistentVolumeClaim
-* Configuration in the Spring Boot Application
+## Task 8: MariaDB integration (optional)
 
+Change the Helm chart from lab 4 so that the mariadb integration can be configured with a conditional parameter, e.g. `persistence.enabled`.
+Consider changing the following resources:
+
+- Service
+- Deployment
+- PersistentVolumeClaim
+- Configuration in the application

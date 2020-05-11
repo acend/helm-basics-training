@@ -1,11 +1,12 @@
 ---
-title: "Deploy your awesome Application"
+title: "Your awesome application"
 weight: 41
 ---
 
 Using the generated and modified Helm chart, we are going to deploy our own awesome application.
 
-## Task 1: Change the deployment.yml Template and the values.yml File
+
+## Task 1: Adapt the chart
 
 {{< onlyWhenNot mobi >}}
 Our container image has the name `appuio/example-spring-boot:latest` and is a very basic python application. Change the content of your `deployment.yml` and `values.yml` so a pod with the `example-spring-boot` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
@@ -20,6 +21,7 @@ Our container image has the name `docker-registry.mobicorp.ch/puzzle/k8s/kurs/ex
 
 The `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` application is running on port `8080`. Change the existing `deployment.yaml` accordingly.
 {{< /onlyWhen >}}
+
 
 ### Solution
 
@@ -255,8 +257,7 @@ helm upgrade myfirstrelease --namespace [NAMESPACE] ./mychart
 ```
 
 
-
-## Task 2: Create Ingress to access the app
+## Task 2: Make the app accessible
 
 The template folder already has a file for an ingress resource. There are even some variables in `values.yaml` to configure it. Set the correct values for our app and upgrade it.
 
@@ -268,7 +269,9 @@ The current values for the ingress depends on the Kubernetes cluster. Ask your i
 You can use `helmtechlab-springboot-[NAMESPACE].phoenix.mobicorp.test` as your hostname if you wan't to access your deployed application. It might take some minute until your ingress hostname is accessable as the DNS name first have to be propagated correctly.
 {{< /onlyWhen >}}
 
+
 ### Solution
+
 The `values.yaml` should look like this:
 
 ```yaml
@@ -338,5 +341,3 @@ As we can see there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` w
 {{% alert title="Tip" color="warning" %}}
 For details on flow control, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/control_structures/).
 {{% /alert %}}
-
-
