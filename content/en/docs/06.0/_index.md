@@ -52,18 +52,18 @@ As we learned in lab 2, we can now deploy a release of it in our namespace:
 
 {{< onlyWhen helm2  >}}
 ```bash
-helm install gotemplatechart --name gotemplaterelease --namespace [NAMESPACE]
+helm install gotemplatechart --name gotemplaterelease --namespace <NAMESPACE>
 ```
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3  >}}
 ```bash
-helm install gotemplaterelease gotemplatechart --namespace [NAMESPACE]
+helm install gotemplaterelease gotemplatechart --namespace <NAMESPACE>
 ```
 {{< /onlyWhen >}}
 
 {{% alert title="Tip" color="warning" %}}
-Make sure the Tiller namespace environment variable (`export TILLER_NAMESPACE=[NAMESPACE]`) is set to your namespace or add the `--tiller-namespace [NAMESPACE]` argument to the `helm` commands.
+Make sure the Tiller namespace environment variable (`export TILLER_NAMESPACE=<NAMESPACE>`) is set to your namespace or add the `--tiller-namespace <NAMESPACE>` argument to the `helm` commands.
 {{% /alert %}}
 
 

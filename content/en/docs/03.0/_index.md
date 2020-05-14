@@ -8,7 +8,7 @@ In this extended lab, we are going to deploy an existing, more complex applicati
 {{< onlyWhen helm2 >}}
 
 {{% alert title="Tip" color="warning" %}}
-Make sure the Tiller Namespace Environment Variable (`export TILLER_NAMESPACE=[NAMESPACE]`) is set to your Namespace or add the `--tiller-namespace [NAMESPACE]` argument to the every Helm commands
+Make sure the Tiller Namespace Environment Variable (`export TILLER_NAMESPACE=<NAMESPACE>`) is set to your Namespace or add the `--tiller-namespace <NAMESPACE>` argument to the every Helm commands
 {{% /alert %}}
 
 {{< /onlyWhen >}}
@@ -171,33 +171,33 @@ We are now going to deploy the application in a specific version (which is not t
 
 {{< onlyWhen helm2 >}}
 ```bash
-helm install --name=wordpress -f values.yaml --namespace [NAMESPACE] --version 9.1.3 bitnami/wordpress
+helm install --name=wordpress -f values.yaml --namespace <NAMESPACE> --version 9.1.3 bitnami/wordpress
 ```
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3 >}}
 ```bash
-helm install -f values.yaml --namespace [NAMESPACE] --version 9.1.3 wordpress bitnami/wordpress
+helm install -f values.yaml --namespace <NAMESPACE> --version 9.1.3 wordpress bitnami/wordpress
 ```
 {{< /onlyWhen >}}
 
 Watch for the newly created resources with `helm ls` and `kubectl get deploy,pod,ingress,pvc`:
 
 ```bash
-helm ls --namespace [NAMESPACE]
+helm ls --namespace <NAMESPACE>
 ```
 
 which gives you:
 
 ```bash
 NAME     	NAMESPACE      	REVISION	UPDATED                                 	STATUS  	CHART          	APP VERSION
-wordpress	[NAMESPACE]        	1       	2020-03-31 13:23:17.213961038 +0200 CEST	deployed	wordpress-9.0.4	5.3.2
+wordpress	<NAMESPACE>        	1       	2020-03-31 13:23:17.213961038 +0200 CEST	deployed	wordpress-9.0.4	5.3.2
 ```
 
 and
 
 ```bash
-kubectl -n [NAMESPACE] get deploy,pod,ingress,pvc
+kubectl -n <NAMESPACE> get deploy,pod,ingress,pvc
 ``` 
 which gives you:
 
@@ -248,7 +248,7 @@ As soon as all deployments are ready (meaning pods `wordpress` and `mariadb` are
 We are now going to upgrade the application to a newer Helm chart version. You can do this with:
 
 ```bash
-helm upgrade -f values.yaml --namespace [NAMESPACE] --version 9.1.4 wordpress bitnami/wordpress
+helm upgrade -f values.yaml --namespace <NAMESPACE> --version 9.1.4 wordpress bitnami/wordpress
 ```
 
 And then observe the changes in your WordPress and MariaDB Apps
