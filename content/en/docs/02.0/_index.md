@@ -77,10 +77,11 @@ helm ls --namespace [NAMESPACE]
 ```
 {{< /onlyWhen >}}
 
-
+{{< onlyWhen helm2 >}}
 {{% alert title="Tip" color="warning" %}}
 You can omit the parameter `--tiller-namespace [NAMESPACE]` if you set the following environment variable: `export TILLER_NAMESPACE=[NAMESPACE]`
 {{% /alert %}}
+{{< /onlyWhen >}}
 
 ## Task 3
 
