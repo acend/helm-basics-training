@@ -62,7 +62,7 @@ helm install gotemplaterelease gotemplatechart --namespace <NAMESPACE>
 ```
 {{< /onlyWhen >}}
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 Make sure the Tiller namespace environment variable (`export TILLER_NAMESPACE=<NAMESPACE>`) is set to your namespace or add the `--tiller-namespace <NAMESPACE>` argument to the `helm` commands.
 {{% /alert %}}
 
@@ -122,7 +122,7 @@ Now also add your favorite color to be rendered in the ConfigMap as data under t
 
 Use `helm template gotemplatechart ...` again (as in task 2) to see what your rendered Kubernetes resources will look like.
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 The output should look like this:
 
 ```yaml
@@ -177,7 +177,7 @@ data:
   myFavoriteColor: {{ .Values.favorite.color }}
 ```
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 The official [Helm best practices](https://v2.helm.sh/docs/chart_best_practices/#values) suggest using flat values over nested ones:
 >In most cases, flat should be favored over nested. The reason for this is that it is simpler for template developers and users.
 {{% /alert %}}
@@ -254,7 +254,7 @@ If then else control structures are very common in templating languages like Go 
 {{ end }}
 ```
 
-{{% alert title="Conditional Operators" color="warning" %}}
+{{% alert title="Note: Conditional Operators" color="primary" %}}
 Like `and`, `or`, `not`, `eq` are functions, conditions therefore look like this `{{ if and .Values.favorite.band (eq .Values.favorite.band "The Rolling Stones") }}`
 For this condition to be true, the value `.Values.favorite.band` must be set and is set to "The Rolling Stones"
 

@@ -28,7 +28,7 @@ Looking at the `mychart/templates/` directory, we notice that there already are 
 * `service.yaml`: A basic manifest for creating a service endpoint for your deployment
 * `_helpers.tpl`: A place to put template helpers that you can re-use throughout the chart
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 For details on chart templating, check out the [Helm's getting started guide](https://helm.sh/docs/chart_template_guide/getting_started/).
 {{% /alert %}}
 
@@ -112,7 +112,7 @@ When instantiating a release from a chart, we can overwrite these values accordi
 
 So for instance we can create a `values-dev.yaml` where we keep our development environment values and then use `helm upgrade/install -f values-dev.yaml` to update or instantiate a release for the given environment. A different approach is to keep the files under version control and use branches for the different stages.
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 For details on the values file, check out the [Helm documentation about values files](https://helm.sh/docs/chart_template_guide/values_files/).
 {{% /alert %}}
 
@@ -183,7 +183,7 @@ spec:
 
 We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go template](https://golang.org/pkg/text/template/) rendering engine.
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 For details on templating, check out the [Helm documentation about template functions and pipelines](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/).
 {{% /alert %}}
 

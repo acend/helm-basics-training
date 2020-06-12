@@ -363,7 +363,7 @@ database:
   driver: com.mysql.jdbc.Driver
 ```
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Warning" color="warning" %}}
 Make sure the `url` contains the correct service name. The service name is based on the chart name `{{ include "mychart.fullname" . }}-mysql` (see the service template above).
 {{% /alert %}}
 

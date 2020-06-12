@@ -14,11 +14,10 @@ First let's create our chart:
 helm create mychart
 ```
 
-You'll now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys nginx. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
-
+You'll now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
 
 {{< onlyWhen mobi >}}
-Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your now `values.yaml` to match the following:
+Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to match the following:
 
 ```yaml
 [...]
@@ -28,6 +27,7 @@ image:
   pullPolicy: IfNotPresent
 [...]
 ```
+
 {{< /onlyWhen >}}
 
 ## Task 2
@@ -78,7 +78,7 @@ helm ls --namespace <NAMESPACE>
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm2 >}}
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 You can omit the parameter `--tiller-namespace <NAMESPACE>` if you set the following environment variable: `export TILLER_NAMESPACE=<NAMESPACE>`
 {{% /alert %}}
 {{< /onlyWhen >}}
@@ -130,7 +130,7 @@ kubectl get svc --namespace <NAMESPACE> --watch
 nginx is now available at the given port number indicated by the `NodePort` and should display a welcome page when accessing it with `curl` or your browser of choice.
 
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 Use `kubectl get node -o wide` to get a node ip address. Remember, [NodePort's](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) are open on any kubernetes node
 {{% /alert %}}
 

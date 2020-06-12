@@ -21,7 +21,7 @@ That leads to a now-obvious security issue: escalation of privileges. Suddenly, 
 
 With the v3 release, Helm got rid of Tiller.
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 Check out the [Helm Documentation](https://helm.sh/docs/topics/v2_v3_migration/) for more details about changes between v2 and v3.
 {{% /alert %}}
 
@@ -41,17 +41,17 @@ The official Helm documentation explains a few hints to mitigate these problems.
 
 Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
 
-The latest v2 release v2.16.5 can be found at https://github.com/helm/helm/releases/tag/v2.16.5.
+In this lab, we use version v2.16.5 of Helm .The release can be found on [Github](https://github.com/helm/helm/releases/tag/v2.16.5).
 
 
 ## Task 1
 
-1. Download your desired version (https://get.helm.sh/helm-v2.16.5-linux-amd64.tar.gz)
+1. Download your desired version (e.g. for linux: https://get.helm.sh/helm-v2.16.5-linux-amd64.tar.gz)
 1. Unpack it (`tar -zxvf helm-v2.16.5-linux-amd64.tar.gz`)
 1. Find the helm binary in the unpacked directory and move it to its desired destination (e.g. `mv linux-amd64/helm /usr/local/bin/helm`)
   * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
 
-{{% alert title="Windows Users" color="warning" %}}
+{{% alert title="Warning: Windows Users" color="warning" %}}
 Please make sure to select the Windows version https://get.helm.sh/helm-v2.16.5-windows-amd64.zip. Put the binary into your working directory or make sure the directory containing the `helm.exe` binary is in your `Path` environment variable.
 {{% /alert %}}
 
@@ -81,7 +81,9 @@ Replace `u...:PASSWORD` with your account details. If you have specials chars in
 
 The namespace, the service account, the role and the role binding for Helm have already been created for you.
 
-The Tiller `helm init` command installs Tiller in your namespace and by default uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. Your Mobiliar Kubernetes nodes cannot directly pull from the `gcr.io` registry, you have to overwrite the image by setting the `--tiller-image` parameter. Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5` as your Tiller image:
+The Tiller `helm init` command installs Tiller in your namespace and by default uses the `gcr.io/kubernetes-helm/tiller:v2.16.5` container image. Your Mobiliar Kubernetes nodes cannot directly pull from the `gcr.io` registry, you have to overwrite the image by setting the `--tiller-image` parameter. Use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5` as your Tiller image.
+
+Execute in your terminal to install Tiller in your namespace:
 
 ```bash
 helm init --service-account "tiller-<NAMESPACE>" --tiller-namespace <NAMESPACE> --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade
@@ -93,7 +95,7 @@ Then wait until tiller deployment is ready. You can check the deployment status 
 kubectl get deploy tiller --namespace <NAMESPACE>
 ```
 
-Now tiller should be ready and you can check the version of helm and tiller with
+Now Tiller should be ready and you can check the version of Helm and Tiller with
 
 ```bash
 helm version --tiller-namespace <NAMESPACE>
@@ -102,7 +104,8 @@ helm version --tiller-namespace <NAMESPACE>
 this should give you an output similar to: 
 
 ```bash
-TODO
+Client: &version.Version{SemVer:"v2.16.5", GitCommit:"89bd14c1541fa93a09492010030fd3699ca65a97", GitTreeState:"clean"}
+Server: &version.Version{SemVer:"v2.16.5", GitCommit:"89bd14c1541fa93a09492010030fd3699ca65a97", GitTreeState:"clean"}
 ```
 
 {{< /onlyWhen >}}
@@ -156,7 +159,7 @@ this should give you an output similar to:
 TODO
 ```
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 You can delete an existing tiller instance with `kubectl delete deployment tiller --namespace <NAMESPACE>`
 {{% /alert %}}
 

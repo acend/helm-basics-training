@@ -261,7 +261,7 @@ helm upgrade myfirstrelease --namespace <NAMESPACE> ./mychart
 
 The template folder already has a file for an ingress resource. There are even some variables in `values.yaml` to configure it. Set the correct values for our app and upgrade it.
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Warning" color="warning" %}}
 The current values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
 {{% /alert %}}
 
@@ -338,6 +338,6 @@ spec:
 
 As we can see there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` which loops trough all the values in the `host` array. The same happens to the `path` value.
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 For details on flow control, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/control_structures/).
 {{% /alert %}}

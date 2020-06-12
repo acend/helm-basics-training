@@ -7,7 +7,7 @@ In this extended lab, we are going to deploy an existing, more complex applicati
 
 {{< onlyWhen helm2 >}}
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Warning" color="warning" %}}
 Make sure the Tiller Namespace Environment Variable (`export TILLER_NAMESPACE=<NAMESPACE>`) is set to your Namespace or add the `--tiller-namespace <NAMESPACE>` argument to the every Helm commands
 {{% /alert %}}
 
@@ -161,7 +161,7 @@ version: ~3.5.7
 This is e.g. equivalent to `>= 3.5.7, < 3.6.0`
 Check [this SemVer readme chapter](https://github.com/Masterminds/semver#checking-version-constraints) for more information about version ranges.
 
-{{% alert title="Tip" color="warning" %}}
+{{% alert title="Note" color="primary" %}}
 For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://v2.helm.sh/docs/charts/#chart-dependencies).
 {{% /alert %}} 
 
