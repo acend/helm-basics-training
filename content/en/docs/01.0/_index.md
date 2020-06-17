@@ -44,7 +44,7 @@ Every [release](https://github.com/helm/helm/releases) of Helm provides binary r
 In this lab, we use version v2.16.5 of Helm .The release can be found on [Github](https://github.com/helm/helm/releases/tag/v2.16.5).
 
 
-## Task 1
+## Task 1: Download Helm CLI
 
 1. Download your desired version (e.g. for linux: https://get.helm.sh/helm-v2.16.5-linux-amd64.tar.gz)
 1. Unpack it (`tar -zxvf helm-v2.16.5-linux-amd64.tar.gz`)
@@ -76,6 +76,10 @@ First, make sure to set your http proxy environment variables so the stable char
 export HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 export HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 ```
+
+{{% alert title="Note" color="primary" %}}
+If you have direct access to the internet from your location, the proxy configuration is not required.
+{{% /alert %}}
 
 Replace `u...:PASSWORD` with your account details. If you have specials chars in your password, you have to escape them with hexadecimal value according to https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
 

@@ -61,7 +61,7 @@ You can create your namespace with:
 {{< /onlyWhenNot >}}
 
 {{< onlyWhen mobi >}}
-We already created a namespace for you. The name of your namespace is equal to your Mobi U-Account `u....` and has been placed in the Project `?`. 
+We already created a namespace for you. The name of your namespace is equal to your Mobi U-Account `u....` and has been placed in the Project `helm`. 
 Just to see it again, a namespace in Kubernetes can be created with:
 
 {{< /onlyWhen >}}

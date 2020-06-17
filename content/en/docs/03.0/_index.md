@@ -45,6 +45,11 @@ $env:https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 ``` 
 
 Replace `u...:PASSWORD` with your account details. If you have specials chars in your password, you have to escape them with hexadecimal value according to https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
+
+{{% alert title="Note" color="primary" %}}
+If you have direct access to the internet from your location, the proxy configuration is not required.
+{{% /alert %}}
+
 {{< /onlyWhen >}}
 
 ```bash
