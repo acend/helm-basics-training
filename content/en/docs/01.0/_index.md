@@ -96,7 +96,7 @@ helm init --service-account "tiller-<NAMESPACE>" --tiller-namespace <NAMESPACE> 
 Then wait until tiller deployment is ready. You can check the deployment status with:
 
 ```bash
-kubectl get deploy tiller --namespace <NAMESPACE>
+kubectl get deploy tiller-deploy --namespace <NAMESPACE>
 ```
 
 Now Tiller should be ready and you can check the version of Helm and Tiller with
