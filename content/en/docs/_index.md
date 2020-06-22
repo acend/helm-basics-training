@@ -10,13 +10,16 @@ menu:
 
 ![Helm Logo](helm-horizontal-color.png)
 
+
 ### tl;dr
 
 Helm is a Package Manager for Kubernetes
+
 * package multiple K8s resources into a single logical deployment unit
 * ... but it's not just a Package Manager
 
 Helm is a Deployment Management for Kubernetes
+
 * do a repeatable deployment
 * manage dependencies: reuse and share
 * manage multiple configurations
@@ -24,6 +27,7 @@ Helm is a Deployment Management for Kubernetes
 
 As a recap for after the labs, you can watch *[Amy Chen](https://twitter.com/TheAmyCode)* and her talk at Kubecon North America in 2017.
 {{< youtube vQX5nokoqrQ >}}
+
 
 ### Prerequisites
 
@@ -50,6 +54,7 @@ With these concepts in mind, we can now explain Helm like this:
 ![Helm Architecture](architecture.png)
 *[Image Source](https://www.slideshare.net/alexLM/helm-application-deployment-management-for-kubernetes)*
 
+
 ### Task: Techlab Setup
 
 Make sure you have access to the Mobiliar `dev` Kubernetes cluster and `kubectl` is configured to use the right context.
@@ -69,6 +74,7 @@ Just to see it again, a namespace in Kubernetes can be created with:
 ```bash
 kubectl create namespace <NAMESPACE>
 ```
+
 In the labs we are going to use `<NAMESPACE>` as a placeholder for your namespace.
 
 {{% alert title="Note" color="primary" %}}
