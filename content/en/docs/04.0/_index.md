@@ -190,7 +190,7 @@ For details on templating, check out the [Helm documentation about template func
 
 ### _helpers.tpl
 
-Inside the template folder you find also a `_helpers.tpl` file. 
+Inside the template folder you find also a `_helpers.tpl` file.
 
 ```yaml
 {{/* vim: set filetype=mustache: */}}
@@ -297,7 +297,7 @@ appVersion: "1.0"
 description: My awesome app
 name: mychart
 version: 0.1.0
-maintainers: 
+maintainers:
   - name: YOUR NAME
     email: YOUR E-MAIL ADDRESS
 ```

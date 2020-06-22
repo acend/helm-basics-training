@@ -28,6 +28,7 @@ The `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` app
 In our `values.yaml` we only have to change the value of `image.repository`:
 
 {{< onlyWhenNot mobi >}}
+
 ```yaml
 # Default values for test.
 # This is a YAML-formatted file.
@@ -99,8 +100,10 @@ tolerations: []
 
 affinity: {}
 ```
+
 {{< /onlyWhenNot >}}
 {{< onlyWhen mobi >}}
+
 ```yaml
 # Default values for test.
 # This is a YAML-formatted file.
@@ -172,6 +175,7 @@ tolerations: []
 
 affinity: {}
 ```
+
 {{< /onlyWhen >}}
 
 And then our `deployment.yaml` should look like this, note the changed `.spec.containers[0].ports[0].containerPort`:
@@ -239,15 +243,19 @@ spec:
 To create a release from our chart, we run the following command within our chart directory:
 
 {{< onlyWhen helm2  >}}
+
 ```bash
 helm install --name myapp --namespace <NAMESPACE> ./mychart
 ```
+
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3  >}}
+
 ```bash
 helm install --namespace <NAMESPACE> myapp ./mychart
 ```
+
 {{< /onlyWhen >}}
 
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
@@ -261,7 +269,7 @@ helm upgrade myfirstrelease --namespace <NAMESPACE> ./mychart
 
 The template folder already has a file for an ingress resource. There are even some variables in `values.yaml` to configure it. Set the correct values for our app and upgrade it.
 
-{{% alert title="Warning" color="warning" %}}
+{{% alert title="Warning" color="secondary" %}}
 The current values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
 {{% /alert %}}
 
@@ -270,7 +278,7 @@ You can use `helmtechlab-springboot-<NAMESPACE>.phoenix.mobicorp.test` as your h
 {{< /onlyWhen >}}
 
 
-### Solution
+### Solution Task 2
 
 The `values.yaml` should look like this:
 

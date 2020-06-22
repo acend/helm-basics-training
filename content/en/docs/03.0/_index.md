@@ -7,17 +7,19 @@ In this extended lab, we are going to deploy an existing, more complex applicati
 
 {{< onlyWhen helm2 >}}
 
-{{% alert title="Warning" color="warning" %}}
+{{% alert title="Warning" color="secondary" %}}
 Make sure the Tiller Namespace Environment Variable (`export TILLER_NAMESPACE=<NAMESPACE>`) is set to your Namespace or add the `--tiller-namespace <NAMESPACE>` argument to the every Helm commands
 {{% /alert %}}
 
 {{< /onlyWhen >}}
+
 
 ## Helm Hub
 
 Check out [Helm Hub](https://hub.helm.sh/) where you'll find a huge number of different Helm charts. For this lab, we'll use the [WordPress chart by Bitnami](https://hub.helm.sh/charts/bitnami/wordpress), a publishing platform for building blogs and websites.
 
 ![Helm Hub](helmhub.png)
+
 
 ## WordPress
 
@@ -42,9 +44,9 @@ $env:HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 $env:HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 $env:http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 $env:https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-``` 
+```
 
-Replace `u...:PASSWORD` with your account details. If you have specials chars in your password, you have to escape them with hexadecimal value according to https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
+Replace `u...:PASSWORD` with your account details. If you have specials chars in your password, you have to escape them with hexadecimal value according [this article](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters)
 
 {{% alert title="Note" color="primary" %}}
 If you have direct access to the internet from your location, the proxy configuration is not required.
@@ -60,8 +62,8 @@ Let's check if that worked:
 
 ```bash
 helm repo list
-NAME           	URL                                              
-bitnami         https://charts.bitnami.com/bitnami 
+NAME            URL
+bitnami         https://charts.bitnami.com/bitnami
 ```
 
 Now look at the available configuration for this Helm chart. Usually you can find them in the [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) or in the chart's readme file. You can also check them on its [Helm Hub page](https://hub.helm.sh/charts/bitnami/wordpress).
@@ -74,7 +76,7 @@ persistence:
   size: 1Gi
 service:
   type: ClusterIP
-updateStrategy: 
+updateStrategy:
   type: Recreate
 
 mariadb:
@@ -91,7 +93,7 @@ If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blo
 The WordPress and MariaDB charts use (at the time of writing) the following container images:
 
 * `docker.io/bitnami/wordpress:5.4.0-debian-10-r6`
-* `docker.io/bitnami/mariadb:10.3.22-debian-10-r60 `
+* `docker.io/bitnami/mariadb:10.3.22-debian-10-r60`
 
 As we cannot access these images, we'll have to overwrite them. Add the following to your `values.yaml` file in order to do so:
 
@@ -120,7 +122,7 @@ persistence:
   size: 1Gi
 service:
   type: ClusterIP
-updateStrategy: 
+updateStrategy:
   type: Recreate
 
 mariadb:
@@ -145,9 +147,11 @@ ingress:
   hostname: helmtechlab-wordpress-[USER].phoenix.mobicorp.test
 [...]
 ```
+
 {{< /onlyWhen >}}
 
 The `requirements.yaml` file allows us to define dependencies on other charts. In our Wordpress chart we use the `requirements.yaml` to add a `mariadb` to store the WordPress data in.
+
 ```yaml
 dependencies:
   - name: mariadb
@@ -157,33 +161,39 @@ dependencies:
     tags:
       - wordpress-database
 ```
+
 [Helm's best practices](https://v2.helm.sh/docs/chart_best_practices/#the-chart-best-practices-guide) suggest to use version ranges instead of a fixed version whenever possible.
 The suggested default therefore is patch-level version match:
 
 ```
-version: ~3.5.7 
+version: ~3.5.7
 ```
+
 This is e.g. equivalent to `>= 3.5.7, < 3.6.0`
 Check [this SemVer readme chapter](https://github.com/Masterminds/semver#checking-version-constraints) for more information about version ranges.
 
 {{% alert title="Note" color="primary" %}}
 For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://v2.helm.sh/docs/charts/#chart-dependencies).
-{{% /alert %}} 
+{{% /alert %}}
 
 Subcharts are an alternative way to define dependencies within a chart: A chart may contain (inside of its `charts/` directory) another chart upon which it depends. As a result, when installing the chart, it will install all of its dependencies from the `charts/` directory.
 
 We are now going to deploy the application in a specific version (which is not the latest release on purpose):
 
 {{< onlyWhen helm2 >}}
+
 ```bash
 helm install --name=wordpress -f values.yaml --namespace <NAMESPACE> --version 9.1.3 bitnami/wordpress
 ```
+
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3 >}}
+
 ```bash
 helm install -f values.yaml --namespace <NAMESPACE> --version 9.1.3 wordpress bitnami/wordpress
 ```
+
 {{< /onlyWhen >}}
 
 Watch for the newly created resources with `helm ls` and `kubectl get deploy,pod,ingress,pvc`:
@@ -195,15 +205,16 @@ helm ls --namespace <NAMESPACE>
 which gives you:
 
 ```bash
-NAME     	NAMESPACE      	REVISION	UPDATED                                 	STATUS  	CHART          	APP VERSION
-wordpress	<NAMESPACE>        	1       	2020-03-31 13:23:17.213961038 +0200 CEST	deployed	wordpress-9.0.4	5.3.2
+NAME      NAMESPACE       REVISION  UPDATED                                     STATUS    CHART           APP VERSION
+wordpress <NAMESPACE>         1        2020-03-31 13:23:17.213961038 +0200 CEST deployed  wordpress-9.0.4 5.3.2
 ```
 
 and
 
 ```bash
 kubectl -n <NAMESPACE> get deploy,pod,ingress,pvc
-``` 
+```
+
 which gives you:
 
 ```bash
@@ -226,7 +237,8 @@ And use `helm get values wordpress` to deploy the values for a given release:
 
 ```bash
 helm get values wordpress
-``` 
+```
+
 which gives you:
 
 ```yaml
@@ -264,6 +276,7 @@ And then observe the changes in your WordPress and MariaDB Apps
 ```bash
 helm delete wordpress
 ```
+
 
 ## Additional Task
 

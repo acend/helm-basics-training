@@ -47,6 +47,8 @@ The goal of this task is a successfully running `myrelease-error-chart` pod in y
 
 
 ### Hints
+
+
 #### YAML
 
 YAML has some strict formatting rules. Check if all files conform to these rules.
@@ -63,13 +65,15 @@ Check if all defined values in `values.yaml` look ok to you. Also check if those
 
 
 ### Solution
+
+
 #### Ingress path
 
 The first error we get when trying to install the chart or when using the `helm lint` command is this:
 
 ```
 [ERROR] templates/ingress.yaml: unable to parse YAML
-	error converting YAML to JSON: yaml: line 15: found character that cannot start any token
+  error converting YAML to JSON: yaml: line 15: found character that cannot start any token
 ```
 
 "found character that cannot start any token" probably doesn't ring a bell so we try to find out what's wrong with line 15 in file `templates/ingress.yaml`. Beware that line 15 corresponds to line 15 of the rendered file! Opening the file and going to the appropriate line containing `paths:`, we notice that a tab instead of whitespace characters was used to indent. Replace it with whitespace characters.
