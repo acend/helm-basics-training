@@ -3,7 +3,7 @@ title: "6. Go templating"
 weight: 6
 ---
 
-In this lab we are going to learn how to use Go templating in Helm templates. 
+In this lab we are going to learn how to use Go templating in Helm templates.
 
 
 ## Task 1: Create a new Helm chart
@@ -37,29 +37,37 @@ data:
 We can now render the template with the following command:
 
 {{< onlyWhen helm2  >}}
+
 ```bash
 helm template gotemplatechart -x templates/configmap.yaml
 ```
+
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3 >}}
+
 ```bash
 helm template gotemplatechart -s templates/configmap.yaml
 ```
+
 {{< /onlyWhen >}}
 
 As we learned in lab 2, we can now deploy a release of it in our namespace:
 
 {{< onlyWhen helm2  >}}
+
 ```bash
 helm install gotemplatechart --name gotemplaterelease --namespace <NAMESPACE>
 ```
+
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3  >}}
+
 ```bash
 helm install gotemplaterelease gotemplatechart --namespace <NAMESPACE>
 ```
+
 {{< /onlyWhen >}}
 
 {{% alert title="Note" color="primary" %}}
@@ -135,10 +143,11 @@ data:
   ...
   myFavoriteColor: blue
 ```
+
 {{% /alert %}}
 
 
-### Solution
+### Solution Task 4
 
 ```yaml
 apiVersion: v1
@@ -164,7 +173,7 @@ favorite:
 ```
 
 
-### Solution
+### Solution Task 5
 
 ```yaml
 apiVersion: v1
@@ -193,6 +202,7 @@ When injecting strings like e.g. our favorite color in a template, we want to qu
 {{ .Values.favorite.color }} --> blue
 {{ quote .Values.favorite.color }} --> "blue"
 ```
+
 The quote function therefore adds double quotes around the value. Functions follow the syntax `functionName arg1 arg2 ...`.
 
 Helm has over 60 functions available. Some are defined in the [Go template language](https://godoc.org/text/template), others in the [Spring template library](https://godoc.org/github.com/Masterminds/sprig).
@@ -226,7 +236,7 @@ data:
 ```
 
 
-### Solution
+### Solution Task 6
 
 ```yaml
 apiVersion: v1
@@ -279,7 +289,7 @@ favorite:
 Now edit the ConfigMap template accordingly.
 
 
-### Solution
+### Solution Task 7
 
 ```yaml
 apiVersion: v1
@@ -368,7 +378,7 @@ Checkout [Helm's documentation about developing templates](https://v2.helm.sh/do
 Change the Helm chart from lab 4 so that the mariadb integration can be configured with a conditional parameter, e.g. `persistence.enabled`.
 Consider changing the following resources:
 
-- Service
-- Deployment
-- PersistentVolumeClaim
-- Configuration in the application
+* Service
+* Deployment
+* PersistentVolumeClaim
+* Configuration in the application

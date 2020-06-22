@@ -8,6 +8,7 @@ weight: 42
 We want to add a MySQL database and use it as a backend for our `example-spring-boot` application. Using the following Kubernetes resource file, create a new template file for the MySQL database:
 
 {{< onlyWhenNot mobi  >}}
+
 ```yaml
 ---
 apiVersion: apps/v1
@@ -57,6 +58,7 @@ spec:
       - name: mysql-persistent-storage
         emptyDir: {}
 ```
+
 {{< /onlyWhenNot >}}
 {{< onlyWhen mobi  >}}
 You have to use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mysql:5.6` as the container image.
@@ -110,6 +112,7 @@ spec:
       - name: mysql-persistent-storage
         emptyDir: {}
 ```
+
 {{< /onlyWhen >}}
 
 You also have to create a template for the `mysql-root-password` secret:
@@ -273,7 +276,7 @@ Add the following environment variables:
 * `SPRING_DATASOURCE_URL` with value `jdbc:mysql://springboot-mysql/springboot?autoReconnect=true`
 
 
-### Solution
+### Solution Taks 2
 
 Change your `template/deployment.yml` and include the new environment variables:
 
@@ -363,7 +366,7 @@ database:
   driver: com.mysql.jdbc.Driver
 ```
 
-{{% alert title="Warning" color="warning" %}}
+{{% alert title="Warning" color="secondary" %}}
 Make sure the `url` contains the correct service name. The service name is based on the chart name `{{ include "mychart.fullname" . }}-mysql` (see the service template above).
 {{% /alert %}}
 
