@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    keel.sh/policy: force
+    keel.sh/policy: "force"
+    keel.sh/match-tag: "true"
   labels:
-    app: helm-techlab
-  name: helm-techlab
-  namespace: dreng-helmtechlab-prod
+    app: helm-basics-training
+  name: helm-basics-training
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: helm-techlab
+      app: helm-basics-training
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -20,10 +20,10 @@ spec:
   template:
     metadata:
       labels:
-        app: helm-techlab
+        app: helm-basics-training
     spec:
       containers:
-      - image: acend/helm-techlab:latest
+      - image: acend/helm-basics-training:latest
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
