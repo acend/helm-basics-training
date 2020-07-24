@@ -4,7 +4,6 @@ metadata:
   labels:
     app: helm-techlab
   name: helm-techlab
-  namespace: dreng-helmtechlab-prod
 spec:
   ports:
   - port: 8080

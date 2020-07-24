@@ -4,17 +4,16 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx-public
   labels:
-    app: helm-techlab
-  name: helm-techlab
-  namespace: dreng-helmtechlab-prod
+    app: helm-basics-training
+  name: helm-basics-training
 spec:
   rules:
-  - host: helm-techlab.k8s.puzzle.ch
+  - host: helm-basics.k8s.puzzle.ch
     http:
       paths:
       - backend:
-          serviceName: helm-techlab
+          serviceName: helm-basics-training
           servicePort: 8080
   tls:
   - hosts:
-    - helm-techlab.k8s.puzzle.ch
+    - helm-basics.k8s.puzzle.ch
