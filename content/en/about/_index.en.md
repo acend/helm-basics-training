@@ -1,5 +1,5 @@
 ---
-title: "About Helm Techlab"
+title: "About Helm Basics Training"
 linkTitle: About
 menu:
   main:
@@ -7,13 +7,13 @@ menu:
 ---
 
 
-{{< blocks/cover title="About Helm Techlab" image_anchor="bottom" height="min" >}}
+{{< blocks/cover title="About Helm Basics Training" image_anchor="bottom" height="min" >}}
 
 {{< /blocks/cover >}}
 
 {{< blocks/section color="light" type="section">}}
 
-This **Techlab** is based on Helm v2.16.5.
+This **Training** is based on Helm v2.16.5.
 
 
 ## Additional information
