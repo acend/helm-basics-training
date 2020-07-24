@@ -1,4 +1,4 @@
-# Helm Basics
+# Helm Basics Training
 
 In this guided hands-on training, we show participants the Helm's basics.
 
