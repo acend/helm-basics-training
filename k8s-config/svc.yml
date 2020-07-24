@@ -2,14 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: helm-techlab
-  name: helm-techlab
+    app: helm-basics-training
+  name: helm-basics-training
 spec:
   ports:
   - port: 8080
     protocol: TCP
     targetPort: 8080
   selector:
-    app: helm-techlab
+    app: helm-basics-training
   sessionAffinity: None
   type: ClusterIP
