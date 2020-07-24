@@ -67,4 +67,4 @@ $ docker run --rm --interactive --publish 8080:8080 -v $(pwd):/opt/app/src -w /o
 
 ## Contributions
 
-If you find errors, bugs or missing information please help us improve our techlab and have a look at the [Contribution Guide](CONTRIBUTING.md).
+If you find errors, bugs or missing information please help us improve our training and have a look at the [Contribution Guide](CONTRIBUTING.md).
