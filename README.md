@@ -2,7 +2,7 @@
 
 In this guided hands-on training, we show participants the Helm's basics.
 
-For more see [Helm Techlabs online](https://helm-basics.k8s.puzzle.ch/).
+For more see [Helm Basics Training online](https://helm-basics.k8s.puzzle.ch/).
 
 
 ## Content Sections
