@@ -46,13 +46,13 @@ In this lab, we use version v2.16.5 of Helm .The release can be found on [Github
 
 ## Task 1: Download Helm CLI
 
-1. Download your desired version (e.g. for linux: https://get.helm.sh/helm-v2.16.5-linux-amd64.tar.gz)
+1. Download your desired version ([e.g. for linux](https://get.helm.sh/helm-v2.16.5-linux-amd64.tar.gz))
 1. Unpack it (`tar -zxvf helm-v2.16.5-linux-amd64.tar.gz`)
 1. Find the helm binary in the unpacked directory and move it to its desired destination (e.g. `mv linux-amd64/helm /usr/local/bin/helm`)
-  * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
+    * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
 
-{{% alert title="Warning: Windows Users" color="warning" %}}
-Please make sure to select the Windows version https://get.helm.sh/helm-v2.16.5-windows-amd64.zip. Put the binary into your working directory or make sure the directory containing the `helm.exe` binary is in your `Path` environment variable.
+{{% alert title="Warning: Windows Users" color="secondary" %}}
+Please make sure to select the [Windows version](https://get.helm.sh/helm-v2.16.5-windows-amd64.zip). Put the binary into your working directory or make sure the directory containing the `helm.exe` binary is in your `Path` environment variable.
 {{% /alert %}}
 
 To verify run the following command and check if `Version` is what you expected:
@@ -81,7 +81,7 @@ export HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
 If you have direct access to the internet from your location, the proxy configuration is not required.
 {{% /alert %}}
 
-Replace `u...:PASSWORD` with your account details. If you have specials chars in your password, you have to escape them with hexadecimal value according to https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
+Replace `u...:PASSWORD` with your account details. If you have specials chars in your password, you have to escape them with hexadecimal value according to [this article](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters)
 
 The namespace, the service account, the role and the role binding for Helm have already been created for you.
 
@@ -105,7 +105,7 @@ Now Tiller should be ready and you can check the version of Helm and Tiller with
 helm version --tiller-namespace <NAMESPACE>
 ```
 
-this should give you an output similar to: 
+this should give you an output similar to:
 
 ```bash
 Client: &version.Version{SemVer:"v2.16.5", GitCommit:"89bd14c1541fa93a09492010030fd3699ca65a97", GitTreeState:"clean"}
@@ -128,7 +128,9 @@ You can verify the created resources with:
 ```bash
 kubectl get sa,role,rolebinding --namespace <NAMESPACE>
 ```
+
 which gives you an output similar to this:
+
 ```bash
 NAME                     SECRETS   AGE
 serviceaccount/tiller-<NAMESPACE>    1         56s
@@ -147,6 +149,7 @@ helm init --service-account "tiller-<NAMESPACE>" --tiller-namespace <NAMESPACE> 
 ```
 
 Wait until tiller deployment is ready. You can check the deployment status with:
+
 ```bash
 kubectl get deploy tiller --namespace <NAMESPACE>
 ```
@@ -156,7 +159,8 @@ Now tiller should be ready and you can check the version of helm and tiller with
 ```bash
 helm version --tiller-namespace <NAMESPACE>
 ```
-this should give you an output similar to: 
+
+this should give you an output similar to:
 
 
 ```bash
@@ -170,23 +174,27 @@ You can delete an existing tiller instance with `kubectl delete deployment tille
 {{< /onlyWhenNot >}}
 {{< /onlyWhen >}}
 {{< onlyWhen helm3 >}}
+
+
 ## Install the Helm v3 CLI client
+
 Every [release](https://github.com/helm/helm/releases) of Helm provides binary releases for a variety of OSes. These binary versions can be manually downloaded and installed.
 
-The latest v3 release v3.1.2 can be found at https://github.com/helm/helm/releases/tag/v3.1.2.
+The latest v3 release v3.1.2 can be found [here](https://github.com/helm/helm/releases/tag/v3.1.2).
 
 
 ## Task 1
 
 Install the `helm` cli on your system:
 
-1. Download your desired version (https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz)
+1. Download your desired [version](https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz)
 1. Unpack it (`tar -zxvf helm-v3.1.2-linux-amd64.tar.gz`)
 1. Find the helm binary in the unpacked directory and move it to its desired destination (e.g. `mv linux-amd64/helm /usr/local/bin/`)
-  * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
+    * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
 
-{{% alert title="Windows Users" color="warning" %}}
-Please make sure to select the Windows version https://get.helm.sh/helm-v3.1.2-windows-amd64.zip. Put the binary into your working directory or make sure the directory containing the `helm.exe` binary is in your `Path` environment variable.
+
+{{% alert title="Windows Users" color="secondary" %}}
+Please make sure to select the [Windows version](https://get.helm.sh/helm-v3.1.2-windows-amd64.zip). Put the binary into your working directory or make sure the directory containing the `helm.exe` binary is in your `Path` environment variable.
 {{% /alert %}}
 
 To verify run the following command and check if `Version` is what you expected:
@@ -196,7 +204,7 @@ helm version
 ```
 
 The output is similar to this:
- 
+
 ```bash
 version.BuildInfo{Version:"v3.1.2", GitCommit:"d878d4d45863e42fd5cff6743294a11d28a9abce", GitTreeState:"clean", GoVersion:"go1.13.8"}
 ```
@@ -206,4 +214,5 @@ From here you should be able to run the client and [add the stable repo](https:/
 ```bash
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 ```
+
 {{< /onlyWhen >}}

@@ -12,9 +12,10 @@ menu:
 
 {{< blocks/section type="section" color="light">}}
 
-
-{{% blocks/feature icon="fa-chalkboard-teacher" url="https://drive.google.com/file/d/1S-l1kZXIH5l11P233EWCpcJZeitQ0V0g/view" title="Slides" %}}
+{{% blocks/feature icon="fa-chalkboard-teacher"  title="Slides" %}}
 Get the slides for this techlab
+
+[Read more ...](https://drive.google.com/file/d/1S-l1kZXIH5l11P233EWCpcJZeitQ0V0g/view)
 {{% /blocks/feature %}}
 
 {{< /blocks/section >}}
