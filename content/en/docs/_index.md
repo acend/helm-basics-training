@@ -55,7 +55,7 @@ With these concepts in mind, we can now explain Helm like this:
 *[Image Source](https://www.slideshare.net/alexLM/helm-application-deployment-management-for-kubernetes)*
 
 
-### Task: Techlab Setup
+### Task: Training Setup
 
 Make sure you have access to the Mobiliar `dev` Kubernetes cluster and `kubectl` is configured to use the right context.
 

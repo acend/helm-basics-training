@@ -45,7 +45,7 @@ anchor = "smart"
 
 [Languages]
 [Languages.en]
-title = "Helm Techlabs"
+title = "Helm Basics Training"
 languageName = "English"
 weight = 1
 
@@ -92,7 +92,7 @@ footer_about_disable = true
 [[params.links.developer]]
 name = "Github"
 icon = "fab fa-github" 
-url = "https://github.com/acend/helm-techlab"
+url = "https://github.com/acend/helm-basics-training"
 
 [[params.links.user]]
 name = "Twitter"
