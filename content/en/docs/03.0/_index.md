@@ -8,7 +8,7 @@ In this extended lab, we are going to deploy an existing, more complex applicati
 {{< onlyWhen helm2 >}}
 
 {{% alert title="Warning" color="secondary" %}}
-Make sure the Tiller Namespace Environment Variable (`export TILLER_NAMESPACE=<NAMESPACE>`) is set to your Namespace or add the `--tiller-namespace <NAMESPACE>` argument to the every Helm commands
+Make sure the Tiller Namespace environment variable (`export TILLER_NAMESPACE=<NAMESPACE>`) is set to your Namespace or add the `--tiller-namespace <NAMESPACE>` argument to every Helm command.
 {{% /alert %}}
 
 {{< /onlyWhen >}}
@@ -26,7 +26,7 @@ Check out [Helm Hub](https://hub.helm.sh/) where you'll find a huge number of di
 As this WordPress Helm chart is published in Bitnami's Helm repository, we're first going to add it to our local repo list:
 
 {{< onlyWhen mobi >}}
-You have to set your `HTTP_PROXY` environment variable in order to access the bitnami helm repository:
+You have to set your `HTTP_PROXY` environment variable in order to access the Bitnami Helm repository:
 
 ```bash
 # Linux
@@ -66,7 +66,7 @@ NAME            URL
 bitnami         https://charts.bitnami.com/bitnami
 ```
 
-Now look at the available configuration for this Helm chart. Usually you can find them in the [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) or in the chart's readme file. You can also check them on its [Helm Hub page](https://hub.helm.sh/charts/bitnami/wordpress).
+Now look at the available configuration for this Helm chart. Usually you can find it in the [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) or in the chart's readme file. You can also check it on its [Helm Hub page](https://hub.helm.sh/charts/bitnami/wordpress).
 
 We are going to override some of the values. For that purpose, create a new `values.yaml` file locally on your workstation with the following content:
 
