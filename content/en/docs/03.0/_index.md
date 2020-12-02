@@ -3,7 +3,7 @@ title: "3. A more complex application"
 weight: 3
 ---
 
-In this extended lab, we are going to deploy an existing, more complex application with a Helm chart from the Helm Hub.
+In this extended lab, we are going to deploy an existing, more complex application with a Helm chart from the Artifact Hub.
 
 {{< onlyWhen helm2 >}}
 
@@ -14,11 +14,9 @@ Make sure the Tiller Namespace environment variable (`export TILLER_NAMESPACE=<n
 {{< /onlyWhen >}}
 
 
-## Helm Hub
+## Artifact Hub
 
-Check out [Helm Hub](https://hub.helm.sh/) where you'll find a huge number of different Helm charts. For this lab, we'll use the [WordPress chart by Bitnami](https://hub.helm.sh/charts/bitnami/wordpress), a publishing platform for building blogs and websites.
-
-![Helm Hub](helmhub.png)
+Check out [Artifact Hub](hhttps://artifacthub.io/) where you'll find a huge number of different Helm charts. For this lab, we'll use the [WordPress chart by Bitnami](https://artifacthub.io/packages/helm/bitnami/wordpress), a publishing platform for building blogs and websites.
 
 
 ## WordPress
@@ -62,13 +60,17 @@ Let's check if that worked:
 
 ```bash
 helm repo list
-NAME            URL
-bitnami         https://charts.bitnami.com/bitnami
 ```
 
-Now look at the available configuration for this Helm chart. Usually you can find it in the [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) or in the chart's readme file. You can also check it on its [Helm Hub page](https://hub.helm.sh/charts/bitnami/wordpress).
+```
+NAME    URL
+stable  https://charts.helm.sh/stable
+bitnami https://charts.bitnami.com/bitnami
+```
 
-We are going to override some of the values. For that purpose, create a new `values.yaml` file locally on your workstation with the following content:
+Now look at the available configuration for this Helm chart. Usually you can find it in the [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) or in the chart's readme file. You can also check it on its [Artifact Hub page](https://artifacthub.io/packages/helm/bitnami/wordpress).
+
+We are going to override some of the values. For that purpose, create a new `values.yaml` file locally on your workstation (e.g. `~/<workspace>/values.yaml`) with the following content:
 
 ```yaml
 ---
@@ -79,6 +81,10 @@ service:
 updateStrategy:
   type: Recreate
 
+ingress:
+  enabled: true
+  hostname: wordpress-<namespace>.<appdomain>
+
 mariadb:
   db:
     password: mysuperpassword123
@@ -87,7 +93,13 @@ mariadb:
       size: 1Gi
 ```
 
+{{< onlyWhen helm2 >}}
 If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/requirements.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
+{{< /onlyWhen >}}
+
+{{< onlyWhen helm3 >}}
+If you look inside the [Chart.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/Chart.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
+{{< /onlyWhen >}}
 
 {{< onlyWhen mobi >}}
 The WordPress and MariaDB charts use (at the time of writing) the following container images:
@@ -150,19 +162,23 @@ ingress:
 
 {{< /onlyWhen >}}
 
+{{< onlyWhen helm2 >}}
 The `requirements.yaml` file allows us to define dependencies on other charts. In our Wordpress chart we use the `requirements.yaml` to add a `mariadb` to store the WordPress data in.
+{{< /onlyWhen >}}
+
+{{< onlyWhen helm3 >}}
+The `Chart.yaml` file allows us to define dependencies on other charts. In our Wordpress chart we use the `Chart.yaml` to add a `mariadb` to store the WordPress data in.
+{{< /onlyWhen >}}
 
 ```yaml
 dependencies:
-  - name: mariadb
-    version: 7.x.x
+  - condition: mariadb.enabled
+    name: mariadb
     repository: https://charts.bitnami.com/bitnami
-    condition: mariadb.enabled
-    tags:
-      - wordpress-database
+    version: 9.x.x
 ```
 
-[Helm's best practices](https://v2.helm.sh/docs/chart_best_practices/#the-chart-best-practices-guide) suggest to use version ranges instead of a fixed version whenever possible.
+[Helm's best practices](https://helm.sh/docs/chart_best_practices/) suggest to use version ranges instead of a fixed version whenever possible.
 The suggested default therefore is patch-level version match:
 
 ```
@@ -173,7 +189,7 @@ This is e.g. equivalent to `>= 3.5.7, < 3.6.0`
 Check [this SemVer readme chapter](https://github.com/Masterminds/semver#checking-version-constraints) for more information about version ranges.
 
 {{% alert title="Note" color="primary" %}}
-For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://v2.helm.sh/docs/charts/#chart-dependencies).
+For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://helm.sh/docs/chart_best_practices/dependencies/).
 {{% /alert %}}
 
 Subcharts are an alternative way to define dependencies within a chart: A chart may contain (inside of its `charts/` directory) another chart upon which it depends. As a result, when installing the chart, it will install all of its dependencies from the `charts/` directory.
@@ -191,7 +207,7 @@ helm install --name=wordpress -f values.yaml --namespace <namespace> --version 9
 {{< onlyWhen helm3 >}}
 
 ```bash
-helm install -f values.yaml --namespace <namespace> --version 9.1.3 wordpress bitnami/wordpress
+helm install -f values.yaml --namespace <namespace> --version 10.0.6 wordpress bitnami/wordpress
 ```
 
 {{< /onlyWhen >}}
@@ -205,14 +221,14 @@ helm ls --namespace <namespace>
 which gives you:
 
 ```bash
-NAME      NAMESPACE       REVISION  UPDATED                                     STATUS    CHART           APP VERSION
-wordpress <namespace>         1        2020-03-31 13:23:17.213961038 +0200 CEST deployed  wordpress-9.0.4 5.3.2
+NAME      NAMESPACE       REVISION  UPDATED                                     STATUS    CHART             APP VERSION
+wordpress <namespace>         1        2020-03-31 13:23:17.213961038 +0200 CEST deployed  wordpress-10.0.6  5.5.3
 ```
 
 and
 
 ```bash
-kubectl -n <namespace> get deploy,pod,ingress,pvc
+kubectl --namespace <namespace> get deploy,pod,ingress,pvc
 ```
 
 which gives you:
@@ -226,22 +242,23 @@ pod/wordpress-6bf6df9c5d-w4fpx   1/1     Running   0          2m6s
 pod/wordpress-mariadb-0          1/1     Running   0          2m6s
 
 NAME                           HOSTS                                          ADDRESS       PORTS   AGE
-ingress.extensions/wordpress   helmtechlab-wordpress.k8s-internal.puzzle.ch   10.100.1.10   80      2m6s
+ingress.extensions/wordpress   wordpress-<namespace>.<appdomain>              10.100.1.10   80      2m6s
 
 NAME                                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS            AGE
-persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86-b7ed-a3a183f700fd   1Gi        RWO            cloudscale-volume-ssd   2m6s
+persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86-b7ed-a3a183f700fd   8Gi        RWO            cloudscale-volume-ssd   2m6s
 persistentvolumeclaim/wordpress                  Bound    pvc-83ebf739-0b0e-45a2-936e-e925141a0d35   1Gi        RWO            cloudscale-volume-ssd   2m7s
 ```
 
-And use `helm get values wordpress` to deploy the values for a given release:
+And use `helm get values wordpress --namespace <namespace>` to deploy the values for a given release:
 
 ```bash
-helm get values wordpress
+helm get values wordpress --namespace <namespace>
 ```
 
 which gives you:
 
 ```yaml
+USER-SUPPLIED VALUES:
 mariadb:
   db:
     password: mysuperpassword123
@@ -262,10 +279,34 @@ As soon as all deployments are ready (meaning pods `wordpress` and `mariadb` are
 
 ## Upgrade
 
-We are now going to upgrade the application to a newer Helm chart version. You can do this with:
+We are now going to upgrade the application to a newer Helm chart version. When we installed the Chart, a couple of secrets were neede during this process. In order to do the upgrade of the Chart now, we need to provide those secrets to the upgrade command, to be sure no sensitive data will be overwritten:
+
+* wordpressPassword
+* mariadb.auth.rootPassword
+* mariadb.auth.password
+
+{{% alert title="Note" color="primary" %}}
+This is specific to the wordpress Bitami Chart, and might be different when installing other Charts.
+{{% /alert %}}
+
+Use the following commands to gather the secrets and store them into Environment variables. Make sure to replace `<namespace>` with your current value.
 
 ```bash
-helm upgrade -f values.yaml --namespace <namespace> --version 9.1.4 wordpress bitnami/wordpress
+export WORDPRESS_PASSWORD=$(kubectl get secret --namespace <namespace> wordpress -o jsonpath="{.data.wordpress-password}" | base64 --decode)
+```
+
+```bash
+export MARIADB_ROOT_PASSWORD=$(kubectl get secret --namespace <namespace> wordpress-mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+```
+
+```bash
+export MARIADB_PASSWORD=$(kubectl get secret --namespace <namespace> wordpress-mariadb -o jsonpath="{.data.mariadb-password}" | base64 --decode)
+```
+
+Then do the upgrade with the following command:
+
+```bash
+helm upgrade -f values.yaml --set wordpressPassword=$WORDPRESS_PASSWORD --set mariadb.auth.rootPassword=$MARIADB_ROOT_PASSWORD --set mariadb.auth.password=$MARIADB_PASSWORD --namespace <namespace> --version 10.0.7 wordpress bitnami/wordpress
 ```
 
 And then observe the changes in your WordPress and MariaDB Apps
@@ -274,10 +315,10 @@ And then observe the changes in your WordPress and MariaDB Apps
 ## Cleanup
 
 ```bash
-helm delete wordpress
+helm delete wordpress --namespace <namespace>
 ```
 
 
 ## Additional Task
 
-Study the Helm [best practices](https://v2.helm.sh/docs/chart_best_practices/#the-chart-best-practices-guide) as an optional and additional task.
+Study the Helm [best practices](https://helm.sh/docs/chart_best_practices/) as an optional and additional task.
