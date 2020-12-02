@@ -90,19 +90,19 @@ The Tiller `helm init` command installs Tiller in your namespace and by default 
 Execute in your terminal to install Tiller in your namespace:
 
 ```bash
-helm init --service-account "tiller-<NAMESPACE>" --tiller-namespace <NAMESPACE> --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade
+helm init --service-account "tiller-<namespace>" --tiller-namespace <namespace> --tiller-image docker-registry.mobicorp.ch/puzzle/k8s/kurs/tiller:v2.16.5 --upgrade
 ```
 
 Then wait until tiller deployment is ready. You can check the deployment status with:
 
 ```bash
-kubectl get deploy tiller-deploy --namespace <NAMESPACE>
+kubectl get deploy tiller-deploy --namespace <namespace>
 ```
 
 Now Tiller should be ready and you can check the version of Helm and Tiller with
 
 ```bash
-helm version --tiller-namespace <NAMESPACE>
+helm version --tiller-namespace <namespace>
 ```
 
 this should give you an output similar to:
@@ -117,26 +117,26 @@ Server: &version.Version{SemVer:"v2.16.5", GitCommit:"89bd14c1541fa93a0949201003
 So lets create the serviceaccount, the role and the rolebinding:
 
 ```bash
-kubectl create sa "tiller-<NAMESPACE>" --namespace <NAMESPACE>
-kubectl create role "tiller-role-<NAMESPACE>" --namespace <NAMESPACE> --verb=* --resource=*.,*.apps,*.batch,*.extensions,*.networking.k8s.io
-kubectl create rolebinding "tiller-rolebinding-<NAMESPACE>" --namespace <NAMESPACE> --role="tiller-role-<NAMESPACE>" --serviceaccount="<NAMESPACE>:tiller-<NAMESPACE>"
+kubectl create sa "tiller-<namespace>" --namespace <namespace>
+kubectl create role "tiller-role-<namespace>" --namespace <namespace> --verb=* --resource=*.,*.apps,*.batch,*.extensions,*.networking.k8s.io
+kubectl create rolebinding "tiller-rolebinding-<namespace>" --namespace <namespace> --role="tiller-role-<namespace>" --serviceaccount="<namespace>:tiller-<namespace>"
 
 ```
 
 You can verify the created resources with:
 
 ```bash
-kubectl get sa,role,rolebinding --namespace <NAMESPACE>
+kubectl get sa,role,rolebinding --namespace <namespace>
 ```
 
 which gives you an output similar to this:
 
 ```bash
 NAME                     SECRETS   AGE
-serviceaccount/tiller-<NAMESPACE>    1         56s
+serviceaccount/tiller-<namespace>    1         56s
 
 NAME                                         AGE
-role.rbac.authorization.k8s.io/tiller-role-<NAMESPACE>   52s
+role.rbac.authorization.k8s.io/tiller-role-<namespace>   52s
 
 NAME                                                                                             AGE
 rolebinding.rbac.authorization.k8s.io/tiller-rolebinding-[USER]                                         6s
@@ -145,19 +145,19 @@ rolebinding.rbac.authorization.k8s.io/tiller-rolebinding-[USER]                 
 then initialize helm with:
 
 ```bash
-helm init --service-account "tiller-<NAMESPACE>" --tiller-namespace <NAMESPACE> --upgrade
+helm init --service-account "tiller-<namespace>" --tiller-namespace <namespace> --upgrade
 ```
 
 Wait until tiller deployment is ready. You can check the deployment status with:
 
 ```bash
-kubectl get deploy tiller --namespace <NAMESPACE>
+kubectl get deploy tiller --namespace <namespace>
 ```
 
 Now tiller should be ready and you can check the version of helm and tiller with
 
 ```bash
-helm version --tiller-namespace <NAMESPACE>
+helm version --tiller-namespace <namespace>
 ```
 
 this should give you an output similar to:
@@ -168,7 +168,7 @@ TODO
 ```
 
 {{% alert title="Note" color="primary" %}}
-You can delete an existing tiller instance with `kubectl delete deployment tiller --namespace <NAMESPACE>`
+You can delete an existing tiller instance with `kubectl delete deployment tiller --namespace <namespace>`
 {{% /alert %}}
 
 {{< /onlyWhenNot >}}

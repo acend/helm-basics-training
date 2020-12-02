@@ -72,11 +72,11 @@ Just to see it again, a namespace in Kubernetes can be created with:
 {{< /onlyWhen >}}
 
 ```bash
-kubectl create namespace <NAMESPACE>
+kubectl create namespace <namespace>
 ```
 
-In the labs we are going to use `<NAMESPACE>` as a placeholder for your namespace.
+In the labs we are going to use `<namespace>` as a placeholder for your namespace.
 
 {{% alert title="Note" color="primary" %}}
-Each time you see a `<NAMESPACE>` somewhere in a command, replace it with your chosen namespace name.
+Each time you see a `<namespace>` somewhere in a command, replace it with your chosen namespace name.
 {{% /alert %}}

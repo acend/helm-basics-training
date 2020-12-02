@@ -245,7 +245,7 @@ To create a release from our chart, we run the following command within our char
 {{< onlyWhen helm2  >}}
 
 ```bash
-helm install --name myapp --namespace <NAMESPACE> ./mychart
+helm install --name myapp --namespace <namespace> ./mychart
 ```
 
 {{< /onlyWhen >}}
@@ -253,7 +253,7 @@ helm install --name myapp --namespace <NAMESPACE> ./mychart
 {{< onlyWhen helm3  >}}
 
 ```bash
-helm install --namespace <NAMESPACE> myapp ./mychart
+helm install --namespace <namespace> myapp ./mychart
 ```
 
 {{< /onlyWhen >}}
@@ -261,7 +261,7 @@ helm install --namespace <NAMESPACE> myapp ./mychart
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
 
 ```bash
-helm upgrade myfirstrelease --namespace <NAMESPACE> ./mychart
+helm upgrade myfirstrelease --namespace <namespace> ./mychart
 ```
 
 
@@ -274,7 +274,7 @@ The current values for the ingress depends on the Kubernetes cluster. Ask your i
 {{% /alert %}}
 
 {{< onlyWhen mobi >}}
-You can use `helmtechlab-springboot-<NAMESPACE>.phoenix.mobicorp.test` as your hostname if you wan't to access your deployed application. It might take some minute until your ingress hostname is accessable as the DNS name first have to be propagated correctly.
+You can use `helmtechlab-springboot-<namespace>.phoenix.mobicorp.test` as your hostname if you wan't to access your deployed application. It might take some minute until your ingress hostname is accessable as the DNS name first have to be propagated correctly.
 {{< /onlyWhen >}}
 
 
