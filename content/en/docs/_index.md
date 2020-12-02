@@ -57,23 +57,25 @@ With these concepts in mind, we can now explain Helm like this:
 
 ### Task: Training Setup
 
-Make sure you have access to the Mobiliar `dev` Kubernetes cluster and `kubectl` is configured to use the right context.
-
 {{< onlyWhenNot mobi >}}
+
 For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username.
 
 You can create your namespace with:
-{{< /onlyWhenNot >}}
-
-{{< onlyWhen mobi >}}
-We already created a namespace for you. The name of your namespace is equal to your Mobi U-Account `u....` and has been placed in the Project `helm`.
-Just to see it again, a namespace in Kubernetes can be created with:
-
-{{< /onlyWhen >}}
 
 ```bash
 kubectl create namespace <namespace>
 ```
+
+{{< /onlyWhenNot >}}
+
+{{< onlyWhen mobi >}}
+Make sure you have access to the Mobiliar `dev` Kubernetes cluster and `kubectl` is configured to use the right context.
+
+We already created a namespace for you. The name of your namespace is equal to your Mobi U-Account `u....` and has been placed in the Project `helm`.
+Just to see it again, a namespace in Kubernetes can be created with:
+
+{{< /onlyWhen >}}
 
 In the labs we are going to use `<namespace>` as a placeholder for your namespace.
 
