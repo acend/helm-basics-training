@@ -30,7 +30,7 @@ In our `values.yaml` we only have to change the value of `image.repository`:
 {{< onlyWhenNot mobi >}}
 
 ```yaml
-# Default values for test.
+# Default values for mychart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -40,6 +40,7 @@ image:
   repository: appuio/example-spring-boot
   tag: latest
   pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
 
 imagePullSecrets: []
 nameOverride: ""
@@ -52,7 +53,9 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: ""
+
+podAnnotations: {}
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -93,6 +96,13 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 
@@ -186,31 +196,35 @@ kind: Deployment
 metadata:
   name: {{ include "mychart.fullname" . }}
   labels:
-{{ include "mychart.labels" . | indent 4 }}
+    {{- include "mychart.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "mychart.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "mychart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "mychart.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "mychart.selectorLabels" . | nindent 8 }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-      serviceAccountName: {{ template "mychart.serviceAccountName" . }}
+      {{- end }}
+      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -230,14 +244,14 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
 ```
 
 To create a release from our chart, we run the following command within our chart directory:
@@ -245,7 +259,7 @@ To create a release from our chart, we run the following command within our char
 {{< onlyWhen helm2  >}}
 
 ```bash
-helm install --name myapp --namespace <NAMESPACE> ./mychart
+helm install --name myapp --namespace <namespace> ./mychart
 ```
 
 {{< /onlyWhen >}}
@@ -253,7 +267,7 @@ helm install --name myapp --namespace <NAMESPACE> ./mychart
 {{< onlyWhen helm3  >}}
 
 ```bash
-helm install --namespace <NAMESPACE> myapp ./mychart
+helm install --namespace <namespace> myapp ./mychart
 ```
 
 {{< /onlyWhen >}}
@@ -261,7 +275,7 @@ helm install --namespace <NAMESPACE> myapp ./mychart
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
 
 ```bash
-helm upgrade myfirstrelease --namespace <NAMESPACE> ./mychart
+helm upgrade myfirstrelease --namespace <namespace> ./mychart
 ```
 
 
@@ -274,7 +288,7 @@ The current values for the ingress depends on the Kubernetes cluster. Ask your i
 {{% /alert %}}
 
 {{< onlyWhen mobi >}}
-You can use `helmtechlab-springboot-<NAMESPACE>.phoenix.mobicorp.test` as your hostname if you wan't to access your deployed application. It might take some minute until your ingress hostname is accessable as the DNS name first have to be propagated correctly.
+You can use `helmtechlab-springboot-<namespace>.phoenix.mobicorp.test` as your hostname if you wan't to access your deployed application. It might take some minute until your ingress hostname is accessable as the DNS name first have to be propagated correctly.
 {{< /onlyWhen >}}
 
 
@@ -289,7 +303,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: YOUR_INGRESS_NAME
+    - host: awesome.<namespace>.<appdomain>
       paths:
       - /
   tls: []
@@ -319,29 +333,29 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-{{- if .Values.ingress.tls }}
+  {{- if .Values.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
+    {{- range .Values.ingress.tls }}
     - hosts:
-      {{- range .hosts }}
+        {{- range .hosts }}
         - {{ . | quote }}
-      {{- end }}
+        {{- end }}
       secretName: {{ .secretName }}
+    {{- end }}
   {{- end }}
-{{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
+    {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
-        {{- range .paths }}
+          {{- range .paths }}
           - path: {{ . }}
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
-        {{- end }}
+          {{- end }}
+    {{- end }}
   {{- end }}
-{{- end }}
 ```
 
 As we can see there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` which loops trough all the values in the `host` array. The same happens to the `path` value.

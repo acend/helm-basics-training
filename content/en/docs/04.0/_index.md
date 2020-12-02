@@ -12,6 +12,7 @@ Remember "Lab 2.0 - Create a simple chart" where you created your first chart? L
 ├── templates
 │   ├── deployment.yaml
 │   ├── _helpers.tpl
+│   ├── hpa.yaml
 │   ├── ingress.yaml
 │   ├── NOTES.txt
 │   ├── serviceaccount.yaml
@@ -38,7 +39,7 @@ For details on chart templating, check out the [Helm's getting started guide](ht
 In the `values.yaml` file we define our values used in our templates:
 
 ```yaml
-# Default values for test.
+# Default values for mychart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -47,6 +48,8 @@ replicaCount: 1
 image:
   repository: nginx
   pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -59,7 +62,9 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: ""
+
+podAnnotations: {}
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -101,6 +106,13 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
 nodeSelector: {}
 
 tolerations: []
@@ -127,31 +139,35 @@ kind: Deployment
 metadata:
   name: {{ include "mychart.fullname" . }}
   labels:
-{{ include "mychart.labels" . | indent 4 }}
+    {{- include "mychart.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "mychart.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "mychart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "mychart.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "mychart.selectorLabels" . | nindent 8 }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-      serviceAccountName: {{ template "mychart.serviceAccountName" . }}
+      {{- end }}
+      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -171,17 +187,17 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.affinity }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
 ```
 
-We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go template](https://golang.org/pkg/text/template/) rendering engine.
+We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go template](https://golang.org/pkg/text/template/) rendering engine, more about `Go templates` will be covered in upcoming lab.
 
 {{% alert title="Note" color="primary" %}}
 For details on templating, check out the [Helm documentation about template functions and pipelines](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/).
@@ -193,13 +209,12 @@ For details on templating, check out the [Helm documentation about template func
 Inside the template folder you find also a `_helpers.tpl` file.
 
 ```yaml
-{{/* vim: set filetype=mustache: */}}
 {{/*
 Expand the name of the chart.
 */}}
 {{- define "mychart.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
 {{/*
 Create a default fully qualified app name.
@@ -207,48 +222,55 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "mychart.fullname" -}}
-{{- if .Values.fullnameOverride -}}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
 
 {{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "mychart.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
 {{/*
 Common labels
 */}}
 {{- define "mychart.labels" -}}
-app.kubernetes.io/name: {{ include "mychart.name" . }}
 helm.sh/chart: {{ include "mychart.chart" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "mychart.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end -}}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "mychart.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "mychart.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
 {{- define "mychart.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create -}}
-    {{ default (include "mychart.fullname" .) .Values.serviceAccount.name }}
-{{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
-{{- end -}}
-{{- end -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "mychart.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
 ```
 
 As you see, you can also define [named templates](https://helm.sh/docs/chart_template_guide/named_templates/) in helm and then use these named templates.
@@ -258,14 +280,13 @@ Have a look at:
 ```yaml
 [...]
 {{- define "mychart.labels" -}}
-app.kubernetes.io/name: {{ include "mychart.name" . }}
 helm.sh/chart: {{ include "mychart.chart" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "mychart.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end -}}
+{{- end }}
 [...]
 ```
 
@@ -277,8 +298,9 @@ kind: Deployment
 metadata:
   name: {{ include "mychart.fullname" . }}
   labels:
-{{ include "mychart.labels" . | indent 4 }}
+    {{- include "mychart.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
 [...]
 ```
@@ -286,7 +308,7 @@ spec:
 
 ## Task 1: Change charts.yaml
 
-Study the [Helm documentation about the Chart.yaml file](https://v2.helm.sh/docs/charts/#the-chart-yaml-file), then change the description to `My awesome app` and add yourself to the list of maintainers.
+Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/topics/charts/#the-chartyaml-file), then change the description to `My awesome app` and add yourself to the list of maintainers.
 
 
 ### Solution

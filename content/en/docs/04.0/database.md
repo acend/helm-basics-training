@@ -359,9 +359,11 @@ database:
   host: myhost
   user: springboot
   dbname: springboot
-  secretName: secretName
+  secretName: mysql-root-password
   secretKey: password
   secretKeyroot: rootpassword
+  password: mysuperpassword123
+  rootpassword: mysuperrootpassword123
   url: jdbc:mysql://springboot-mysql/springboot?autoReconnect=true
   driver: com.mysql.jdbc.Driver
 ```
