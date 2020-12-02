@@ -60,6 +60,10 @@ As we learned in lab 2, we can now deploy a release of it in our namespace:
 helm install gotemplatechart --name gotemplaterelease --namespace <namespace>
 ```
 
+{{% alert title="Note" color="primary" %}}
+Make sure the Tiller namespace environment variable (`export TILLER_NAMESPACE=<namespace>`) is set to your namespace or add the `--tiller-namespace <namespace>` argument to the `helm` commands.
+{{% /alert %}}
+
 {{< /onlyWhen >}}
 
 {{< onlyWhen helm3  >}}
@@ -69,10 +73,6 @@ helm install gotemplaterelease gotemplatechart --namespace <namespace>
 ```
 
 {{< /onlyWhen >}}
-
-{{% alert title="Note" color="primary" %}}
-Make sure the Tiller namespace environment variable (`export TILLER_NAMESPACE=<namespace>`) is set to your namespace or add the `--tiller-namespace <namespace>` argument to the `helm` commands.
-{{% /alert %}}
 
 
 ## Task 3: The first Go template directive
