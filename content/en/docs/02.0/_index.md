@@ -168,7 +168,8 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: <namespace>.<appdomain>
-      paths: ["/"]
+      paths:
+      - /
 [...]
 ```
 
@@ -335,7 +336,7 @@ helm delete myfirstrelease --tiller-namespace <namespace>
 {{< onlyWhen helm3 >}}
 
 ```bash
-helm delete myfirstrelease
+helm delete myfirstrelease --namespace <namespace>
 ```
 
 {{< /onlyWhen >}}
