@@ -25,7 +25,7 @@ The `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` app
 
 ### Solution
 
-In our `values.yaml` we only have to change the value of `image.repository`:
+In our `values.yaml` we only have to change the value of `image.repository` and `image.tag`:
 
 {{< onlyWhenNot mobi >}}
 
@@ -38,9 +38,9 @@ replicaCount: 1
 
 image:
   repository: appuio/example-spring-boot
-  tag: latest
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
 
 imagePullSecrets: []
 nameOverride: ""

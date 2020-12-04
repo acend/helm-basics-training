@@ -224,7 +224,7 @@ data:
 
 Notice the `| b64enc`, which is a builtin function to encode strings with base64.
 
-The service for our MySQL database should look like this:
+The service `templates/mysql-service.yaml` for our MySQL database should look like this:
 
 ```yaml
 apiVersion: v1
