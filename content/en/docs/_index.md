@@ -8,31 +8,26 @@ menu:
 
 [Helm](https://github.com/helm/helm) is a [Cloud Native Foundation](https://www.cncf.io/) project to define, install and manage applications in Kubernetes.
 
+It can be used to package multiple K8s resources into a single logical deployment unit.
 
+But it's not just a package manager.
 
-### tl;dr
-
-Helm is a Package Manager for Kubernetes
-
-* package multiple K8s resources into a single logical deployment unit
-* ... but it's not just a Package Manager
-
-Helm is a Deployment Management for Kubernetes
+Helm is deployment management for Kubernetes. It can:
 
 * do a repeatable deployment
-* manage dependencies: reuse and share
+* manage dependencies, reuse and share
 * manage multiple configurations
 * update, rollback and test application deployments
 
-As a recap for after the labs, you can watch *[Amy Chen](https://twitter.com/TheAmyCode)* and her talk at Kubecon North America in 2017.
+A great recap after finishing the labs is *[Amy Chen](https://twitter.com/TheAmyCode)*'s talk at Kubecon North America in 2017.
 {{< youtube vQX5nokoqrQ >}}
 
 
 ### Prerequisites
 
-* We assume you have knowledge about Kubernetes and understand the concepts behind [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/), [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Services](https://kubernetes.io/docs/concepts/services-networking/service/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) and [Secrets](https://kubernetes.io/docs/concepts/services-networking/service/)
-* You should also have `kubectl` installed and a working context to access a Kubernetes cluster. Check the [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) for the most common commands.
-* Make sure you have access to the internet from your shell. If required, set appropriate proxy settings in your shell. This is only needed for lab 3.0 to access the Helm hub.
+* We assume you have knowledge about Kubernetes and understand the concepts of [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/), [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Services](https://kubernetes.io/docs/concepts/services-networking/service/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) and [Secrets](https://kubernetes.io/docs/concepts/services-networking/service/).
+* You should have `kubectl` installed and a working context to access a Kubernetes cluster. Check the [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) for the most common commands.
+* Make sure you have access to the internet from your shell. If required, set appropriate proxy settings in your shell. This is only needed for lab 3 to access the Helm hub.
 
 
 ### Helm Overview
