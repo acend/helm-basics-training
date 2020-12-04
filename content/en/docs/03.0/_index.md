@@ -88,7 +88,7 @@ ingress:
 mariadb:
   db:
     password: mysuperpassword123
-  master:
+  primary:
     persistence:
       size: 1Gi
 ```
@@ -143,7 +143,7 @@ mariadb:
     repository: puzzle/helm-techlab/mariadb
   db:
     password: mysuperpassword123
-  master:
+  primary:
     persistence:
       size: 1Gi
 ```
@@ -262,7 +262,7 @@ USER-SUPPLIED VALUES:
 mariadb:
   db:
     password: mysuperpassword123
-  master:
+  primary:
     persistence:
       size: 1Gi
 persistence:
