@@ -8,7 +8,7 @@ This guide shows you how to install the Helm CLI. Helm can be installed either f
 
 ### Helm v2 vs. v3
 
-Helm recently got a big update to v3 which saw some significant changes. However, Helm v2 is still in heavy use. Before downloading any Helm cli client, make sure you get the correct version.
+Helm got a big update to v3 in November 2019 which saw some significant changes. However, Helm v2 is still in heavy use even though [it reached its end-of-life](https://helm.sh/blog/helm-v2-deprecation-timeline/). Before downloading any Helm CLI client, make sure you get the correct version.
 
 As for one of the big differences: Helm v2 requires a server-side component to be running inside your Kubernetes cluster called **Tiller**. Tiller is the service that actually communicates with the Kubernetes API to manage our Helm packages.
 
@@ -26,7 +26,7 @@ Check out the [Helm Documentation](https://helm.sh/docs/topics/v2_v3_migration/)
 {{% /alert %}}
 
 
-### Mitigating the issues
+### Mitigating the v2 issues
 
 The official Helm documentation explains a few hints to mitigate these problems. Unfortunately, they all come with their own issues:
 
@@ -185,7 +185,7 @@ The latest v3 release v3.4.1 can be found [here](https://github.com/helm/helm/re
 
 ## Task 1
 
-Install the `helm` cli on your system:
+Install the `helm` CLI on your system:
 
 1. Download your desired [version](https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz)
 1. Unpack it (`tar -zxvf helm-v3.4.1-linux-amd64.tar.gz`)

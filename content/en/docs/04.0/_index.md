@@ -3,7 +3,7 @@ title: "4. Your own Helm chart"
 weight: 4
 ---
 
-Remember "Lab 2.0 - Create a simple chart" where you created your first chart? Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
+Remember [lab 2 "A simple chart"](../02.0/) where you created your first chart? Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
 
 ```
 ./
@@ -323,3 +323,5 @@ maintainers:
   - name: YOUR NAME
     email: YOUR E-MAIL ADDRESS
 ```
+
+Continue with the lab "[Your awesome application](./deploy/)".

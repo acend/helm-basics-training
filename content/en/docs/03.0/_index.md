@@ -64,7 +64,6 @@ helm repo list
 
 ```
 NAME    URL
-stable  https://charts.helm.sh/stable
 bitnami https://charts.bitnami.com/bitnami
 ```
 
@@ -194,12 +193,12 @@ For more details on how to manage **dependencies**, check out the [Helm Dependen
 
 Subcharts are an alternative way to define dependencies within a chart: A chart may contain (inside of its `charts/` directory) another chart upon which it depends. As a result, when installing the chart, it will install all of its dependencies from the `charts/` directory.
 
-We are now going to deploy the application in a specific version (which is not the latest release on purpose):
+We are now going to deploy the application in a specific version (which is not the latest release on purpose). Also note that we define our custom `values.yaml` file with the `-f` parameter:
 
 {{< onlyWhen helm2 >}}
 
 ```bash
-helm install --name=wordpress -f values.yaml --namespace <namespace> --version 9.1.3 bitnami/wordpress
+helm install --name=wordpress -f values.yaml --version 9.1.3 bitnami/wordpress --namespace <namespace>
 ```
 
 {{< /onlyWhen >}}
@@ -207,7 +206,7 @@ helm install --name=wordpress -f values.yaml --namespace <namespace> --version 9
 {{< onlyWhen helm3 >}}
 
 ```bash
-helm install -f values.yaml --namespace <namespace> --version 10.0.6 wordpress bitnami/wordpress
+helm install -f values.yaml --version 10.0.6 wordpress bitnami/wordpress --namespace <namespace>
 ```
 
 {{< /onlyWhen >}}
@@ -228,7 +227,7 @@ wordpress <namespace>         1        2020-03-31 13:23:17.213961038 +0200 CEST 
 and
 
 ```bash
-kubectl --namespace <namespace> get deploy,pod,ingress,pvc
+kubectl get deploy,pod,ingress,pvc --namespace <namespace>
 ```
 
 which gives you:
@@ -249,7 +248,7 @@ persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86
 persistentvolumeclaim/wordpress                  Bound    pvc-83ebf739-0b0e-45a2-936e-e925141a0d35   1Gi        RWO            cloudscale-volume-ssd   2m7s
 ```
 
-And use `helm get values wordpress --namespace <namespace>` to deploy the values for a given release:
+In order to check the values used in a given release, execute:
 
 ```bash
 helm get values wordpress --namespace <namespace>
@@ -279,7 +278,7 @@ As soon as all deployments are ready (meaning pods `wordpress` and `mariadb` are
 
 ## Upgrade
 
-We are now going to upgrade the application to a newer Helm chart version. When we installed the Chart, a couple of secrets were neede during this process. In order to do the upgrade of the Chart now, we need to provide those secrets to the upgrade command, to be sure no sensitive data will be overwritten:
+We are now going to upgrade the application to a newer Helm chart version. When we installed the Chart, a couple of secrets were needed during this process. In order to do the upgrade of the Chart now, we need to provide those secrets to the upgrade command, to be sure no sensitive data will be overwritten:
 
 * wordpressPassword
 * mariadb.auth.rootPassword
@@ -289,24 +288,24 @@ We are now going to upgrade the application to a newer Helm chart version. When 
 This is specific to the wordpress Bitami Chart, and might be different when installing other Charts.
 {{% /alert %}}
 
-Use the following commands to gather the secrets and store them into Environment variables. Make sure to replace `<namespace>` with your current value.
+Use the following commands to gather the secrets and store them in environment variables. Make sure to replace `<namespace>` with your current value.
 
 ```bash
-export WORDPRESS_PASSWORD=$(kubectl get secret --namespace <namespace> wordpress -o jsonpath="{.data.wordpress-password}" | base64 --decode)
+export WORDPRESS_PASSWORD=$(kubectl get secret wordpress -o jsonpath="{.data.wordpress-password}" --namespace <namespace> | base64 --decode)
 ```
 
 ```bash
-export MARIADB_ROOT_PASSWORD=$(kubectl get secret --namespace <namespace> wordpress-mariadb -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+export MARIADB_ROOT_PASSWORD=$(kubectl get secret wordpress-mariadb -o jsonpath="{.data.mariadb-root-password}" --namespace <namespace> | base64 --decode)
 ```
 
 ```bash
-export MARIADB_PASSWORD=$(kubectl get secret --namespace <namespace> wordpress-mariadb -o jsonpath="{.data.mariadb-password}" | base64 --decode)
+export MARIADB_PASSWORD=$(kubectl get secret wordpress-mariadb -o jsonpath="{.data.mariadb-password}" --namespace <namespace> | base64 --decode)
 ```
 
 Then do the upgrade with the following command:
 
 ```bash
-helm upgrade -f values.yaml --set wordpressPassword=$WORDPRESS_PASSWORD --set mariadb.auth.rootPassword=$MARIADB_ROOT_PASSWORD --set mariadb.auth.password=$MARIADB_PASSWORD --namespace <namespace> --version 10.0.7 wordpress bitnami/wordpress
+helm upgrade -f values.yaml --set wordpressPassword=$WORDPRESS_PASSWORD --set mariadb.auth.rootPassword=$MARIADB_ROOT_PASSWORD --set mariadb.auth.password=$MARIADB_PASSWORD --version 10.0.7 wordpress bitnami/wordpress --namespace <namespace>
 ```
 
 And then observe the changes in your WordPress and MariaDB Apps
@@ -314,9 +313,20 @@ And then observe the changes in your WordPress and MariaDB Apps
 
 ## Cleanup
 
+{{< onlyWhen helm2 >}}
+
 ```bash
 helm delete wordpress --namespace <namespace>
 ```
+
+{{< /onlyWhen >}}
+{{< onlyWhen helm3 >}}
+
+```bash
+helm uninstall wordpress --namespace <namespace>
+```
+
+{{< /onlyWhen >}}
 
 
 ## Additional Task

@@ -209,7 +209,7 @@ spec:
 
 ```
 
-The secret `templates/mysql-secret.yaml` file should look like this:
+The secret `templates/secret-mysql.yaml` file should look like this:
 
 ```yaml
 ---
@@ -222,9 +222,9 @@ data:
   rootpassword: {{ .Values.database.rootpassword | b64enc}}
 ```
 
-Notice the `| b64enc`, which is a builtin function to encode strings with base64.
+Note the `| b64enc`, which is a builtin function to encode strings with base64.
 
-The service `templates/mysql-service.yaml` for our MySQL database should look like this:
+The service at `templates/service-mysql.yaml` for our MySQL database should look similar to this:
 
 ```yaml
 apiVersion: v1
@@ -260,7 +260,7 @@ database:
 Finally, to upgrade the existing release run:
 
 ```bash
-helm upgrade myapp --namespace [USER] ./mychart
+helm upgrade myapp ./mychart --namespace <namespace>
 ```
 
 
@@ -278,7 +278,7 @@ Add the following environment variables:
 
 ### Solution Taks 2
 
-Change your `template/deployment.yml` and include the new environment variables:
+Change your `templates/deployment.yml` and include the new environment variables:
 
 ```yaml
 apiVersion: apps/v1
@@ -376,5 +376,25 @@ Make sure the `url` contains the correct service name. The service name is based
 To upgrade your existing release run:
 
 ```bash
-helm upgrade myapp --namespace [USER] ./mychart
+helm upgrade myapp ./mychart --namespace <namespace>
 ```
+
+
+## Task 3: Cleanup
+
+If you're happy with the result, clean up your namespace:
+
+{{< onlyWhen helm2 >}}
+
+```bash
+helm delete myapp --namespace <namespace>
+```
+
+{{< /onlyWhen >}}
+{{< onlyWhen helm3 >}}
+
+```bash
+helm uninstall myapp --namespace <namespace>
+```
+
+{{< /onlyWhen >}}

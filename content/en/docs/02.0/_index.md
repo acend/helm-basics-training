@@ -3,18 +3,18 @@ title: "2. A simple chart"
 weight: 2
 ---
 
-In this lab we're going to create our very first Helm chart and deploy it.
+In this lab we are going to create our very first Helm chart and deploy it.
 
 
 ## Task 1
 
-First let's create our chart, open your favorite terminal and make sure you're in the workspace for this lab e.g. `cd ~/<workspace-helm-training>`:
+First let's create our chart. Open your favorite terminal and make sure you're in the workspace for this lab, e.g. `cd ~/<workspace-helm-training>`:
 
 ```bash
 helm create mychart
 ```
 
-You'll now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
+You now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
 
 {{< onlyWhen mobi >}}
 Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to match the following:
@@ -111,7 +111,7 @@ Our freshly deployed nginx is not yet accessible from outside of the Kubernetes 
 
 ### Solution Task 3 Ingress
 
-A look into the file `templates/ingress.yaml`, the whole ingress definition will be only part of the rendered resources if the condition `{{- if .Values.ingress.enabled -}}` is true:
+A look into the file `templates/ingress.yaml` reveals that the whole Ingress definition will only be part of the rendered resources if the condition `{{- if .Values.ingress.enabled -}}` is true:
 
 ```yaml
 {{- if .Values.ingress.enabled -}}
@@ -174,10 +174,10 @@ ingress:
 ```
 
 {{% alert title="Note" color="primary" %}}
-make sure to set the proper value as hostname. `<appdomain>` will be provided by the teacher.
+Make sure to set the proper value as hostname. `<appdomain>` will be provided by the teacher.
 {{% /alert %}}
 
-Apply the change by upgrading our release:
+Apply the change by upgrading the release:
 
 {{< onlyWhen helm2 >}}
 
@@ -212,11 +212,16 @@ NOTES:
 Check whether the ingress successfully was deployed, by accessing the URL `http://<namespace>.<appdomain>/`
 
 
-### Node Port
+## Task 4: NodePort
 
-We can also expose the Application using a `NodePort`. Search now for the Service type definition in your chart and make the change.
+We can also expose the application using a `NodePort`.
+First, set `ingress.enabled` back to `false` in your `values.yaml` file.
+Now search for the Service type definition in your chart and make the change.
 
-A look into the file `templates/service.yaml` reveals that the service type is set by value:
+
+### Solution Task 4 NodePort
+
+A look into the file `templates/service.yaml` reveals that the service type is set by the value `service.type`:
 
 ```yaml
 [...]
@@ -225,7 +230,7 @@ spec:
 [...]
 ```
 
-Thus we need to change this value inside our `values.yaml` file:
+Thus we need to change it inside our `values.yaml` file:
 
 ```yaml
 [...]
@@ -244,7 +249,6 @@ helm upgrade myfirstrelease --namespace <namespace> --tiller-namespace <namespac
 ```
 
 {{< /onlyWhen >}}
-
 {{< onlyWhen helm3 >}}
 
 ```bash
@@ -269,7 +273,6 @@ NOTES:
   echo http://$NODE_IP:$NODE_PORT
 ```
 
-
 You will see in the following command's output when the service gets a `NodePort` (as we use `--watch` you have to terminate the command with CTRL-C):
 
 ```bash
@@ -288,14 +291,14 @@ In case you do not have permissions to list the nodes with `kubectl get node` si
 {{< /onlyWhen >}}
 
 
-## Task 4
+## Task 5
 
 An alternative way to set or overwrite values for charts we want to deploy is the `--set name=value` parameter. `--set name=value` can be used when installing a chart as well as upgrading.
 
 Update the replica count of your nginx Deployment to 2 using `--set name=value`
 
 
-### Solution Task 4
+### Solution Task 5
 
 {{< onlyWhen helm2 >}}
 
@@ -316,12 +319,12 @@ helm upgrade --namespace <namespace> --set replicaCount=2 myfirstrelease ./mycha
 Values that have been set using `--set` can be reset by helm upgrade with `--reset-values`.
 
 
-## Task 5
+## Task 6
 
 Have a look at the `values.yaml` file in your chart and study all the possible configuration params introduced in a freshly created chart.
 
 
-## Task 6
+## Task 7
 
 To remove an application, simply remove the Helm release with the following command:
 

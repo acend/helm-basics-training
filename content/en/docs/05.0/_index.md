@@ -8,11 +8,11 @@ Debugging templates can be tricky because the rendered templates are sent to the
 There are a few commands that can help you debug:
 
 * `helm lint` is your go-to tool for verifying that your chart follows best practices.
-* `helm install --dry-run --debug --generate-name [CHART]` or `helm template --debug [CHART]`: We’ve seen this trick already. It’s a great way to have the server render your templates, then return the resulting manifest file.
-* `helm get manifest [RELEASE]`: This is a good way to see what templates are installed on the server.
-* `helm get values [RELEASE]`: This helps you to understand which values are used for a release.
+* `helm install --dry-run --debug --generate-name <chart>` or `helm template --debug <chart>`: We’ve seen this trick already. It’s a great way to have the server render your templates, then return the resulting manifest file.
+* `helm get manifest <release>`: This is a good way to see what templates are installed on the server.
+* `helm get values <release>`: This helps you to understand which values are used for a release.
 
-When your YAML is failing to parse but you want to see what is generated, one easy way to retrieve the YAML is to comment out the problem section in the template and then re-run `helm install --dry-run --debug --generate-name [CHART]`.
+When your YAML is failing to parse but you want to see what is generated, one easy way to retrieve the YAML is to comment out the problem section in the template and then re-run `helm install --dry-run --debug --generate-name <chart>`.
 
 ```
 apiVersion: v2
@@ -111,10 +111,10 @@ Those two key-value pairs `app.kubernetes.io/name` and `app.kubernetes.io/instan
 The host value seems to be incorrect:
 
 ```
-Error: release myrelease failed: Ingress.extensions "myrelease-error-chart" is invalid: spec.rules[0].host: Invalid value: "helmtechlab-errorchart-[USER].phoenix.mobicorp.ch": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
+Error: release myrelease failed: Ingress.extensions "myrelease-error-chart" is invalid: spec.rules[0].host: Invalid value: "helmtechlab-errorchart-<namespace>.phoenix.mobicorp.ch": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
 ```
 
-If you look closely, you'll notice that the placeholder `[USER]` is still in the host's value. This does not correspond to hostname conventions. The file `templates/ingress.yaml` reveals that the host's value is defined in the `values.yaml` file. Fix the `host` value.
+If you look closely, you'll notice that the placeholder `<namespace>` is still in the host's value. This does not correspond to hostname conventions. The file `templates/ingress.yaml` reveals that the host's value is defined in the `values.yaml` file. Fix the `host` value.
 
 
 #### Deployment image tag
