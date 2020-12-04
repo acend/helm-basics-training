@@ -188,7 +188,7 @@ affinity: {}
 
 {{< /onlyWhen >}}
 
-And then our `deployment.yaml` should look like this, note the changed `.spec.containers[0].ports[0].containerPort`:
+And then our `deployment.yaml` should look as follows. Note the changed `.spec.containers[0].ports[0].containerPort`:
 
 ```yaml
 apiVersion: apps/v1
@@ -259,7 +259,7 @@ To create a release from our chart, we run the following command within our char
 {{< onlyWhen helm2  >}}
 
 ```bash
-helm install --name myapp --namespace <namespace> ./mychart
+helm install --name myapp ./mychart --namespace <namespace>
 ```
 
 {{< /onlyWhen >}}
@@ -267,7 +267,7 @@ helm install --name myapp --namespace <namespace> ./mychart
 {{< onlyWhen helm3  >}}
 
 ```bash
-helm install --namespace <namespace> myapp ./mychart
+helm install myapp ./mychart --namespace <namespace>
 ```
 
 {{< /onlyWhen >}}
@@ -363,3 +363,5 @@ As we can see there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` w
 {{% alert title="Note" color="primary" %}}
 For details on flow control, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/control_structures/).
 {{% /alert %}}
+
+Continue with the lab "[A new backend](./database/)".

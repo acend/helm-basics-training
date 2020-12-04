@@ -52,7 +52,7 @@ helm template gotemplatechart -s templates/configmap.yaml
 
 {{< /onlyWhen >}}
 
-As we learned in lab 2, we can now deploy a release of it in our namespace:
+If everything went ok we can deploy a release of the chart in our namespace:
 
 {{< onlyWhen helm2  >}}
 
