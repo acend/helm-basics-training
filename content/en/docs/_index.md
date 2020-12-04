@@ -45,6 +45,11 @@ With these concepts in mind, we can now explain Helm like this:
 
 > Helm installs charts into Kubernetes, creating a new release for each installation. And to find new charts, you can search Helm chart repositories.
 
+{{< onlyWhen helm2 >}}
+![Helm Architecture](architecture.png)
+*[Image Source](https://www.slideshare.net/alexLM/helm-application-deployment-management-for-kubernetes)*
+{{< /onlyWhen >}}
+
 
 ### Task: Training Setup
 
