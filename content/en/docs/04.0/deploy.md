@@ -256,21 +256,9 @@ spec:
 
 To create a release from our chart, we run the following command within our chart directory:
 
-{{< onlyWhen helm2  >}}
-
-```bash
-helm install --name myapp ./mychart --namespace <namespace>
-```
-
-{{< /onlyWhen >}}
-
-{{< onlyWhen helm3  >}}
-
 ```bash
 helm install myapp ./mychart --namespace <namespace>
 ```
-
-{{< /onlyWhen >}}
 
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
 

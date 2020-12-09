@@ -389,17 +389,6 @@ Check if the attachment of the new backend worked by either looking at the Pod's
 
 If you're happy with the result, clean up your namespace:
 
-{{< onlyWhen helm2 >}}
-
-```bash
-helm delete myapp --namespace <namespace>
-```
-
-{{< /onlyWhen >}}
-{{< onlyWhen helm3 >}}
-
 ```bash
 helm uninstall myapp --namespace <namespace>
 ```
-
-{{< /onlyWhen >}}
