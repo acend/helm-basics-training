@@ -5,14 +5,6 @@ weight: 3
 
 In this extended lab, we are going to deploy an existing, more complex application with a Helm chart from the Artifact Hub.
 
-{{< onlyWhen helm2 >}}
-
-{{% alert title="Warning" color="secondary" %}}
-Make sure the Tiller Namespace environment variable (`export TILLER_NAMESPACE=<namespace>`) is set to your Namespace or add the `--tiller-namespace <namespace>` argument to every Helm command.
-{{% /alert %}}
-
-{{< /onlyWhen >}}
-
 
 ## Artifact Hub
 
@@ -96,13 +88,7 @@ mariadb:
 Make sure to set the proper value as hostname. `<appdomain>` will be provided by the teacher.
 {{% /alert %}}
 
-{{< onlyWhen helm2 >}}
-If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/requirements.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
-{{< /onlyWhen >}}
-
-{{< onlyWhen helm3 >}}
 If you look inside the [Chart.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/Chart.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
-{{< /onlyWhen >}}
 
 {{< onlyWhen mobi >}}
 The WordPress and MariaDB charts use (at the time of writing) the following container images:
@@ -165,13 +151,7 @@ ingress:
 
 {{< /onlyWhen >}}
 
-{{< onlyWhen helm2 >}}
-The `requirements.yaml` file allows us to define dependencies on other charts. In our Wordpress chart we use the `requirements.yaml` to add a `mariadb` to store the WordPress data in.
-{{< /onlyWhen >}}
-
-{{< onlyWhen helm3 >}}
 The `Chart.yaml` file allows us to define dependencies on other charts. In our Wordpress chart we use the `Chart.yaml` to add a `mariadb` to store the WordPress data in.
-{{< /onlyWhen >}}
 
 ```yaml
 dependencies:
@@ -199,21 +179,9 @@ Subcharts are an alternative way to define dependencies within a chart: A chart 
 
 We are now going to deploy the application in a specific version (which is not the latest release on purpose). Also note that we define our custom `values.yaml` file with the `-f` parameter:
 
-{{< onlyWhen helm2 >}}
-
 ```bash
-helm install --name=wordpress -f values.yaml --version 9.1.3 bitnami/wordpress --namespace <namespace>
+helm install wordpress bitnami/wordpress -f values.yaml --version 10.0.6 --namespace <namespace>
 ```
-
-{{< /onlyWhen >}}
-
-{{< onlyWhen helm3 >}}
-
-```bash
-helm install -f values.yaml --version 10.0.6 wordpress bitnami/wordpress --namespace <namespace>
-```
-
-{{< /onlyWhen >}}
 
 Watch for the newly created resources with `helm ls` and `kubectl get deploy,pod,ingress,pvc`:
 
@@ -317,20 +285,9 @@ And then observe the changes in your WordPress and MariaDB Apps
 
 ## Cleanup
 
-{{< onlyWhen helm2 >}}
-
-```bash
-helm delete wordpress --namespace <namespace>
-```
-
-{{< /onlyWhen >}}
-{{< onlyWhen helm3 >}}
-
 ```bash
 helm uninstall wordpress --namespace <namespace>
 ```
-
-{{< /onlyWhen >}}
 
 
 ## Additional Task

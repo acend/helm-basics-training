@@ -36,43 +36,15 @@ data:
 
 We can now render the template with the following command:
 
-{{< onlyWhen helm2  >}}
-
-```bash
-helm template gotemplatechart -x templates/configmap.yaml
-```
-
-{{< /onlyWhen >}}
-
-{{< onlyWhen helm3 >}}
-
 ```bash
 helm template gotemplatechart -s templates/configmap.yaml
 ```
 
-{{< /onlyWhen >}}
-
 If everything went ok we can deploy a release of the chart in our namespace:
-
-{{< onlyWhen helm2  >}}
-
-```bash
-helm install gotemplatechart --name gotemplaterelease --namespace <namespace>
-```
-
-{{% alert title="Note" color="primary" %}}
-Make sure the Tiller namespace environment variable (`export TILLER_NAMESPACE=<namespace>`) is set to your namespace or add the `--tiller-namespace <namespace>` argument to the `helm` commands.
-{{% /alert %}}
-
-{{< /onlyWhen >}}
-
-{{< onlyWhen helm3  >}}
 
 ```bash
 helm install gotemplaterelease gotemplatechart --namespace <namespace>
 ```
-
-{{< /onlyWhen >}}
 
 
 ## Task 3: The first Go template directive

@@ -77,7 +77,7 @@ url = "https://www.acend.ch"
 copyright = "acend gmbh"
 github_repo = "https://github.com/acend/helm-basics-training"
 
-enabledModule = "base helm3"
+enabledModule = "base"
 
 # Enable Lunr.js offline search
 offlineSearch = true
