@@ -170,7 +170,7 @@ ingress:
     - host: <namespace>.<appdomain>
       paths:
       - /
-  tls: 
+  tls:
     - secretName: <namespace>-<appdomain>
       hosts:
         - <namespace>.<appdomain>
