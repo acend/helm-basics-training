@@ -163,13 +163,17 @@ Thus we need to change this value inside our `values.yaml` file:
 [...]
 ingress:
   enabled: true
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
   hosts:
     - host: <namespace>.<appdomain>
       paths:
       - /
+  tls: 
+    - secretName: <namespace>-<appdomain>
+      hosts:
+        - <namespace>.<appdomain>
 [...]
 ```
 
