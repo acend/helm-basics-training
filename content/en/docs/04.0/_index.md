@@ -306,7 +306,7 @@ spec:
 ```
 
 
-## Task 1: Change charts.yaml
+## Task 1: Change Chart.yaml
 
 Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/topics/charts/#the-chartyaml-file), then change the description to `My awesome app` and add yourself to the list of maintainers.
 
@@ -314,11 +314,12 @@ Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/to
 ### Solution
 
 ```yaml
-apiVersion: v1
-appVersion: "1.0"
-description: My awesome app
+apiVersion: v2
 name: mychart
+description: My awesome app
+type: application
 version: 0.1.0
+appVersion: 1.16.0
 maintainers:
   - name: YOUR NAME
     email: YOUR E-MAIL ADDRESS
