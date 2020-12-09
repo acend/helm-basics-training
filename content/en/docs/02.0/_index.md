@@ -106,7 +106,7 @@ You can omit the parameter `--tiller-namespace <namespace>` if you set the follo
 
 ## Task 3
 
-Our freshly deployed nginx is not yet accessible from outside of the Kubernetes cluster. To expose it, we have to enable the ingress part in the `values.yaml`, which will then make helm create an ingress resource.
+Our freshly deployed nginx is not yet accessible from outside of the Kubernetes cluster. To expose it, we have to enable the ingress part in the `values.yaml`, which will then make helm create an ingress resource. Also make sure the application is accessible via TLS.
 
 
 ### Solution Task 3 Ingress
@@ -157,7 +157,7 @@ spec:
   {{- end }}
 ```
 
-Thus we need to change this value inside our `values.yaml` file:
+Thus we need to change this value inside our `values.yaml` file. This is also where we enable the TLS part:
 
 ```yaml
 [...]
