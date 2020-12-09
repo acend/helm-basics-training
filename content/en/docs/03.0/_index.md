@@ -16,7 +16,7 @@ Make sure the Tiller Namespace environment variable (`export TILLER_NAMESPACE=<n
 
 ## Artifact Hub
 
-Check out [Artifact Hub](hhttps://artifacthub.io/) where you'll find a huge number of different Helm charts. For this lab, we'll use the [WordPress chart by Bitnami](https://artifacthub.io/packages/helm/bitnami/wordpress), a publishing platform for building blogs and websites.
+Check out [Artifact Hub](https://artifacthub.io/) where you'll find a huge number of different Helm charts. For this lab, we'll use the [WordPress chart by Bitnami](https://artifacthub.io/packages/helm/bitnami/wordpress), a publishing platform for building blogs and websites.
 
 
 ## WordPress
@@ -91,6 +91,10 @@ mariadb:
     persistence:
       size: 1Gi
 ```
+
+{{% alert title="Note" color="primary" %}}
+Make sure to set the proper value as hostname. `<appdomain>` will be provided by the teacher.
+{{% /alert %}}
 
 {{< onlyWhen helm2 >}}
 If you look inside the [requirements.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/requirements.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
