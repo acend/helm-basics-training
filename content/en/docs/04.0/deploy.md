@@ -364,4 +364,4 @@ As we can see there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` w
 For details on flow control, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/control_structures/).
 {{% /alert %}}
 
-Continue with the lab "[A new backend](./database/)".
+Continue with the lab "[A new backend](../database/)".
