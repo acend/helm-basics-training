@@ -115,7 +115,7 @@ affinity: {}
 {{< onlyWhen mobi >}}
 
 ```yaml
-# Default values for test.
+# Default values for mychart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -123,8 +123,9 @@ replicaCount: 1
 
 image:
   repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot
-  tag: latest
   pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
 
 imagePullSecrets: []
 nameOverride: ""
@@ -137,7 +138,9 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: ""
+
+podAnnotations: {}
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -178,6 +181,13 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 
