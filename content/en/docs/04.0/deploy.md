@@ -9,17 +9,17 @@ Using the generated and modified Helm chart, we are going to deploy our own awes
 ## Task 1: Adapt the chart
 
 {{< onlyWhenNot mobi >}}
-Our container image has the name `appuio/example-spring-boot:latest` and is a very basic python application. Change the content of your `deployment.yml` and `values.yml` so a pod with the `example-spring-boot` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
+Our container image has the name `quay.io/acend/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yml` and `values.yml` so a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
 
-The `appuio/example-spring-boot:latest` application is running on port `8080`. Change the existing `deployment.yaml` accordingly.
+The `quay.io/acend/example-web-python:latest` application is running on port `8080`. Change the existing `deployment.yaml` accordingly.
 {{< /onlyWhenNot >}}
 
 After the changes, create or upgrade a release from your template.
 
 {{< onlyWhen mobi >}}
-Our container image has the name `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` and is a very basic python application. Change the content of your `deployment.yml` and `values.yml` so a pod with the `example-spring-boot` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
+Our container image has the name `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yml` and `values.yml` so a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
 
-The `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot:latest` application is running on port `8080`. Change the existing `deployment.yaml` accordingly.
+The `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` application is running on port `8080`. Change the existing `deployment.yaml` accordingly.
 {{< /onlyWhen >}}
 
 
@@ -37,7 +37,7 @@ In our `values.yaml` we only have to change the value of `image.repository` and 
 replicaCount: 1
 
 image:
-  repository: appuio/example-spring-boot
+  repository: quay.io/acend/example-web-python
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
@@ -115,16 +115,17 @@ affinity: {}
 {{< onlyWhen mobi >}}
 
 ```yaml
-# Default values for test.
+# Default values for mychart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-spring-boot
-  tag: latest
+  repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python
   pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
 
 imagePullSecrets: []
 nameOverride: ""
@@ -137,7 +138,9 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: ""
+
+podAnnotations: {}
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -178,6 +181,13 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 
@@ -228,7 +238,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 5000
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -276,7 +286,7 @@ The current values for the ingress depends on the Kubernetes cluster. Ask your i
 {{% /alert %}}
 
 {{< onlyWhen mobi >}}
-You can use `helmtechlab-springboot-<namespace>.phoenix.mobicorp.test` as your hostname if you wan't to access your deployed application. It might take some minute until your ingress hostname is accessable as the DNS name first have to be propagated correctly.
+You can use `helmtechlab-python-<namespace>.phoenix.mobicorp.test` as your hostname if you want to access your deployed application. It might take some time until your ingress hostname is accessable as the DNS name first has to be propagated correctly.
 {{< /onlyWhen >}}
 
 
