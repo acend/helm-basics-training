@@ -286,7 +286,7 @@ The current values for the ingress depends on the Kubernetes cluster. Ask your i
 {{% /alert %}}
 
 {{< onlyWhen mobi >}}
-You can use `helmtechlab-python-<namespace>.phoenix.mobicorp.test` as your hostname if you wan't to access your deployed application. It might take some minute until your ingress hostname is accessable as the DNS name first have to be propagated correctly.
+You can use `helmtechlab-python-<namespace>.phoenix.mobicorp.test` as your hostname if you want to access your deployed application. It might take some time until your ingress hostname is accessable as the DNS name first has to be propagated correctly.
 {{< /onlyWhen >}}
 
 

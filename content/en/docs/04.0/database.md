@@ -3,46 +3,45 @@ title: "A new backend"
 weight: 42
 ---
 
-In this Lab we're going to create the templates, which are necessary to deploy a Maria Database as Backend to our `example-web-python` application. Before we start creating those temples we want to have a look at a couple of best practices.
+In this lab we are going to create the templates that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start creating those temples we want to have a look at a couple of best practices.
 
 
 ## Resource Names
 
-When looking at the Templates of our `mychart` Chart, the name of the resource always is defined by a helpler function:
+When looking at the templates of our `mychart` Chart, the name of the resource is always idefined by a helper function:
 
 ```yaml
 name: {{ include "mychart.fullname" . }}
 ```
 
-Within the same Namespace Resources from the same Resource Type must have an unique Name. And since a Helm Chart can be instantiated multiple times in different Releases, it's best to include the release name as part of the Resource Name.
+Resources within the same Namespace and of the same resource type must have unique names. And since a Helm Chart can be instantiated multiple times in different Releases, it's best to include the Release name as part of the resource name:
 
 `<releasename>-<chartname>`
 
-Have a look at the helper function (`mychart/templates/_helpers.tpl`) for more details and keep that concept in mind when creating new templates.
+Have a look at the helper function in `mychart/templates/_helpers.tpl` for more details and keep this concept in mind when creating new templates.
 
 
 ## Labels
 
-There are a couple of [recommended Kubernetes Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/), which help to make interoperability between different tools and concepts easier and define a "standard".
+There are a couple of [recommended Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/), which help to make interoperability between different tools and concepts easier and define a kind of standard.
 
-We use the following two Labels as so called selector labels, labels that are used on services to define which Pods belong to it.
+We use the following two labels as so-called selector labels. These are labels that are used on Services to define which Pods belong to them:
 
-* `app.kubernetes.io/name`: Resource Name
-* `app.kubernetes.io/instance`: Release Name
+* `app.kubernetes.io/name`: Resource name
+* `app.kubernetes.io/instance`: Release name
 
+And a couple of additional ones to label our resources with supplemental information:
 
-And a couple of additional ones to label our Resources with supplement information
+* `helm.sh/chart`: Chart name, e.g. `mychart-0.1.0`
+* `app.kubernetes.io/version`: Chart version, e.g. `1.16.0`
+* `app.kubernetes.io/managed-by: Helm`
 
-* `helm.sh/chart`: mychart-0.1.0
-* `app.kubernetes.io/version`: "1.16.0"
-* `app.kubernetes.io/managed-by`: Helm
-
-Similar to the Resource Name we can also use helpers to generate the necessary labels.
+Similar to the resource name we can also use helpers to generate the necessary labels.
 
 
 ## Task 1: Create template files
 
-We want to add a Maria database and use it as a backend for our `example-web-python` application. Using the following Kubernetes resource file, create a new template file for the Maria database:
+We want to add a MariaDB database and use it as a backend for our `example-web-python` application. Using the following Kubernetes resource file, create a new template file for the MariaDB database:
 
 {{% alert title="Note" color="primary" %}}
 You can use the existing templates (`deployment.yaml`, `service.yaml`) as starting point to create the new templates.
@@ -238,9 +237,9 @@ The template file for the MariaDB database `templates/deployment-mariadb.yaml` c
 
 The following points need to be taken into consideration when creating the template:
 
-* the helper `mychart.fullname` will return `release-mychart`, since our first deployment for the `example-web-python` application already uses this name, we use `-mariadb` as postfix. As an alternative we could also alter the fullname helper to accept an additional name, which would be different from deployment to deployment.
-* Same situation for the label `app.kubernetes.io/name`, therefore we can't use the include `mychart.labels`. We could also alter the helpler or in our case for simplicity reasons just add the labels directly.
-* In the deployment templates we reference to our secrets by using again the full name `{{ include "mychart.fullname" . }}-mariadb`
+* The helper `mychart.fullname` will return `release-mychart`. Since our first deployment for the `example-web-python` application already uses this name, we use `-mariadb` as postfix. As an alternative we could also alter the fullname helper to accept an additional name, which would be different for each deployment.
+* The same applies to the label `app.kubernetes.io/name`. We can't therefore use the included `mychart.labels`. We could also alter the helper function or in our case simply just add the labels directly.
+* In the deployment templates we reference our secrets by again using the full name `{{ include "mychart.fullname" . }}-mariadb`.
 
 ```yaml
 apiVersion: apps/v1
@@ -435,9 +434,9 @@ helm upgrade myapp ./mychart --namespace <namespace>
 ```
 
 
-## Task 2: Connect to new Database Deployment
+## Task 2: Connect to the database
 
-In order for the python application to be able to connect to the newly deplyed database, we need some environment variables in our deployment. The goal of this task is to allow a user to set them via values.
+In order for the python application to be able to connect to the newly deployed database, we need to add some environment variables to our deployment. The goal of this task is to allow a user to set them via values.
 
 Add the following environment variables:
 
