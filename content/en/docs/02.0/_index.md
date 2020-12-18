@@ -253,7 +253,7 @@ Have a look at the `values.yaml` file in your chart and study all the possible c
 To remove an application, simply remove the Helm release with the following command:
 
 ```bash
-helm delete myfirstrelease --namespace <namespace>
+helm uninstall myfirstrelease --namespace <namespace>
 ```
 
 Do this with our deployed release. With `kubectl get pods --namespace <namespace>` you should no longer see your application pod.
