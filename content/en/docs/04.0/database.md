@@ -383,6 +383,7 @@ spec:
 ```
 
 And then in our `values.yaml` we need to add:
+{{< onlyWhenNot mobi  >}}
 
 ```yaml
 database:
@@ -402,6 +403,30 @@ database:
   tolerations: []
   affinity: {}
 ```
+
+{{< /onlyWhenNot >}}
+{{< onlyWhen mobi  >}}
+
+```yaml
+database:
+  databaseuser: acend
+  databasename: acenddb
+  databasepassword: mysuperpassword123
+  databaserootpassword: mysuperrootpassword123
+  image:
+    repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb:10.5
+    pullPolicy: IfNotPresent
+    tag: "10.5"
+  imagePullSecrets: []
+  podAnnotations: {}
+  podSecurityContext: {}
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+```
+
+{{< /onlyWhen >}}
 
 Finally, to upgrade the existing release run:
 
