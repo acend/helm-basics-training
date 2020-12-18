@@ -195,10 +195,11 @@ metadata:
     app.kubernetes.io/instance: myfirstrelease
     # additional Labels ...
 data:
-  database-name: YWNlbmQtZXhhbXBsZS1kYg==
-  database-password: bXlzcWxwYXNzd29yZA==
-  database-root-password: bXlzcWxyb290cGFzc3dvcmQ=
-  database-user: YWNlbmQtdXNlcg==
+  database-name: YWNlbmRkYg==
+  database-password: bXlzdXBlcnBhc3N3b3JkMTIz
+  database-root-password: bXlzdXBlcnJvb3RwYXNzd29yZDEyMw==
+  database-user: YWNlbmQ=
+
 ```
 
 When creating the template files, make sure that a user can specify the `database-name`, `database-password`, `database-root-password` and `database-user` from the secret using a variable.
@@ -242,7 +243,6 @@ The following points need to be taken into consideration when creating the templ
 * In the deployment templates we reference to our secrets by using again the full name `{{ include "mychart.fullname" . }}-mariadb`
 
 ```yaml
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -254,6 +254,7 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb
@@ -336,7 +337,6 @@ spec:
 The secret `templates/secret-mysql.yaml` file should look like this:
 
 ```yaml
----
 apiVersion: v1
 kind: Secret
 metadata:
@@ -513,7 +513,7 @@ spec:
             value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ include "mychart.fullname" . }}-mariadb/$(MYSQL_DATABASE_NAME)
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 5000
               protocol: TCP
           livenessProbe:
             httpGet:
