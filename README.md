@@ -30,6 +30,7 @@ Alternatively you can use the Puzzle setup from [config/puzzle](config/puzzle/co
 `--environment puzzle`.
 Further, specialized environments exist, check out the `config` directory.
 
+
 ### Docsy theme usage
 
 * [Official docsy documentation](https://www.docsy.dev/docs/)
@@ -79,7 +80,7 @@ For local checks, you can either use Visual Studio Code with the corresponding e
 
 ```shell script
 npm install
-node_modules/.bin/markdownlint content
+node_modules/.bin/markdownlint content *.md
 ```
 
 
