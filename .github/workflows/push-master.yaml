@@ -4,7 +4,6 @@ on:
   push:
     branches: 
       - master
-      - johann/hugo-theme
 
 jobs:
   build:
@@ -40,7 +39,7 @@ jobs:
           push: true
           tags: |
             acend/helm-basics-training:latestgh
-            quay.io/acend/helm-basics-training:latestgh
+            quay.io/acend/helm-basics-training:latest
       - uses: docker/build-push-action@v2
         with:
           context: .
@@ -49,7 +48,7 @@ jobs:
           push: true
           tags: |
             acend/helm-basics-training:mobigh
-            quay.io/acend/helm-basics-training:mobigh
+            quay.io/acend/helm-basics-training:mobi
       - uses: docker/build-push-action@v2
         with:
           context: .
@@ -58,4 +57,4 @@ jobs:
           push: true
           tags: |
             acend/helm-basics-training:ranchergh
-            quay.io/acend/helm-basics-training:ranchergh
+            quay.io/acend/helm-basics-training:rancher
