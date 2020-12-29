@@ -3,7 +3,7 @@ title = "Helm Basics Training"
 
 enableGitInfo = true
 
-theme = "docsy"
+theme = ["docsy-acend", "docsy-plus", "docsy"]
 
 languageCode = "en-us"
 
@@ -77,7 +77,7 @@ url = "https://www.acend.ch"
 copyright = "acend gmbh"
 github_repo = "https://github.com/acend/helm-basics-training"
 
-enabledModule = "base mobi"
+enabledModule = "base"
 
 # Enable Lunr.js offline search
 offlineSearch = true
@@ -98,14 +98,14 @@ footer_about_disable = true
 [params.links]
 [[params.links.developer]]
 name = "GitHub"
-icon = "fab fa-github" 
+icon = "fab fa-github"
 url = "https://github.com/acend/helm-basics-training"
 
 [[params.links.user]]
 name = "Twitter"
 icon = "fab fa-twitter"
 url = "https://twitter.com/acendch"
-  
+
 [[params.links.user]]
 name = "LinkedIn"
 icon = "fab fa-linkedin-in"

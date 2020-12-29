@@ -1,8 +1,6 @@
 # Helm Basics Training
 
-In this guided hands-on training, we show participants the Helm's basics.
-
-For more see [Helm Basics Training online](https://helm-basics.k8s.puzzle.ch/).
+In this guided hands-on training, we show the participants the basics of Helm, the package manager for Kubernetes.
 
 
 ## Content Sections
@@ -14,14 +12,37 @@ The main part are the labs, which can be found at [content/en/docs](content/en/d
 
 ## Hugo
 
-The site is built using the static page generator [Hugo](https://gohugo.io/) and is published at [helm-basics.k8s.puzzle.ch](https://helm-basics.k8s.puzzle.ch/).
+This site is built using the static page generator [Hugo](https://gohugo.io/).
 
 The page uses the [docsy theme](https://github.com/google/docsy) which is included as a Git Submodule.
+Docsy is being enhanced using [docsy-plus](https://github.com/puzzle/docsy-plus/) as well as
+[docsy-acend](https://github.com/puzzle/docsy-acend/) and [docsy-puzzle](https://github.com/puzzle/docsy-puzzle/)
+for brand specific settings.
 
 After cloning the main repo, you need to initialize the submodule like this:
 
 ```bash
 git submodule update --init --recursive
+```
+
+The default configuration uses the acend setup from [config/_default](config/_default/config.toml).
+Alternatively you can use the Puzzle setup from [config/puzzle](config/puzzle/config.toml), which is enabled with
+`--environment puzzle`.
+Further, specialized environments exist, check out the `config` directory.
+
+
+### Docsy theme usage
+
+* [Official docsy documentation](https://www.docsy.dev/docs/)
+* [Docsy Plus](https://github.com/puzzle/docsy-plus/)
+
+
+### Update submodules for theme updates
+
+Run the following command to update all submodules with their newest upstream version:
+
+```bash
+git submodule update --remote
 ```
 
 
@@ -30,28 +51,13 @@ git submodule update --init --recursive
 Build the image:
 
 ```bash
-docker build -t acend/helm-basics-training:latest .
+docker build <--build-arg HUGO_ENV=...> -t acend/helm-basics-training .
 ```
 
 Run it locally:
 
 ```bash
-docker run --rm --interactive --publish 8080:8080 acend/helm-basics-training
-```
-
-
-### Using Buildah and Podman
-
-Build the image:
-
-```bash
-buildah build-using-dockerfile -t acend/helm-basics-training:latest .
-```
-
-Run it locally with the following command. Beware that `--rmi` automatically removes the built image when the container stops, so you either have to rebuild it or remove the parameter from the command.
-
-```bash
-podman run --rm --rmi --interactive --publish 8080:8080 localhost/acend/helm-basics-training
+docker run -i -p 8080:8080 acend/helm-basics-training
 ```
 
 
@@ -74,10 +80,10 @@ For local checks, you can either use Visual Studio Code with the corresponding e
 
 ```shell script
 npm install
-node_modules/.bin/markdownlint content
+node_modules/.bin/markdownlint content *.md
 ```
 
 
 ## Contributions
 
-If you find errors, bugs or missing information please help us improve our training and have a look at the [Contribution Guide](CONTRIBUTING.md).
+If you find errors, bugs or missing information please help us improve and have a look at the [Contribution Guide](CONTRIBUTING.md).
