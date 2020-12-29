@@ -44,7 +44,8 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          build_args: HUGO_ENV=mobi
+          build-args: |
+            HUGO_ENV=mobi
           push: true
           tags: |
             acend/helm-basics-training:mobi
@@ -53,7 +54,8 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          build_args: HUGO_ENV=rancher
+          build-args: |
+            HUGO_ENV=rancher
           push: true
           tags: |
             acend/helm-basics-training:rancher
