@@ -35,14 +35,14 @@ jobs:
           password: ${{ secrets.QUAYIO_TOKEN }}
       - uses: docker/build-push-action@v2
         with:
-          dockerfile: ./Dockerfile
+          file: ./Dockerfile
           push: true
           tags: |
             acend/helm-basics-training:latestgh
             quay.io/acend/helm-basics-training:latestgh
       - uses: docker/build-push-action@v2
         with:
-          dockerfile: ./Dockerfile
+          file: ./Dockerfile
           build_args: HUGO_ENV=mobi
           push: true
           tags: |
@@ -50,7 +50,7 @@ jobs:
             quay.io/acend/helm-basics-training:mobigh
       - uses: docker/build-push-action@v2
         with:
-          dockerfile: ./Dockerfile
+          file: ./Dockerfile
           build_args: HUGO_ENV=rancher
           push: true
           tags: |
