@@ -23,11 +23,8 @@ spec:
         app: helm-basics-training-mobi
     spec:
       containers:
-      - image: acend/helm-basics-training
+      - image: acend/helm-basics-training:mobi
         imagePullPolicy: Always
-        env:
-          - name: ENV
-            value: mobi
         livenessProbe:
           failureThreshold: 3
           httpGet:

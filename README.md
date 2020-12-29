@@ -51,13 +51,13 @@ git submodule update --remote
 Build the image:
 
 ```bash
-docker build -t acend/container-basics-training:latest .
+docker build <--build-arg HUGO_ENV=...> -t acend/helm-basics-training .
 ```
 
 Run it locally:
 
 ```bash
-docker run -i -p 8080:8080 acend/container-basics-training
+docker run -i -p 8080:8080 acend/helm-basics-training
 ```
 
 
