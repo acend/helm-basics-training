@@ -1,0 +1,52 @@
+name: master-publish
+
+on:
+  push:
+    branches: 
+      - master
+      - johann/hugo-theme
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Login to Quay.io Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAYIO_USERNAME }}
+          password: ${{ secrets.QUAYIO_TOKEN }}
+      - uses: docker/build-push-action@v1
+        with:
+          dockerfile: ./Dockerfile
+          push: true
+          tags: |
+            acend/helm-basics-training:latestgh
+            quay.io/acend/helm-basics-training:latestgh
+      - uses: docker/build-push-action@v1
+        with:
+          dockerfile: ./Dockerfile
+          build_args: HUGO_ENV=mobi
+          push: true
+          tags: |
+            acend/helm-basics-training:mobigh
+            quay.io/acend/helm-basics-training:mobigh
+      - uses: docker/build-push-action@v1
+        with:
+          dockerfile: ./Dockerfile
+          build_args: HUGO_ENV=rancher
+          push: true
+          tags: |
+            acend/helm-basics-training:ranchergh
+            quay.io/acend/helm-basics-training:ranchergh
