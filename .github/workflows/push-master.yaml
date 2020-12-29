@@ -15,6 +15,12 @@ jobs:
         with:
           submodules: recursive
       -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
         name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
@@ -27,14 +33,14 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_TOKEN }}
-      - uses: docker/build-push-action@v1
+      - uses: docker/build-push-action@v2
         with:
           dockerfile: ./Dockerfile
           push: true
           tags: |
             acend/helm-basics-training:latestgh
             quay.io/acend/helm-basics-training:latestgh
-      - uses: docker/build-push-action@v1
+      - uses: docker/build-push-action@v2
         with:
           dockerfile: ./Dockerfile
           build_args: HUGO_ENV=mobi
@@ -42,7 +48,7 @@ jobs:
           tags: |
             acend/helm-basics-training:mobigh
             quay.io/acend/helm-basics-training:mobigh
-      - uses: docker/build-push-action@v1
+      - uses: docker/build-push-action@v2
         with:
           dockerfile: ./Dockerfile
           build_args: HUGO_ENV=rancher
