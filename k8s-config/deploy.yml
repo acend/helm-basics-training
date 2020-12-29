@@ -23,7 +23,7 @@ spec:
         app: helm-basics-training
     spec:
       containers:
-      - image: acend/helm-basics-training:latest
+      - image: quay.io/acend/helm-basics-training:latest
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3

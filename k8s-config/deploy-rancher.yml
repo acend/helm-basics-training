@@ -23,7 +23,7 @@ spec:
         app: helm-basics-training-rancher
     spec:
       containers:
-      - image: acend/helm-basics-training:rancher
+      - image: quay.io/acend/helm-basics-training:rancher
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
