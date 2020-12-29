@@ -38,7 +38,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            acend/helm-basics-training:latestgh
+            acend/helm-basics-training:latest
             quay.io/acend/helm-basics-training:latest
       - uses: docker/build-push-action@v2
         with:
@@ -47,7 +47,7 @@ jobs:
           build_args: HUGO_ENV=mobi
           push: true
           tags: |
-            acend/helm-basics-training:mobigh
+            acend/helm-basics-training:mobi
             quay.io/acend/helm-basics-training:mobi
       - uses: docker/build-push-action@v2
         with:
@@ -56,5 +56,5 @@ jobs:
           build_args: HUGO_ENV=rancher
           push: true
           tags: |
-            acend/helm-basics-training:ranchergh
+            acend/helm-basics-training:rancher
             quay.io/acend/helm-basics-training:rancher
