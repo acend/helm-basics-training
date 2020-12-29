@@ -30,7 +30,7 @@ The output should be similar to this:
 version.BuildInfo{Version:"v3.4.1", GitCommit:"c4e74854886b2efe3321e185578e6db9be0a6e29", GitTreeState:"clean", GoVersion:"go1.14.11"}
 ```
 
-{{< onlyWhen mobi >}}
+{{% onlyWhen mobi %}}
 
 
 ## Task 2
@@ -47,6 +47,6 @@ If you have direct access to the internet from your location, the proxy configur
 {{% /alert %}}
 
 Replace `<username`> and `<password>` with your credentials. If you have special characters in your password, escape them with their corresponding hexadecimal values according to [this article](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters).
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 You are now all set to start with the labs!

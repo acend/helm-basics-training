@@ -15,7 +15,7 @@ Check out [Artifact Hub](https://artifacthub.io/) where you'll find a huge numbe
 
 As this WordPress Helm chart is published in Bitnami's Helm repository, we're first going to add it to our local repo list:
 
-{{< onlyWhen mobi >}}
+{{% onlyWhen mobi %}}
 You have to set your `HTTP_PROXY` environment variable in order to access the Bitnami Helm repository:
 
 ```bash
@@ -42,7 +42,7 @@ Replace `u...:PASSWORD` with your account details. If you have specials chars in
 If you have direct access to the internet from your location, the proxy configuration is not required.
 {{% /alert %}}
 
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -90,7 +90,7 @@ Make sure to set the proper value as hostname. `<appdomain>` will be provided by
 
 If you look inside the [Chart.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/Chart.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
 
-{{< onlyWhen mobi >}}
+{{% onlyWhen mobi %}}
 The WordPress and MariaDB charts use (at the time of writing) the following container images:
 
 * `docker.io/bitnami/wordpress:5.4.0-debian-10-r6`
@@ -149,7 +149,7 @@ ingress:
 [...]
 ```
 
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 The `Chart.yaml` file allows us to define dependencies on other charts. In our Wordpress chart we use the `Chart.yaml` to add a `mariadb` to store the WordPress data in.
 
