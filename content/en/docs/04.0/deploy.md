@@ -8,26 +8,26 @@ Using the generated and modified Helm chart, we are going to deploy our own awes
 
 ## Task 1: Adapt the chart
 
-{{< onlyWhenNot mobi >}}
+{{% onlyWhenNot mobi %}}
 Our container image has the name `quay.io/acend/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yml` and `values.yml` so a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
 
 The `quay.io/acend/example-web-python:latest` application is running on port `8080`. Change the existing `deployment.yaml` accordingly.
-{{< /onlyWhenNot >}}
+{{% /onlyWhenNot %}}
 
 After the changes, create or upgrade a release from your template.
 
-{{< onlyWhen mobi >}}
+{{% onlyWhen mobi %}}
 Our container image has the name `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yml` and `values.yml` so a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
 
 The `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` application is running on port `8080`. Change the existing `deployment.yaml` accordingly.
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 
 ### Solution
 
 In our `values.yaml` we only have to change the value of `image.repository` and `image.tag`:
 
-{{< onlyWhenNot mobi >}}
+{{% onlyWhenNot mobi %}}
 
 ```yaml
 # Default values for mychart.
@@ -111,8 +111,8 @@ tolerations: []
 affinity: {}
 ```
 
-{{< /onlyWhenNot >}}
-{{< onlyWhen mobi >}}
+{{% /onlyWhenNot %}}
+{{% onlyWhen mobi %}}
 
 ```yaml
 # Default values for mychart.
@@ -196,7 +196,7 @@ tolerations: []
 affinity: {}
 ```
 
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 And then our `deployment.yaml` should look as follows. Note the changed `.spec.containers[0].ports[0].containerPort`:
 
@@ -285,9 +285,9 @@ The template folder already has a file for an ingress resource. There are even s
 The current values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
 {{% /alert %}}
 
-{{< onlyWhen mobi >}}
+{{% onlyWhen mobi %}}
 You can use `helmtechlab-python-<namespace>.phoenix.mobicorp.test` as your hostname if you want to access your deployed application. It might take some time until your ingress hostname is accessable as the DNS name first has to be propagated correctly.
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 
 ### Solution Task 2

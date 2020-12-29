@@ -48,9 +48,9 @@ With these concepts in mind, we can now explain Helm like this:
 
 ### Task: Training Setup
 
-{{< onlyWhenNot mobi >}}
+{{% onlyWhenNot mobi %}}
 
-{{< onlyWhen rancher >}}
+{{% onlyWhen rancher %}}
 
 
 #### Login to the Lab Cluster
@@ -99,7 +99,7 @@ The `PATH` can be set in Windows in the advanced system settings. It depends on 
 {{% /alert %}}
 
 
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 
 #### Create Namespace
@@ -112,21 +112,21 @@ You can create your namespace with:
 kubectl create namespace <namespace>
 ```
 
-{{< onlyWhen rancher >}}
+{{% onlyWhen rancher %}}
 {{% alert title="Note" color="primary" %}}
 Namespaces created via `kubectl` have to be assigned to the correct Rancher Project in order to be visible in the Rancher web console. Please ask your teacher for this assignment. Or you can create the Namespace directly within the Rancher web console.
 {{% /alert %}}
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
-{{< /onlyWhenNot >}}
+{{% /onlyWhenNot %}}
 
-{{< onlyWhen mobi >}}
+{{% onlyWhen mobi %}}
 Make sure you have access to the Mobiliar `dev` Kubernetes cluster and `kubectl` is configured to use the right context.
 
 We already created a namespace for you. The name of your namespace is equal to your Mobi U-Account `u....` and has been placed in the Project `helm`.
 Just to see it again, a namespace in Kubernetes can be created with:
 
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 In the labs we are going to use `<namespace>` as a placeholder for your namespace.
 

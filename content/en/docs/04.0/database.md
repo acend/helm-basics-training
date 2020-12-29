@@ -47,7 +47,7 @@ We want to add a MariaDB database and use it as a backend for our `example-web-p
 You can use the existing templates (`deployment.yaml`, `service.yaml`) as starting point to create the new templates.
 {{% /alert %}}
 
-{{< onlyWhenNot mobi  >}}
+{{% onlyWhenNot mobi %}}
 
 ```yaml
 ---
@@ -112,8 +112,9 @@ spec:
         emptyDir: {}
 ```
 
-{{< /onlyWhenNot >}}
-{{< onlyWhen mobi  >}}
+{{% /onlyWhenNot %}}
+
+{{% onlyWhen mobi %}}
 You have to use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb:10.5` as the container image.
 
 ```yaml
@@ -180,7 +181,7 @@ spec:
         emptyDir: {}
 ```
 
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 You also have to create a template for the secret:
 
@@ -382,7 +383,7 @@ spec:
 ```
 
 And then in our `values.yaml` we need to add:
-{{< onlyWhenNot mobi  >}}
+{{% onlyWhenNot mobi %}}
 
 ```yaml
 database:
@@ -403,8 +404,9 @@ database:
   affinity: {}
 ```
 
-{{< /onlyWhenNot >}}
-{{< onlyWhen mobi  >}}
+{{% /onlyWhenNot %}}
+
+{{% onlyWhen mobi %}}
 
 ```yaml
 database:
@@ -425,7 +427,7 @@ database:
   affinity: {}
 ```
 
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 Finally, to upgrade the existing release run:
 

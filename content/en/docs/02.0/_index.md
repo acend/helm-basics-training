@@ -16,7 +16,7 @@ helm create mychart
 
 You now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
 
-{{< onlyWhen mobi >}}
+{{% onlyWhen mobi %}}
 Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to match the following:
 
 ```yaml
@@ -28,7 +28,7 @@ image:
 [...]
 ```
 
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 
 ## Task 2
@@ -222,9 +222,9 @@ nginx is now available at the given port number indicated by the `NodePort` and 
 Use either the output of the `helm upgrade` command, or `kubectl get node -o wide` to get a node ip address. Remember, [NodePort's](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) are open on any kubernetes node
 {{% /alert %}}
 
-{{< onlyWhen mobi >}}
+{{% onlyWhen mobi %}}
 In case you do not have permissions to list the nodes with `kubectl get node` simply use `kubedev-worker-00bb7020c0eb.phoenix.mobicorp.test` as the node address to access the welcome page.
-{{< /onlyWhen >}}
+{{% /onlyWhen %}}
 
 
 ## Task 5
