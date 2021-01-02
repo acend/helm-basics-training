@@ -223,7 +223,7 @@ Use either the output of the `helm upgrade` command, or `kubectl get node -o wid
 {{% /alert %}}
 
 {{% onlyWhen mobi %}}
-In case you do not have permissions to list the nodes with `kubectl get node` simply use `kubedev-worker-00bb7020c0eb.phoenix.mobicorp.test` as the node address to access the welcome page.
+In case you do not have permissions to list the nodes with `kubectl get node` please ask the trainer for a valid node ip address to access the welcome page.
 {{% /onlyWhen %}}
 
 
