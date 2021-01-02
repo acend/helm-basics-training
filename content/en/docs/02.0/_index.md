@@ -133,7 +133,7 @@ ingress:
 ```
 
 {{% alert title="Note" color="primary" %}}
-Make sure to set the proper value as hostname. `<appdomain>` will be provided by the teacher.
+Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
 {{% /alert %}}
 
 Apply the change by upgrading the release:
