@@ -449,7 +449,7 @@ Add the following environment variables:
 * `MYSQL_URI` with value `mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@<servicename of mariadb>/$(MYSQL_DATABASE_NAME)`
 
 
-### Solution Taks 2
+### Solution Task 2
 
 Change your `templates/deployment.yml` and include the new environment variables:
 
