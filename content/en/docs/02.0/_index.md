@@ -219,11 +219,11 @@ nginx is now available at the given port number indicated by the `NodePort` and 
 
 
 {{% alert title="Note" color="primary" %}}
-Use either the output of the `helm upgrade` command, or `kubectl get node -o wide` to get a node ip address. Remember, [NodePort's](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) are open on any kubernetes node
+Use either the output of the `helm upgrade` command, or `kubectl get node -o wide` to get a node IP address. Remember, [NodePort's](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) are open on any kubernetes node
 {{% /alert %}}
 
 {{% onlyWhen mobi %}}
-In case you do not have permissions to list the nodes with `kubectl get node` please ask the trainer for a valid node ip address to access the welcome page.
+In case you do not have permissions to list the nodes with `kubectl get node` please ask the trainer for a valid node IP address to access the welcome page.
 {{% /onlyWhen %}}
 
 
