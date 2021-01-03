@@ -303,7 +303,7 @@ ingress:
   hosts:
     - host: awesome.<namespace>.<appdomain>
       paths:
-      - /
+        - path: /
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
