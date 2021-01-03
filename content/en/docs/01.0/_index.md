@@ -38,8 +38,21 @@ version.BuildInfo{Version:"v3.4.1", GitCommit:"c4e74854886b2efe3321e185578e6db9b
 Set your HTTP proxy environment variables so a chart repository can be added to your Helm repos in a later lab:
 
 ```bash
+# Linux
 export HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
 export HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
+
+# Windows cmd
+setx HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
+setx HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
+setx http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
+setx https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
+
+# Windows Powershell
+$env:HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
+$env:HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
+$env:http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
+$env:https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
 ```
 
 {{% alert title="Note" color="primary" %}}
