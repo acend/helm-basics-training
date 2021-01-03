@@ -415,7 +415,7 @@ database:
   databasepassword: mysuperpassword123
   databaserootpassword: mysuperrootpassword123
   image:
-    repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb:10.5
+    repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
   imagePullSecrets: []
@@ -449,9 +449,9 @@ Add the following environment variables:
 * `MYSQL_URI` with value `mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@<servicename of mariadb>/$(MYSQL_DATABASE_NAME)`
 
 
-### Solution Taks 2
+### Solution Task 2
 
-Change your `templates/deployment.yml` and include the new environment variables:
+Change your `templates/deployment.yaml` and include the new environment variables:
 
 ```yaml
 apiVersion: apps/v1
