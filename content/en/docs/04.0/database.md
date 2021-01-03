@@ -451,7 +451,7 @@ Add the following environment variables:
 
 ### Solution Task 2
 
-Change your `templates/deployment.yml` and include the new environment variables:
+Change your `templates/deployment.yaml` and include the new environment variables:
 
 ```yaml
 apiVersion: apps/v1
