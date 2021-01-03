@@ -415,7 +415,7 @@ database:
   databasepassword: mysuperpassword123
   databaserootpassword: mysuperrootpassword123
   image:
-    repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb:10.5
+    repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
   imagePullSecrets: []
