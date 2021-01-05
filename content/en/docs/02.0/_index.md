@@ -162,7 +162,7 @@ Make sure to set the proper value as hostname. `<appdomain>` will be provided by
 {{% /alert %}}
 
 {{% onlyWhen mobi %}}
-You can use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessable as the DNS name first has to be propagated correctly.
+Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessable as the DNS name first has to be propagated correctly.
 {{% /onlyWhen %}}
 
 Apply the change by upgrading the release:
