@@ -112,6 +112,7 @@ spec:
   {{- end }}
 ```
 
+{{% onlyWhenNot mobi %}}
 Thus we need to change this value inside our `values.yaml` file. This is also where we enable the TLS part:
 
 ```yaml
@@ -124,7 +125,7 @@ ingress:
   hosts:
     - host: <namespace>.<appdomain>
       paths:
-      - /
+        - path: /
   tls:
     - secretName: <namespace>-<appdomain>
       hosts:
@@ -132,9 +133,37 @@ ingress:
 [...]
 ```
 
+{{% /onlyWhenNot %}}
+{{% onlyWhen mobi %}}
+Thus we need to change this value inside our `values.yaml` file.
+
+```yaml
+[...]
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: <namespace>.<appdomain>
+      paths:
+        - path: /
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+[...]
+```
+
+{{% /onlyWhen %}}
+
 {{% alert title="Note" color="primary" %}}
 Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
 {{% /alert %}}
+
+{{% onlyWhen mobi %}}
+You can use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessable as the DNS name first has to be propagated correctly.
+{{% /onlyWhen %}}
 
 Apply the change by upgrading the release:
 
