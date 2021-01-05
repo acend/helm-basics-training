@@ -88,6 +88,10 @@ mariadb:
 Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
 {{% /alert %}}
 
+{{% onlyWhen mobi %}}
+Use `wordpress-<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessable as the DNS name first has to be propagated correctly.
+{{% /onlyWhen %}}
+
 If you look inside the [Chart.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/Chart.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
 
 {{% onlyWhen mobi %}}
@@ -145,7 +149,7 @@ You can use the following snippet for your Ingress configuration if you want to 
 [...]
 ingress:
   enabled: true
-  hostname: helmtechlab-wordpress-<username>.phoenix.mobicorp.test
+  hostname: wordpress-<namespace>.kubedev.mobicorp.test
 [...]
 ```
 
