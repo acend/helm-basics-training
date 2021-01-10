@@ -336,7 +336,7 @@ data:
   mug: true
   {{- end }}
   {{- end }}
-  cities: |-
+  cities:
     {{- range .Values.cities }}
     - {{ . | quote }}
     {{- end }}
