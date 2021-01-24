@@ -1,7 +1,10 @@
-name: Build Training
+name: Publish Main Version
 
 on:
-  pull_request:
+  push:
+    branches:
+      - main
+      - master
 
 jobs:
   build:
@@ -24,7 +27,7 @@ jobs:
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-      - 
+      -
         name: Login to Quay.io Container Registry
         uses: docker/login-action@v1 
         with:
@@ -32,16 +35,16 @@ jobs:
           username: ${{ secrets.QUAYIO_USERNAME }}
           password: ${{ secrets.QUAYIO_TOKEN }}
       - 
-        name: Build Latest Version
+        name: Build and Push Latest Version
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           push: true
           tags: |
-            quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}
+            quay.io/acend/helm-basics-training:latest
       - 
-        name: Build Mobi Version
+        name: Build and Push Mobi Version
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -50,9 +53,9 @@ jobs:
             ACEND_HUGO_ENV=mobi
           push: true
           tags: |
-            quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}-mobi
+            quay.io/acend/helm-basics-training:latest-mobi
       - 
-        name: Build Rancher Version
+        name: Build and Push Rancher Version
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -61,13 +64,13 @@ jobs:
             ACEND_HUGO_ENV=rancher
           push: true
           tags: |
-            quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}-rancher
+            quay.io/acend/helm-basics-training:latest-rancher
       - 
         name: 'Deploy'
         uses: 'deliverybot/helm@v1'
         with:
-          release: 'pr-${{ github.event.pull_request.number }}'
-          namespace: 'acend-helm-basics-training-test'
+          release: 'latest'
+          namespace: 'acend-helm-basics-training-prod'
           version: '${{ github.sha }}'
           repository: 'https://acend.github.io/helm-charts/'
           chart: 'acend-training-chart'
@@ -79,35 +82,25 @@ jobs:
             ]
 
         env:
-          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG_TEST }}'
+          KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
       - 
         name: redeploy acend deployment
         uses: actions-hub/kubectl@master
         env:
-          KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
         with:
-          args: rollout restart deployment/pr-${{ github.event.pull_request.number }}-acend-helm-basics-acend --namespace acend-helm-basics-training-test
+          args: rollout restart deployment/latest-acend-helm-basics-acend --namespace acend-helm-basics-training-prod
       - 
         name: redeploy mobi deployment
         uses: actions-hub/kubectl@master
         env:
-          KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
         with:
-          args: rollout restart deployment/pr-${{ github.event.pull_request.number }}-acend-helm-basics-mobi --namespace acend-helm-basics-training-test
+          args: rollout restart deployment/latest-acend-helm-basics-mobi --namespace acend-helm-basics-training-prod
       - 
         name: redeploy rancher deployment
         uses: actions-hub/kubectl@master
         env:
-          KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
         with:
-          args: rollout restart deployment/pr-${{ github.event.pull_request.number }}-acend-helm-basics-rancher --namespace acend-helm-basics-training-test
-      - 
-        name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          message: |
-           PR Environements: 
-           *  acend <https://helm-basics-pr-${{ github.event.pull_request.number }}.training.acend.ch>
-           *  mobi <https://helm-basics-mobi-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
-           *  rancher <https://helm-basics-rancher-pr-${{ github.event.pull_request.number }}.training.acend.ch>
+          args: rollout restart deployment/latest-acend-helm-basics-rancher --namespace acend-helm-basics-training-prod
