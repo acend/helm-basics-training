@@ -83,7 +83,7 @@ data:
 The directives `{{ .Chart.Name }}` and `{{ .Chart.Version }}` inject the name and version of the actual chart. But where are those values coming from?
 
 Within those directives data is accessible through a data structure. The leading `.` represents the root of the object structure and is the entrypoint to access data in templates.
-Built-in objects as chart, release, file, template, values and more are therefore accessible in a similar fashion. Check the official [Helm documentation about built-in objects](https://v2.helm.sh/docs/chart_template_guide/#built-in-objects) for further and more in-depth information.
+Built-in objects such as a chart, release, file, template, values and more are therefore accessible in a similar fashion. Check the official [Helm documentation about built-in objects](https://v2.helm.sh/docs/chart_template_guide/#built-in-objects) for further and more in-depth information.
 
 The `.Chart` data structure obviously comes from the `Chart.yaml` file and represents the values of this file.
 
@@ -100,7 +100,7 @@ favoriteColor: blue
 
 Now also add your favorite color to be rendered in the ConfigMap as data under the key `myFavoriteColor`. Edit the `gotemplatechart/templates/configmap.yaml` file accordingly.
 
-Use `helm template gotemplatechart ...` again (as in task 2) to see what your rendered Kubernetes resources will look like.
+Use `helm template gotemplatechart ...` again (as in task 2) to see what your rendered Kubernetes resources look like.
 
 {{% alert title="Note" color="primary" %}}
 The output should look like this:
@@ -237,7 +237,7 @@ If then else control structures are very common in templating languages like Go 
 ```
 
 {{% alert title="Note: Conditional Operators" color="primary" %}}
-Like `and`, `or`, `not`, `eq` are functions, conditions therefore look like this `{{ if and .Values.favorite.band (eq .Values.favorite.band "The Rolling Stones") }}`
+With `and`, `or`, `not`, `eq` being functions, conditions therefore look like this `{{ if and .Values.favorite.band (eq .Values.favorite.band "The Rolling Stones") }}`
 For this condition to be true, the value `.Values.favorite.band` must be set and is set to "The Rolling Stones"
 
 {{% /alert %}}
@@ -277,7 +277,7 @@ data:
 
 This condition is mostly unreadable due to the fact that we need to make sure the spaces for the next key and value set are correct.
 
-Check out [Helm's documentation about controlling whitespace](https://v2.helm.sh/docs/chart_template_guide/#controlling-whitespace) for more details about how to control whitespaces and adapt your ConfigMap.
+Check out [Helm's documentation about controlling whitespace](https://v2.helm.sh/docs/chart_template_guide/#controlling-whitespace) for more details on how to control whitespaces and adapt your ConfigMap.
 
 A more readable version could look like this:
 
@@ -342,7 +342,7 @@ data:
     {{- end }}
 ```
 
-Checkout [Helm's documentation about developing templates](https://v2.helm.sh/docs/chart_template_guide/#the-chart-template-developer-s-guide) for more details about templating with Helm.
+Check out [Helm's documentation about developing templates](https://v2.helm.sh/docs/chart_template_guide/#the-chart-template-developer-s-guide) for more details on templating with Helm.
 
 
 ## Task 8: MariaDB integration (optional)

@@ -8,13 +8,13 @@ In this lab we are going to create our very first Helm chart and deploy it.
 
 ## Task 1
 
-First let's create our chart. Open your favorite terminal and make sure you're in the workspace for this lab, e.g. `cd ~/<workspace-helm-training>`:
+First, let's create our chart. Open your favorite terminal and make sure you're in the workspace for this lab, e.g. `cd ~/<workspace-helm-training>`:
 
 ```bash
 helm create mychart
 ```
 
-You now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
+You will now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
 
 {{% onlyWhen mobi %}}
 Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to match the following:
@@ -61,12 +61,12 @@ helm ls --namespace <namespace>
 
 ## Task 3
 
-Our freshly deployed nginx is not yet accessible from outside of the Kubernetes cluster. To expose it, we have to enable the ingress part in the `values.yaml`, which will then make helm create an ingress resource. Also make sure the application is accessible via TLS.
+Our freshly deployed nginx is not yet accessible from outside the Kubernetes cluster. To expose it, we have to enable the ingress part in the `values.yaml`, which will then make helm create an ingress resource. Also make sure the application is accessible via TLS.
 
 
 ### Solution Task 3 Ingress
 
-A look into the file `templates/ingress.yaml` reveals that the whole Ingress definition will only be part of the rendered resources if the condition `{{- if .Values.ingress.enabled -}}` is true:
+A look into the file `templates/ingress.yaml` reveals that the whole Ingress definition will only be part of the rendered resources, if the condition `{{- if .Values.ingress.enabled -}}` is true:
 
 ```yaml
 {{- if .Values.ingress.enabled -}}
@@ -113,7 +113,7 @@ spec:
 ```
 
 {{% onlyWhenNot mobi %}}
-Thus we need to change this value inside our `values.yaml` file. This is also where we enable the TLS part:
+Thus, we need to change this value inside our `values.yaml` file. This is also where we enable the TLS part:
 
 ```yaml
 [...]
@@ -135,7 +135,7 @@ ingress:
 
 {{% /onlyWhenNot %}}
 {{% onlyWhen mobi %}}
-Thus we need to change this value inside our `values.yaml` file.
+Therefore, we need to change this value inside our `values.yaml` file.
 
 ```yaml
 [...]
@@ -162,7 +162,7 @@ Make sure to set the proper value as hostname. `<appdomain>` will be provided by
 {{% /alert %}}
 
 {{% onlyWhen mobi %}}
-Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessable as the DNS name first has to be propagated correctly.
+Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
 {{% /onlyWhen %}}
 
 Apply the change by upgrading the release:
@@ -185,7 +185,7 @@ NOTES:
   http://<namespace>.<appdomain>/
 ```
 
-Check whether the ingress successfully was deployed, by accessing the URL `http://<namespace>.<appdomain>/`
+Check whether the ingress was successfully deployed by accessing the URL `http://<namespace>.<appdomain>/`
 
 
 ## Task 4: NodePort
@@ -206,7 +206,7 @@ spec:
 [...]
 ```
 
-Thus we need to change it inside our `values.yaml` file:
+Thus, we need to change it inside our `values.yaml` file:
 
 ```yaml
 [...]
@@ -216,7 +216,7 @@ service:
 [...]
 ```
 
-Apply the change by upgrading our release:
+Apply the change by upgrading the release:
 
 ```bash
 helm upgrade myfirstrelease ./mychart --namespace <namespace>
@@ -238,7 +238,7 @@ NOTES:
   echo http://$NODE_IP:$NODE_PORT
 ```
 
-You will see in the following command's output when the service gets a `NodePort` (as we use `--watch` you have to terminate the command with CTRL-C):
+You will see in the following command's output when the service gets a `NodePort` (because we use `--watch` you'll have to terminate the command with CTRL-C):
 
 ```bash
 kubectl get svc --namespace <namespace> --watch
@@ -252,7 +252,7 @@ Use either the output of the `helm upgrade` command, or `kubectl get node -o wid
 {{% /alert %}}
 
 {{% onlyWhen mobi %}}
-In case you do not have permissions to list the nodes with `kubectl get node` please ask the trainer for a valid node IP address to access the welcome page.
+In case you do not have permission to list the nodes with `kubectl get node`, please ask the trainer for a valid node IP address to access the welcome page.
 {{% /onlyWhen %}}
 
 

@@ -61,7 +61,7 @@ Find out what resource files are not correct resource definitions.
 
 #### Values
 
-Check if all defined values in `values.yaml` look ok to you. Also check if those values used in the templates reference the correct ones.
+Check whether all defined values in `values.yaml` look ok to you. Also check if those values used in the templates reference the correct ones.
 
 
 ### Solution
@@ -81,13 +81,13 @@ The first error we get when trying to install the chart or when using the `helm 
 
 #### Deployment empty selector
 
-The second error we get when trying to install the chart says:
+The second error we get when trying to install the chart reads:
 
 ```
 Error: release myrelease failed: Deployment.apps "myrelease-error-chart" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string(nil), MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: empty selector is invalid for deployment
 ```
 
-If you look at the deployment template or its rendered form you'll notice that something's wrong about the selector:
+If you look at the deployment template or its rendered form you'll notice that something's wrong with the selector:
 
 ```
   selector:
@@ -143,7 +143,7 @@ image:
   pullPolicy: IfNotPresent
 ```
 
-There's no variable `tags`, instead it's named `tag`. Fix that in the template so the `image:` line reads:
+There's no variable `tags`, instead it's named `tag`. Fix that in the template so that the `image:` line reads:
 
 ```
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

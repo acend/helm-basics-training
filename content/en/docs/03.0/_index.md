@@ -89,13 +89,13 @@ Make sure to set the proper value as hostname. `<appdomain>` will be provided by
 {{% /alert %}}
 
 {{% onlyWhen mobi %}}
-Use `wordpress-<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessable as the DNS name first has to be propagated correctly.
+Use `wordpress-<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
 {{% /onlyWhen %}}
 
-If you look inside the [Chart.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/Chart.yaml) file of the WordPress chart you see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
+If you look inside the [Chart.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/Chart.yaml) file of the WordPress chart, you'll see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
 
 {{% onlyWhen mobi %}}
-The WordPress and MariaDB charts use (at the time of writing) the following container images:
+The WordPress and MariaDB charts use the following container images (at the time of writing):
 
 * `docker.io/bitnami/wordpress:5.4.0-debian-10-r6`
 * `docker.io/bitnami/mariadb:10.3.22-debian-10-r60`
@@ -115,7 +115,7 @@ mariadb:
 [...]
 ```
 
-You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above. So your final `values.yaml` should look like:
+You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above. Your final `values.yaml` should look like:
 
 ```yaml
 ---
@@ -143,7 +143,7 @@ mariadb:
 
 The image tag remains as already defined in the orginial [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) file from the chart.
 
-You can use the following snippet for your Ingress configuration if you want to be able to access the WordPress instance after deploying it (although this is not really necessary for this lab). Make shure to replace `<username>`.
+You can use the following snippet for your Ingress configuration if you want to be able to access the WordPress instance after deploying it (although this is not really necessary for this lab). Make sure to replace `<username>`.
 
 ```yaml
 [...]
@@ -173,13 +173,13 @@ version: ~3.5.7
 ```
 
 This is e.g. equivalent to `>= 3.5.7, < 3.6.0`
-Check [this SemVer readme chapter](https://github.com/Masterminds/semver#checking-version-constraints) for more information about version ranges.
+Check [this SemVer readme chapter](https://github.com/Masterminds/semver#checking-version-constraints) for more information on version ranges.
 
 {{% alert title="Note" color="primary" %}}
 For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://helm.sh/docs/chart_best_practices/dependencies/).
 {{% /alert %}}
 
-Subcharts are an alternative way to define dependencies within a chart: A chart may contain (inside of its `charts/` directory) another chart upon which it depends. As a result, when installing the chart, it will install all of its dependencies from the `charts/` directory.
+Subcharts are an alternative way to define dependencies within a chart: A chart may contain another chart (inside of its `charts/` directory) upon which it depends. As a result, when installing the chart, it will install all of its dependencies from the `charts/` directory.
 
 We are now going to deploy the application in a specific version (which is not the latest release on purpose). Also note that we define our custom `values.yaml` file with the `-f` parameter:
 
@@ -187,7 +187,7 @@ We are now going to deploy the application in a specific version (which is not t
 helm install wordpress bitnami/wordpress -f values.yaml --version 10.0.6 --namespace <namespace>
 ```
 
-Watch for the newly created resources with `helm ls` and `kubectl get deploy,pod,ingress,pvc`:
+Look for the newly created resources with `helm ls` and `kubectl get deploy,pod,ingress,pvc`:
 
 ```bash
 helm ls --namespace <namespace>
