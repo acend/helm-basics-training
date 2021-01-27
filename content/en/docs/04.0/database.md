@@ -3,18 +3,18 @@ title: "A new backend"
 weight: 42
 ---
 
-In this lab we are going to create the templates that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start creating those temples we want to have a look at a couple of best practices.
+In this lab we are going to create the templates that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start creating those templates we want to have a look at a couple of best practices.
 
 
 ## Resource Names
 
-When looking at the templates of our `mychart` Chart, the name of the resource is always idefined by a helper function:
+When looking at the templates of our `mychart` chart, the name of the resource is always defined by a helper function:
 
 ```yaml
 name: {{ include "mychart.fullname" . }}
 ```
 
-Resources within the same Namespace and of the same resource type must have unique names. And since a Helm Chart can be instantiated multiple times in different Releases, it's best to include the Release name as part of the resource name:
+Resources within the same Namespace and of the same resource type must have unique names. Since a Helm chart can be instantiated multiple times in different releases, it's best to include the release name as part of the resource name:
 
 `<releasename>-<chartname>`
 
@@ -25,7 +25,7 @@ Have a look at the helper function in `mychart/templates/_helpers.tpl` for more 
 
 There are a couple of [recommended Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/), which help to make interoperability between different tools and concepts easier and define a kind of standard.
 
-We use the following two labels as so-called selector labels. These are labels that are used on Services to define which Pods belong to them:
+We use the following two labels as so-called selector labels. These are labels that are used on services to define which pods belong to them:
 
 * `app.kubernetes.io/name`: Resource name
 * `app.kubernetes.io/instance`: Release name
@@ -44,7 +44,7 @@ Similar to the resource name we can also use helpers to generate the necessary l
 We want to add a MariaDB database and use it as a backend for our `example-web-python` application. Using the following Kubernetes resource file, create a new template file for the MariaDB database:
 
 {{% alert title="Note" color="primary" %}}
-You can use the existing templates (`deployment.yaml`, `service.yaml`) as starting point to create the new templates.
+You can use the existing templates (`deployment.yaml`, `service.yaml`) as a starting point to create the new templates.
 {{% /alert %}}
 
 {{% onlyWhenNot mobi %}}
@@ -238,7 +238,7 @@ The template file for the MariaDB database `templates/deployment-mariadb.yaml` c
 
 The following points need to be taken into consideration when creating the template:
 
-* The helper `mychart.fullname` will return `release-mychart`. Since our first deployment for the `example-web-python` application already uses this name, we use `-mariadb` as postfix. As an alternative we could also alter the fullname helper to accept an additional name, which would be different for each deployment.
+* The helper `mychart.fullname` will return `release-mychart`. Since our first deployment for the `example-web-python` application already uses this name, we use `-mariadb` as a postfix. As an alternative we could also alter the fullname helper to accept an additional name, which would be different for each deployment.
 * The same applies to the label `app.kubernetes.io/name`. We can't therefore use the included `mychart.labels`. We could also alter the helper function or in our case simply just add the labels directly.
 * In the deployment templates we reference our secrets by again using the full name `{{ include "mychart.fullname" . }}-mariadb`.
 
@@ -355,7 +355,7 @@ data:
 
 ```
 
-Note the `| b64enc`, which is a builtin function to encode strings with base64.
+Note the `| b64enc`, which is a built-in function to encode strings with base64.
 
 The service at `templates/service-mysql.yaml` for our MySQL database should look similar to this:
 
@@ -382,7 +382,7 @@ spec:
   clusterIP: None
 ```
 
-And then in our `values.yaml` we need to add:
+Then we need to add the following to our `values.yaml`:
 {{% onlyWhenNot mobi %}}
 
 ```yaml
@@ -442,11 +442,11 @@ In order for the python application to be able to connect to the newly deployed 
 
 Add the following environment variables:
 
-* `MYSQL_DATABASE_NAME` value from secret you created in task 1
-* `MYSQL_DATABASE_PASSWORD` value from secret you created in task 1
-* `MYSQL_DATABASE_ROOT_PASSWORD` value from secret you created in task 1
-* `MYSQL_DATABASE_USER` value from secret you created in task 1
-* `MYSQL_URI` with value `mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@<servicename of mariadb>/$(MYSQL_DATABASE_NAME)`
+* `MYSQL_DATABASE_NAME` value from the secret you created in task 1
+* `MYSQL_DATABASE_PASSWORD` value from the secret you created in task 1
+* `MYSQL_DATABASE_ROOT_PASSWORD` value from the secret you created in task 1
+* `MYSQL_DATABASE_USER` value from the secret you created in task 1
+* `MYSQL_URI` with the value `mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@<servicename of mariadb>/$(MYSQL_DATABASE_NAME)`
 
 
 ### Solution Task 2
@@ -570,7 +570,7 @@ helm upgrade myapp ./mychart --namespace <namespace>
 
 ## Task 3: Check
 
-Check if the attachment of the new backend worked by either looking at the Pod's logs. In there the application tells you which backend it uses, this should of course be the database. Or simply access the application in your browser, create an entry, redeploy the application Pod (e.g. by scaling it down and up again) and check if your entry is still there.
+Check whether the attachment of the new backend worked by either looking at the Pod's logs. In there the application tells you which backend it uses, this should of course be the database. You can also simply access the application in your browser, create an entry, re-deploy the application Pod (e.g. by scaling it down and up again) and check if your entry is still there.
 
 
 ## Task 4: Cleanup

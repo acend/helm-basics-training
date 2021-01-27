@@ -35,7 +35,7 @@ version.BuildInfo{Version:"v3.4.1", GitCommit:"c4e74854886b2efe3321e185578e6db9b
 
 ## Task 2
 
-Set your HTTP proxy environment variables so a chart repository can be added to your Helm repos in a later lab:
+Set your HTTP proxy environment variables so that a chart repository can be added to your Helm repos in a later lab:
 
 ```bash
 # Linux

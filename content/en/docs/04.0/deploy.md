@@ -9,7 +9,7 @@ Using the generated and modified Helm chart, we are going to deploy our own awes
 ## Task 1: Adapt the chart
 
 {{% onlyWhenNot mobi %}}
-Our container image has the name `quay.io/acend/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
+Our container image has the name `quay.io/acend/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so that a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
 
 The `quay.io/acend/example-web-python:latest` application is running on port `5000`. Change the existing `deployment.yaml` accordingly.
 {{% /onlyWhenNot %}}
@@ -17,7 +17,7 @@ The `quay.io/acend/example-web-python:latest` application is running on port `50
 After the changes, create or upgrade a release from your template.
 
 {{% onlyWhen mobi %}}
-Our container image has the name `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
+Our container image has the name `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so that a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
 
 The `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` application is running on port `5000`. Change the existing `deployment.yaml` accordingly.
 {{% /onlyWhen %}}
@@ -198,7 +198,7 @@ affinity: {}
 
 {{% /onlyWhen %}}
 
-And then our `deployment.yaml` should look as follows. Note the changed `.spec.containers[0].ports[0].containerPort`:
+Afterwards our `deployment.yaml` should look as follows. Note the changed `.spec.containers[0].ports[0].containerPort`:
 
 ```yaml
 apiVersion: apps/v1
@@ -286,7 +286,7 @@ The current values for the ingress depends on the Kubernetes cluster. Ask your i
 {{% /alert %}}
 
 {{% onlyWhen mobi %}}
-Use `awesome.<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessable as the DNS name first has to be propagated correctly.
+Use `awesome.<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible as the DNS name first has to be propagated correctly.
 {{% /onlyWhen %}}
 
 
@@ -356,7 +356,7 @@ spec:
   {{- end }}
 ```
 
-As we can see there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` which loops trough all the values in the `host` array. The same happens to the `path` value.
+As we can see there is a `{{- range .Values.ingress.hosts }} [...] {{- end }}` which loops over all the values in the `host` array. The same happens to the `path` value.
 
 {{% alert title="Note" color="primary" %}}
 For details on flow control, check out the [Helm Documentation](https://helm.sh/docs/chart_template_guide/control_structures/).

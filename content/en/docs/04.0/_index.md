@@ -122,7 +122,7 @@ affinity: {}
 
 When instantiating a release from a chart, we can overwrite these values according to our own environment-specific conditions.
 
-So for instance we can create a `values-dev.yaml` where we keep our development environment values and then use `helm upgrade/install -f values-dev.yaml` to update or instantiate a release for the given environment. A different approach is to keep the files under version control and use branches for the different stages.
+So, we can for instance create a `values-dev.yaml` where we keep our development environment values and then use `helm upgrade/install -f values-dev.yaml` to update or instantiate a release for the given environment. A different approach is to keep the files under version control and use branches for the different stages.
 
 {{% alert title="Note" color="primary" %}}
 For details on the values file, check out the [Helm documentation about values files](https://helm.sh/docs/chart_template_guide/values_files/).
@@ -197,7 +197,7 @@ spec:
       {{- end }}
 ```
 
-We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go template](https://golang.org/pkg/text/template/) rendering engine, more about `Go templates` will be covered in upcoming lab.
+We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go template](https://golang.org/pkg/text/template/) rendering engine. More will be covered on `Go templates` in an upcoming lab.
 
 {{% alert title="Note" color="primary" %}}
 For details on templating, check out the [Helm documentation about template functions and pipelines](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/).
@@ -206,7 +206,7 @@ For details on templating, check out the [Helm documentation about template func
 
 ### _helpers.tpl
 
-Inside the template folder you find also a `_helpers.tpl` file.
+Inside the template folder you can also find a `_helpers.tpl` file.
 
 ```yaml
 {{/*
@@ -273,7 +273,7 @@ Create the name of the service account to use
 {{- end }}
 ```
 
-As you see, you can also define [named templates](https://helm.sh/docs/chart_template_guide/named_templates/) in helm and then use these named templates.
+As you can see, you can also define [named templates](https://helm.sh/docs/chart_template_guide/named_templates/) in Helm and then use these named templates.
 
 Have a look at:
 
@@ -290,7 +290,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 [...]
 ```
 
-and then in your `deployment.yaml` you can access this `mychart.labels` like this:
+you can then access this `mychart.labels` in your `deployment.yaml` like follows:
 
 ```yaml
 apiVersion: apps/v1

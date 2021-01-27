@@ -12,7 +12,7 @@ It can be used to package multiple K8s resources into a single logical deploymen
 
 But it's not just a package manager.
 
-Helm is deployment management for Kubernetes. It can:
+Helm is a deployment management for Kubernetes. It can:
 
 * do a repeatable deployment
 * manage dependencies, reuse and share
@@ -39,11 +39,11 @@ A **Chart** is a Helm package. It contains all of the resource definitions neces
 
 A **Repository** is the place where charts can be collected and shared. It’s like Perl’s CPAN archive or the Fedora Package Database, but for Kubernetes packages.
 
-A **Release** is an instance of a chart running in a Kubernetes cluster. One chart can often be installed many times into the same cluster. And each time it is installed, a new release is created. Consider a MySQL chart. If you want two databases running in your cluster, you can install that chart twice. Each one will have its own release, which will in turn have its own release name.
+A **Release** is an instance of a chart running in a Kubernetes cluster. One chart can often be installed many times in the same cluster. Each time it is installed, a new release is created. Consider a MySQL chart. If you want two databases running in your cluster, you can install that chart twice. Each one will have its own release, which will in turn have its own release name.
 
 With these concepts in mind, we can now explain Helm like this:
 
-> Helm installs charts into Kubernetes, creating a new release for each installation. And to find new charts, you can search Helm chart repositories.
+> Helm installs charts into Kubernetes, creating a new release for each installation. To find new charts, you can search Helm chart repositories.
 
 
 ### Task: Training Setup
@@ -57,7 +57,7 @@ With these concepts in mind, we can now explain Helm like this:
 
 Please make sure you have `kubectl` installed on your laptop, if not follow the [instructions](https://kubernetes-basics.training.acend.ch/docs/02/) and install it.
 
-Our Kubernetes cluster of the lab environment runs on [cloudscale.ch](https://cloudscale.ch) (a Swiss IaaS provider) and has been provisioned with [Rancher](https://rancher.com/). You can log in into the cluster with a Rancher user.
+Our Kubernetes cluster of the lab environment runs on [cloudscale.ch](https://cloudscale.ch) (a Swiss IaaS provider) and has been provisioned with [Rancher](https://rancher.com/). You can log in to the cluster with a Rancher user.
 
 {{% alert title="Note" color="primary" %}}
 Your teacher will provide you with the credentials to log in.
@@ -82,7 +82,7 @@ If you decide to not use the default kubeconfig location at `~/.kube/config` the
 export KUBECONFIG=$KUBECONFIG:~/.kube-techlab/config
 ```
 
-{{% alert title="Note" color="primary" %}} When using PowerShell on a Windows Computer use the following command, you'll have to replace `<user>` with your actual user
+{{% alert title="Note" color="primary" %}} When using PowerShell on a Windows Computer use the following command. You'll have to replace `<user>` with your actual user
 
 ```
 $Env:KUBECONFIG = "C:\Users\<user>\.kube-techlab\config"
