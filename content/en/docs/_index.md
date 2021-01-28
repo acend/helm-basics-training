@@ -3,7 +3,7 @@ title: "Labs"
 weight: 2
 menu:
   main:
-    weight: 1
+    weight: 2
 ---
 
 [Helm](https://github.com/helm/helm) is a [Cloud Native Foundation](https://www.cncf.io/) project to define, install and manage applications in Kubernetes.
