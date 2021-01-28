@@ -66,7 +66,7 @@ jobs:
           tags: |
             quay.io/acend/helm-basics-training:latest-rancher
       - 
-        name: 'Deploy'
+        name: 'Deploy Helm Release'
         uses: 'deliverybot/helm@v1'
         with:
           release: 'latest'
@@ -84,21 +84,21 @@ jobs:
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
       - 
-        name: redeploy acend deployment
+        name: Redeploy acend Deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
         with:
           args: rollout restart deployment/latest-acend-helm-basics-acend --namespace acend-helm-basics-training-prod
       - 
-        name: redeploy mobi deployment
+        name: Redeploy mobi Deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
         with:
           args: rollout restart deployment/latest-acend-helm-basics-mobi --namespace acend-helm-basics-training-prod
       - 
-        name: redeploy rancher deployment
+        name: Redeploy rancher Deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
