@@ -63,7 +63,7 @@ jobs:
           tags: |
             quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}-rancher
       - 
-        name: 'Deploy'
+        name: 'Deploy Helm Release'
         uses: 'deliverybot/helm@v1'
         with:
           release: 'pr-${{ github.event.pull_request.number }}'
@@ -81,33 +81,33 @@ jobs:
         env:
           KUBECONFIG_FILE: '${{ secrets.KUBECONFIG_TEST }}'
       - 
-        name: redeploy acend deployment
+        name: Redeploy acend Deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
         with:
           args: rollout restart deployment/pr-${{ github.event.pull_request.number }}-acend-helm-basics-acend --namespace acend-helm-basics-training-test
       - 
-        name: redeploy mobi deployment
+        name: Redeploy mobi Deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
         with:
           args: rollout restart deployment/pr-${{ github.event.pull_request.number }}-acend-helm-basics-mobi --namespace acend-helm-basics-training-test
       - 
-        name: redeploy rancher deployment
+        name: Redeploy rancher Deployment
         uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_TEST_BASE64 }}
         with:
           args: rollout restart deployment/pr-${{ github.event.pull_request.number }}-acend-helm-basics-rancher --namespace acend-helm-basics-training-test
       - 
-        name: Comment on PR
+        name: Comment PR Environments in PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
-           PR Environements: 
-           *  acend <https://helm-basics-pr-${{ github.event.pull_request.number }}.training.acend.ch>
-           *  mobi <https://helm-basics-mobi-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
-           *  rancher <https://helm-basics-rancher-pr-${{ github.event.pull_request.number }}.training.acend.ch>
+           PR Environments: 
+           * acend version <https://helm-basics-pr-${{ github.event.pull_request.number }}.training.acend.ch>
+           * mobi version <https://helm-basics-mobi-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
+           * rancher version <https://helm-basics-rancher-pr-${{ github.event.pull_request.number }}.training.acend.ch>
