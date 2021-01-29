@@ -130,6 +130,10 @@ service:
 updateStrategy:
   type: Recreate
 
+ingress:
+  enabled: true
+  hostname: wordpress-<namespace>.kubedev.mobicorp.test
+
 mariadb:
   image:
     registry: docker-registry.mobicorp.ch
@@ -141,17 +145,9 @@ mariadb:
       size: 1Gi
 ```
 
+Make sure to replace `<namespace>`.
+
 The image tag remains as already defined in the orginial [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) file from the chart.
-
-You can use the following snippet for your Ingress configuration if you want to be able to access the WordPress instance after deploying it (although this is not really necessary for this lab). Make sure to replace `<username>`.
-
-```yaml
-[...]
-ingress:
-  enabled: true
-  hostname: wordpress-<namespace>.kubedev.mobicorp.test
-[...]
-```
 
 {{% /onlyWhen %}}
 
