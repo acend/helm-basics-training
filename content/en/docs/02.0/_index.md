@@ -185,7 +185,14 @@ NOTES:
   http://<namespace>.<appdomain>/
 ```
 
+{{% onlyWhenNot mobi %}}
 Check whether the ingress was successfully deployed by accessing the URL `http://<namespace>.<appdomain>/`
+
+{{% /onlyWhenNot %}}
+{{% onlyWhen mobi %}}
+Check whether the ingress was successfully deployed by accessing the URL `https://<namespace>.<appdomain>/`
+
+{{% /onlyWhen %}}
 
 
 ## Task 4: NodePort
