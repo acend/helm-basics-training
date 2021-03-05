@@ -1,6 +1,6 @@
 ---
-title: "6. Go templating"
-weight: 6
+title: "5. Go templating"
+weight: 5
 ---
 
 In this lab we are going to learn how to use Go templating in Helm templates.
@@ -347,7 +347,7 @@ Check out [Helm's documentation about developing templates](https://v2.helm.sh/d
 
 ## Task 8: MariaDB integration (optional)
 
-Change the Helm chart from lab 4 so that the mariadb integration can be configured with a conditional parameter, e.g. `persistence.enabled`.
+Change the Helm chart from lab 3 so that the mariadb integration can be configured with a conditional parameter, e.g. `persistence.enabled`.
 Consider changing the following resources:
 
 * Service

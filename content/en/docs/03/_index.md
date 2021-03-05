@@ -1,9 +1,9 @@
 ---
-title: "4. Your own Helm chart"
-weight: 4
+title: "3. Your own Helm chart"
+weight: 3
 ---
 
-Remember [lab 2 "A simple chart"](../02.0/) where you created your first chart? Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
+Remember [lab 1 "A simple chart"](../01/) where you created your first chart? Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
 
 ```
 ./

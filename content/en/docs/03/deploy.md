@@ -1,6 +1,6 @@
 ---
 title: "Your awesome application"
-weight: 41
+weight: 31
 ---
 
 Using the generated and modified Helm chart, we are going to deploy our own awesome application.
@@ -9,7 +9,7 @@ Using the generated and modified Helm chart, we are going to deploy our own awes
 ## Task 1: Adapt the chart
 
 {{% onlyWhenNot mobi %}}
-Our container image has the name `quay.io/acend/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so that a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
+Our container image has the name `quay.io/acend/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so that a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 1.
 
 The `quay.io/acend/example-web-python:latest` application is running on port `5000`. Change the existing `deployment.yaml` accordingly.
 {{% /onlyWhenNot %}}
@@ -17,7 +17,7 @@ The `quay.io/acend/example-web-python:latest` application is running on port `50
 After the changes, create or upgrade a release from your template.
 
 {{% onlyWhen mobi %}}
-Our container image has the name `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so that a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 2.
+Our container image has the name `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so that a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 1.
 
 The `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` application is running on port `5000`. Change the existing `deployment.yaml` accordingly.
 {{% /onlyWhen %}}

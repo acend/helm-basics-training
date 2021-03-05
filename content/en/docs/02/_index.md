@@ -1,6 +1,6 @@
 ---
-title: "3. A more complex application"
-weight: 3
+title: "2. A more complex application"
+weight: 2
 ---
 
 In this extended lab, we are going to deploy an existing, more complex application with a Helm chart from the Artifact Hub.
@@ -14,35 +14,6 @@ Check out [Artifact Hub](https://artifacthub.io/) where you'll find a huge numbe
 ## WordPress
 
 As this WordPress Helm chart is published in Bitnami's Helm repository, we're first going to add it to our local repo list:
-
-{{% onlyWhen mobi %}}
-You have to set your HTTP proxy environment variables in order to access the Bitnami Helm repository:
-
-```bash
-# Linux
-export HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-export HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-
-# Windows cmd
-setx HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-setx HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-setx http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-setx https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-
-# Windows Powershell
-$env:HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-$env:HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-$env:http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-$env:https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-```
-
-Replace `<username`> and `<password>` with your credentials. If you have special characters in your password, escape them with their corresponding hexadecimal values according to [this article](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters).
-
-{{% alert title="Note" color="primary" %}}
-If you have direct access to the internet from your location, the proxy configuration is not required.
-{{% /alert %}}
-
-{{% /onlyWhen %}}
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
