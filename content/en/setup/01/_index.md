@@ -14,15 +14,15 @@ Install the `helm` CLI binary on your system:
 1. Find the `helm` binary in the unpacked directory and move it to its desired destination
     * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
 
-In Windows, the `PATH` can be set in the advanced system settings. It depends on the version:
+{{% alert title="Note" color="primary" %}}
+Windows quick hack: Copy the `helm` binary directly into the folder `C:\Windows`.
+{{% /alert %}}
+
+If the `$PATH` variable doesn't contain a suitable directory, it can be changed in the advanced system settings:
 
 * [Windows 7](http://geekswithblogs.net/renso/archive/2009/10/21/how-to-set-the-windows-path-in-windows-7.aspx)
 * [Windows 8](http://www.itechtics.com/customize-windows-environment-variables/)
 * [Windows 10](http://techmixx.de/windows-10-umgebungsvariablen-bearbeiten/)
-
-{{% alert title="Note" color="primary" %}}
-Windows quick hack: Copy the `helm` binary directly into the folder `C:\Windows`.
-{{% /alert %}}
 
 {{% onlyWhen mobi %}}
 
