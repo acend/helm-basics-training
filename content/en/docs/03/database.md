@@ -1,12 +1,12 @@
 ---
 title: "A new backend"
-weight: 42
+weight: 32
 ---
 
 In this lab we are going to create the templates that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start creating those templates we want to have a look at a couple of best practices.
 
 
-## Resource Names
+## Resource names
 
 When looking at the templates of our `mychart` chart, the name of the resource is always defined by a helper function:
 

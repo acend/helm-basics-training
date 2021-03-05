@@ -1,6 +1,6 @@
 ---
-title: "2. A simple chart"
-weight: 2
+title: "1. A simple chart"
+weight: 1
 ---
 
 In this lab we are going to create our very first Helm chart and deploy it.

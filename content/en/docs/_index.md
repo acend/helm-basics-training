@@ -8,7 +8,7 @@ menu:
 
 [Helm](https://github.com/helm/helm) is a [Cloud Native Foundation](https://www.cncf.io/) project to define, install and manage applications in Kubernetes.
 
-It can be used to package multiple K8s resources into a single logical deployment unit.
+It can be used to package multiple Kubernetes resources into a single logical deployment unit.
 
 But it's not just a package manager.
 
@@ -27,7 +27,7 @@ A great recap after finishing the labs is *[Amy Chen](https://twitter.com/TheAmy
 
 * We assume you have knowledge about Kubernetes and understand the concepts of [Pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/), [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Services](https://kubernetes.io/docs/concepts/services-networking/service/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) and [Secrets](https://kubernetes.io/docs/concepts/services-networking/service/).
 * You should have `kubectl` installed and a working context to access a Kubernetes cluster. Check the [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) for the most common commands.
-* Make sure you have access to the internet from your shell. If required, set appropriate proxy settings in your shell. This is only needed for lab 3 to access the Helm hub.
+* Make sure you have access to the internet from your shell. If required, set appropriate proxy settings in your shell. This is only needed for lab 2 to access the Artifact Hub.
 
 
 ### Helm Overview

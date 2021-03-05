@@ -1,6 +1,6 @@
 ---
-title: "5. Debugging Helm"
-weight: 5
+title: "4. Debugging Helm"
+weight: 4
 ---
 
 Debugging templates can be tricky because the rendered templates are sent to the Kubernetes API server which may reject the YAML files for reasons other than formatting.
