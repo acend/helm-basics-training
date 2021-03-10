@@ -124,6 +124,6 @@ We are going to use `<namespace>` as a placeholder for your created namespace. E
 
 {{% onlyWhen rancher %}}
 {{% alert title="Note" color="primary" %}}
-Namespaces created via `kubectl` have to be assigned to the correct Rancher Project in order to be visible in the Rancher web console. Please ask your teacher for this assignment. Or you can create the namespace directly within the Rancher web console.
+Namespaces created via `kubectl` have to be assigned to the correct Rancher Project in order to be visible in the Rancher web console. Please ask your trainer for this assignment or create the namespace directly within this project on the Rancher web console.
 {{% /alert %}}
 {{% /onlyWhen %}}
