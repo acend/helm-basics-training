@@ -112,6 +112,12 @@ The `PATH` can be set in Windows in the advanced system settings. It depends on 
 
 For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username.
 
+{{% onlyWhen rancher %}}
+{{% alert title="Note" color="primary" %}}
+Namespaces created via `kubectl` have to be assigned to the correct Rancher Project in order to be visible in the Rancher web console. Please ask your trainer for this assignment or create the namespace directly within this project on the Rancher web console.
+{{% /alert %}}
+{{% /onlyWhen %}}
+
 You can create your namespace with:
 
 ```bash
@@ -121,9 +127,3 @@ kubectl create namespace <namespace>
 {{% alert title="Note" color="primary" %}}
 We are going to use `<namespace>` as a placeholder for your created namespace. Each time you see a `<namespace>` somewhere in a command, replace it with your chosen namespace name.
 {{% /alert %}}
-
-{{% onlyWhen rancher %}}
-{{% alert title="Note" color="primary" %}}
-Namespaces created via `kubectl` have to be assigned to the correct Rancher Project in order to be visible in the Rancher web console. Please ask your trainer for this assignment or create the namespace directly within this project on the Rancher web console.
-{{% /alert %}}
-{{% /onlyWhen %}}
