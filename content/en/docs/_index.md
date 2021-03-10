@@ -57,23 +57,33 @@ With these concepts in mind, we can now explain Helm like this:
 
 ### Task: Training Setup
 
-Make sure you have access to the Mobiliar `dev` Kubernetes cluster and `kubectl` is configured to use the right context.
+{{< onlyWhen mobi >}}
+First, make sure you have access to the Mobiliar `kubedev` Kubernetes cluster and `kubectl` is configured to use the right context.
+{{< /onlyWhen >}}
 
-{{< onlyWhenNot mobi >}}
-For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username.
+For the following labs we are going to create a Namespace. You can choose any name, we suggest using e.g. your username.
 
 You can create your namespace with:
-{{< /onlyWhenNot >}}
-
-{{< onlyWhen mobi >}}
-We already created a namespace for you. The name of your namespace is equal to your Mobi U-Account `u....` and has been placed in the Project `helm`.
-Just to see it again, a namespace in Kubernetes can be created with:
-
-{{< /onlyWhen >}}
 
 ```bash
 kubectl create namespace <NAMESPACE>
 ```
+
+{{% alert title="Note" color="primary" %}}
+Please choose an identifying name for your Namespace, e.g. your initials or name as a prefix.
+We are going to use `<namespace>` as a placeholder for your created Namespace.
+{{% /alert %}}
+
+{{% onlyWhen rancher %}}
+{{% alert title="Note" color="primary" %}}
+Additionally, Rancher knows the concept of a [*Project*](https://rancher.com/docs/rancher/v2.x/en/cluster-admin/projects-and-namespaces/) which encapsulates multiple Namespaces.
+Namespaces created via `kubectl` have to be assigned to the correct Rancher Project in order to be visible in the Rancher web console. Please ask your trainer for this assignment. Or you can create the Namespace directly within the Rancher web console.
+{{% /alert %}}
+
+{{% onlyWhen mobi %}}
+We use the project `helm` on the `kubedev` Kubernetes cluster.
+{{% /onlyWhen %}}
+{{% /onlyWhen %}}
 
 In the labs we are going to use `<NAMESPACE>` as a placeholder for your namespace.
 
