@@ -1,7 +1,7 @@
 theme = ["docsy-puzzle", "docsy-plus", "docsy"]
 
 [params]
-enabledModule = "base mobi"
+enabledModule = "base mobi rancher"
 copyright = "Puzzle ITC GmbH"
 imagePrefix = "puzzle_"
 

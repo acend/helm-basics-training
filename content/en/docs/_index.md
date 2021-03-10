@@ -50,6 +50,7 @@ With these concepts in mind, we can now explain Helm like this:
 
 {{% onlyWhen mobi %}}
 Make sure you have access to the Mobiliar `kubedev` Kubernetes cluster and `kubectl` is configured to use the right context.
+For these labs, we use the Rancher project with name `helm`.
 {{% /onlyWhen %}}
 
 {{% onlyWhenNot mobi %}}
