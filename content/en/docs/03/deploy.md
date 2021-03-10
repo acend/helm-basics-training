@@ -286,7 +286,7 @@ The current values for the ingress depends on the Kubernetes cluster. Ask your i
 {{% /alert %}}
 
 {{% onlyWhen mobi %}}
-Use `awesome.<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible as the DNS name first has to be propagated correctly.
+Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible as the DNS name first has to be propagated correctly.
 {{% /onlyWhen %}}
 
 
@@ -301,7 +301,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: awesome.<namespace>.<appdomain>
+    - host: <namespace>.<appdomain>
       paths:
         - path: /
   tls: []
