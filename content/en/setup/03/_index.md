@@ -28,6 +28,7 @@ Set your HTTP proxy environment variables so that a chart repository can be adde
 ```bash
 export HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
 export HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
+export NO_PROXY="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
 ```
 
 Replace `<username`> and `<password>` with your credentials. If you have special characters in your password, escape them with their corresponding hexadecimal values according to [this article](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters).
