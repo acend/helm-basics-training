@@ -21,7 +21,7 @@ rm -rf gotemplatechart/templates/*
 
 ## Task 2: Add a ConfigMap template
 
-As the template directory is completely empty, it's time to create our first template. For the purpose of this lab we're going to use a simple ConfigMap template. If you don't exactly understand what a ConfigMap is, consider reading the [Kubernetes documentation on how to configure a pod to use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/).
+As the template directory is completely empty, it's time to create our first template. For the purpose of this lab we're going to use a simple ConfigMap template. If you don't exactly understand what a ConfigMap is, consider reading the {{% onlyWhenNot openshift %}}[Kubernetes documentation on how to configure a pod to use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/){{% /onlyWhenNot %}}{{% onlyWhen openshift %}}[OpenShift documentation on how to configure a pod to use a ConfigMap](https://docs.openshift.com/container-platform/latest/authentication/configmaps.html#authentication-configmaps-consuming-configmap-in-pods){{% /onlyWhen %}}.
 
 Create the template called `gotemplatechart/templates/configmap.yaml`:
 

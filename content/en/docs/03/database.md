@@ -23,7 +23,7 @@ Have a look at the helper function in `mychart/templates/_helpers.tpl` for more 
 
 ## Labels
 
-There are a couple of [recommended Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/), which help to make interoperability between different tools and concepts easier and define a kind of standard.
+There are a couple of [recommended Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/){{% onlyWhen openshift %}} (that also apply to OpenShift){{% /onlyWhen %}}, which help to make interoperability between different tools and concepts easier and define a kind of standard.
 
 We use the following two labels as so-called selector labels. These are labels that are used on services to define which pods belong to them:
 

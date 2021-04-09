@@ -45,7 +45,7 @@ Finally, the following command creates a new release and deploys the application
 helm install --namespace <namespace> myfirstrelease ./mychart
 ```
 
-With `kubectl get pods --namespace <namespace>` you should see a new pod:
+With `{{% param cliToolName %}} get pods --namespace <namespace>` you should see a new pod:
 
 ```bash
 NAME                                     READY   STATUS    RESTARTS   AGE
@@ -61,7 +61,7 @@ helm ls --namespace <namespace>
 
 ## Task 3
 
-Our freshly deployed nginx is not yet accessible from outside the Kubernetes cluster. To expose it, we have to enable the ingress part in the `values.yaml`, which will then make helm create an ingress resource. Also make sure the application is accessible via TLS.
+Our freshly deployed nginx is not yet accessible from outside the {{% param distroName %}} cluster. To expose it, we have to enable the ingress part in the `values.yaml`, which will then make helm create an ingress resource. Also make sure the application is accessible via TLS.
 
 
 ### Solution Task 3 Ingress
@@ -240,26 +240,26 @@ STATUS: deployed
 REVISION: 3
 NOTES:
 1. Get the application URL by running these commands:
-  export NODE_PORT=$(kubectl get --namespace <namespace> -o jsonpath="{.spec.ports[0].nodePort}" services myfirstrelease-mychart)
-  export NODE_IP=$(kubectl get nodes --namespace <namespace> -o jsonpath="{.items[0].status.addresses[0].address}")
+  export NODE_PORT=$({{% param cliToolName %}} get --namespace <namespace> -o jsonpath="{.spec.ports[0].nodePort}" services myfirstrelease-mychart)
+  export NODE_IP=$({{% param cliToolName %}} get nodes --namespace <namespace> -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 ```
 
 You will see in the following command's output when the service gets a `NodePort` (because we use `--watch` you'll have to terminate the command with CTRL-C):
 
 ```bash
-kubectl get svc --namespace <namespace> --watch
+{{% param cliToolName %}} get svc --namespace <namespace> --watch
 ```
 
 nginx is now available at the given port number indicated by the `NodePort` and should display a welcome page when accessing it with `curl` or your browser of choice.
 
 
 {{% alert title="Note" color="primary" %}}
-Use either the output of the `helm upgrade` command, or `kubectl get node -o wide` to get a node IP address. Remember, [NodePort's](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) are open on any kubernetes node
+Use either the output of the `helm upgrade` command, or `{{% param cliToolName %}} get node -o wide` to get a node IP address. Remember, [NodePort's](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) are open on any kubernetes node
 {{% /alert %}}
 
 {{% onlyWhen mobi %}}
-In case you do not have permission to list the nodes with `kubectl get node`, please ask the trainer for a valid node IP address to access the welcome page.
+In case you do not have permission to list the nodes with `{{% param cliToolName %}} get node`, please ask the trainer for a valid node IP address to access the welcome page.
 {{% /onlyWhen %}}
 
 
@@ -292,4 +292,4 @@ To remove an application, simply remove the Helm release with the following comm
 helm uninstall myfirstrelease --namespace <namespace>
 ```
 
-Do this with our deployed release. With `kubectl get pods --namespace <namespace>` you should no longer see your application pod.
+Do this with our deployed release. With `{{% param cliToolName %}} get pods --namespace <namespace>` you should no longer see your application pod.

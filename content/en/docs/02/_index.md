@@ -185,7 +185,7 @@ We are now going to deploy the application in a specific version (which is not t
 helm install wordpress bitnami/wordpress -f values.yaml --version 10.7.1 --namespace <namespace>
 ```
 
-Look for the newly created resources with `helm ls` and `kubectl get deploy,pod,ingress,pvc`:
+Look for the newly created resources with `helm ls` and `{{% param cliToolName %}} get deploy,pod,ingress,pvc`:
 
 ```bash
 helm ls --namespace <namespace>
@@ -201,7 +201,7 @@ wordpress <namespace>         1     2021-03-25 14:27:38.231722961 +0100 CET     
 and
 
 ```bash
-kubectl get deploy,pod,ingress,pvc --namespace <namespace>
+{{% param cliToolName %}} get deploy,pod,ingress,pvc --namespace <namespace>
 ```
 
 which gives you:
@@ -296,15 +296,15 @@ This is specific to the wordpress Bitami Chart, and might be different when inst
 Use the following commands to gather the secrets and store them in environment variables. Make sure to replace `<namespace>` with your current value.
 
 ```bash
-export WORDPRESS_PASSWORD=$(kubectl get secret wordpress -o jsonpath="{.data.wordpress-password}" --namespace <namespace> | base64 --decode)
+export WORDPRESS_PASSWORD=$({{% param cliToolName %}} get secret wordpress -o jsonpath="{.data.wordpress-password}" --namespace <namespace> | base64 --decode)
 ```
 
 ```bash
-export MARIADB_ROOT_PASSWORD=$(kubectl get secret wordpress-mariadb -o jsonpath="{.data.mariadb-root-password}" --namespace <namespace> | base64 --decode)
+export MARIADB_ROOT_PASSWORD=$({{% param cliToolName %}} get secret wordpress-mariadb -o jsonpath="{.data.mariadb-root-password}" --namespace <namespace> | base64 --decode)
 ```
 
 ```bash
-export MARIADB_PASSWORD=$(kubectl get secret wordpress-mariadb -o jsonpath="{.data.mariadb-password}" --namespace <namespace> | base64 --decode)
+export MARIADB_PASSWORD=$({{% param cliToolName %}} get secret wordpress-mariadb -o jsonpath="{.data.mariadb-password}" --namespace <namespace> | base64 --decode)
 ```
 
 Then do the upgrade with the following command:

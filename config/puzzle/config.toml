@@ -4,6 +4,10 @@ theme = ["docsy-puzzle", "docsy-plus", "docsy"]
 copyright = "Puzzle ITC GmbH"
 imagePrefix = "puzzle_"
 
+enabledModule = "base openshift"
+distroName = "OpenShift"
+cliToolName = "oc"
+
 [[Languages.en.menu.main]]
 copyright = "Puzzle ITC GmbH"
 url = "https://www.puzzle.ch"
