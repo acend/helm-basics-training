@@ -7,7 +7,7 @@ menu:
 ---
 
 The purpose of these labs is to convey Helm basics by providing hands-on tasks for people. [Helm](https://github.com/helm/helm) is a [Cloud Native Foundation](https://www.cncf.io/) project to define, install and manage applications in Kubernetes and any Kubernetes distribution like OpenShift.
- 
+
 It can be used to package multiple Kubernetes resources into a single logical deployment unit.
 
 But it's not just a package manager.
