@@ -1,12 +1,13 @@
 ---
 title: "1. A simple chart"
 weight: 1
+sectionnumber: 1
 ---
 
 In this lab we are going to create our very first Helm chart and deploy it.
 
 
-## Task 1
+## Task {{% param sectionnumber %}}.1
 
 First, let's create our chart. Open your favorite terminal and make sure you're in the workspace for this lab, e.g. `cd ~/<workspace-helm-training>`:
 
@@ -31,7 +32,7 @@ image:
 {{% /onlyWhen %}}
 
 
-## Task 2
+## Task {{% param sectionnumber %}}.2
 
 Before actually deploying our generated chart, we can check the (to be) generated Kubernetes resources with the following command:
 
@@ -59,12 +60,12 @@ helm ls --namespace <namespace>
 ```
 
 
-## Task 3
+## Task {{% param sectionnumber %}}.3
 
 Our freshly deployed nginx is not yet accessible from outside the {{% param distroName %}} cluster. To expose it, we have to enable the ingress part in the `values.yaml`, which will then make helm create an ingress resource. Also make sure the application is accessible via TLS.
 
 
-### Solution Task 3 Ingress
+### Solution Task {{% param sectionnumber %}}.3 Ingress
 
 A look into the file `templates/ingress.yaml` reveals that the whole Ingress definition will only be part of the rendered resources, if the condition `{{- if .Values.ingress.enabled -}}` is true:
 
@@ -195,14 +196,14 @@ Check whether the ingress was successfully deployed by accessing the URL `https:
 {{% /onlyWhen %}}
 
 
-## Task 4: NodePort
+## Task {{% param sectionnumber %}}.4: NodePort
 
 We can also expose the application using a `NodePort`.
 First, set `ingress.enabled` back to `false` in your `values.yaml` file.
 Now search for the Service type definition in your chart and make the change.
 
 
-### Solution Task 4 NodePort
+### Solution Task {{% param sectionnumber %}}.4 NodePort
 
 A look into the file `templates/service.yaml` reveals that the service type is set by the value `service.type`:
 
@@ -263,14 +264,14 @@ In case you do not have permission to list the nodes with `{{% param cliToolName
 {{% /onlyWhen %}}
 
 
-## Task 5
+## Task {{% param sectionnumber %}}.5
 
 An alternative way to set or overwrite values for charts we want to deploy is the `--set name=value` parameter. `--set name=value` can be used when installing a chart as well as upgrading.
 
 Update the replica count of your nginx Deployment to 2 using `--set name=value`
 
 
-### Solution Task 5
+### Solution Task {{% param sectionnumber %}}.5
 
 ```bash
 helm upgrade myfirstrelease --set replicaCount=2 ./mychart --namespace <namespace>
@@ -279,12 +280,12 @@ helm upgrade myfirstrelease --set replicaCount=2 ./mychart --namespace <namespac
 Values that have been set using `--set` can be reset by helm upgrade with `--reset-values`.
 
 
-## Task 6
+## Task {{% param sectionnumber %}}.6
 
 Have a look at the `values.yaml` file in your chart and study all the possible configuration params introduced in a freshly created chart.
 
 
-## Task 7
+## Task {{% param sectionnumber %}}.7
 
 To remove an application, simply remove the Helm release with the following command:
 

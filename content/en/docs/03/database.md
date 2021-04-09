@@ -1,6 +1,7 @@
 ---
 title: "A new backend"
 weight: 32
+sectionnumber: 3.2
 ---
 
 In this lab we are going to create the templates that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start creating those templates we want to have a look at a couple of best practices.
@@ -39,7 +40,7 @@ And a couple of additional ones to label our resources with supplemental informa
 Similar to the resource name we can also use helpers to generate the necessary labels.
 
 
-## Task 1: Create template files
+## Task {{% param sectionnumber %}}.1: Create template files
 
 We want to add a MariaDB database and use it as a backend for our `example-web-python` application. Using the following Kubernetes resource file, create a new template file for the MariaDB database:
 
@@ -436,7 +437,7 @@ helm upgrade myapp ./mychart --namespace <namespace>
 ```
 
 
-## Task 2: Connect to the database
+## Task {{% param sectionnumber %}}.2: Connect to the database
 
 In order for the python application to be able to connect to the newly deployed database, we need to add some environment variables to our deployment. The goal of this task is to allow a user to set them via values.
 
@@ -449,7 +450,7 @@ Add the following environment variables:
 * `MYSQL_URI` with the value `mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@<servicename of mariadb>/$(MYSQL_DATABASE_NAME)`
 
 
-### Solution Task 2
+### Solution Task {{% param sectionnumber %}}.2
 
 Change your `templates/deployment.yaml` and include the new environment variables:
 
@@ -568,12 +569,12 @@ helm upgrade myapp ./mychart --namespace <namespace>
 ```
 
 
-## Task 3: Check
+## Task {{% param sectionnumber %}}.3: Check
 
 Check whether the attachment of the new backend worked by either looking at the Pod's logs. In there the application tells you which backend it uses, this should of course be the database. You can also simply access the application in your browser, create an entry, re-deploy the application Pod (e.g. by scaling it down and up again) and check if your entry is still there.
 
 
-## Task 4: Cleanup
+## Task {{% param sectionnumber %}}.4: Cleanup
 
 If you're happy with the result, clean up your namespace:
 

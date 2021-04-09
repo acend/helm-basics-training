@@ -1,12 +1,13 @@
 ---
 title: "5. Go templating"
 weight: 5
+sectionnumber: 5
 ---
 
 In this lab we are going to learn how to use Go templating in Helm templates.
 
 
-## Task 1: Create a new Helm chart
+## Task {{% param sectionnumber %}}.1: Create a new Helm chart
 
 Let's create a new Helm chart with the name `gotemplatechart` and remove all default templates from the `templates` folder.
 
@@ -19,7 +20,7 @@ rm -rf gotemplatechart/templates/*
 ```
 
 
-## Task 2: Add a ConfigMap template
+## Task {{% param sectionnumber %}}.2: Add a ConfigMap template
 
 As the template directory is completely empty, it's time to create our first template. For the purpose of this lab we're going to use a simple ConfigMap template. If you don't exactly understand what a ConfigMap is, consider reading the {{% onlyWhenNot openshift %}}[Kubernetes documentation on how to configure a pod to use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/){{% /onlyWhenNot %}}{{% onlyWhen openshift %}}[OpenShift documentation on how to configure a pod to use a ConfigMap](https://docs.openshift.com/container-platform/latest/authentication/configmaps.html#authentication-configmaps-consuming-configmap-in-pods){{% /onlyWhen %}}.
 
@@ -47,7 +48,7 @@ helm install gotemplaterelease gotemplatechart --namespace <namespace>
 ```
 
 
-## Task 3: The first Go template directive
+## Task {{% param sectionnumber %}}.3: The first Go template directive
 
 As our first Go template directives we are going to add so-called built-in objects: the chart name and version `{{ .Chart.Name }}-{{ .Chart.Version }}`.
 
@@ -88,7 +89,7 @@ Built-in objects such as a chart, release, file, template, values and more are t
 The `.Chart` data structure obviously comes from the `Chart.yaml` file and represents the values of this file.
 
 
-## Task 4: Add data from values.yaml
+## Task {{% param sectionnumber %}}.4: Add data from values.yaml
 
 As you could have guessed by now, the `values.yaml` file allows us to configure values and parameters used during the rendering of the templates to replace strings, parameters, functions or even to control whether a part of a template is rendered at all. Let's add a couple more directives to our ConfigMap.
 
@@ -119,7 +120,7 @@ data:
 {{% /alert %}}
 
 
-### Solution Task 4
+### Solution Task {{% param sectionnumber %}}.4
 
 ```yaml
 apiVersion: v1
@@ -133,7 +134,7 @@ data:
 ```
 
 
-## Task 5: Structured data
+## Task {{% param sectionnumber %}}.5: Structured data
 
 As mentioned in task 3, data within the built-in objects can be structured and values can be nested.
 
@@ -145,7 +146,7 @@ favorite:
 ```
 
 
-### Solution Task 5
+### Solution Task {{% param sectionnumber %}}.5
 
 ```yaml
 apiVersion: v1
@@ -190,7 +191,7 @@ Similar to Linux pipes known from shell commands, e.g. `ps -aux | grep ps`, you 
 ```
 
 
-## Task 6: Add functions and pipelines
+## Task {{% param sectionnumber %}}.6: Add functions and pipelines
 
 Make the required changes to your ConfigMap template so that it renders to the following output:
 
@@ -208,7 +209,7 @@ data:
 ```
 
 
-### Solution Task 6
+### Solution Task {{% param sectionnumber %}}.6
 
 ```yaml
 apiVersion: v1
@@ -243,7 +244,7 @@ For this condition to be true, the value `.Values.favorite.band` must be set and
 {{% /alert %}}
 
 
-## Task 7: Add a condition
+## Task {{% param sectionnumber %}}.7: Add a condition
 
 Let's add an example condition to our ConfigMap:
 
@@ -261,7 +262,7 @@ favorite:
 Now edit the ConfigMap template accordingly.
 
 
-### Solution Task 7
+### Solution Task {{% param sectionnumber %}}.7
 
 ```yaml
 apiVersion: v1
@@ -345,7 +346,7 @@ data:
 Check out [Helm's documentation about developing templates](https://v2.helm.sh/docs/chart_template_guide/#the-chart-template-developer-s-guide) for more details on templating with Helm.
 
 
-## Task 8: MariaDB integration (optional)
+## Task {{% param sectionnumber %}}.8: MariaDB integration (optional)
 
 Change the Helm chart from lab 3 so that the mariadb integration can be configured with a conditional parameter, e.g. `persistence.enabled`.
 Consider changing the following resources:
