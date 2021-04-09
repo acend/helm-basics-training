@@ -128,5 +128,5 @@ jobs:
            PR Environments: 
            * acend version <https://helm-basics-pr-${{ github.event.pull_request.number }}.training.acend.ch>
            * mobi version <https://helm-basics-mobi-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
-           * puzzle version <https://helm-basics-puzzle-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
+           * puzzle version <https://helm-basics-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
            * rancher version <https://helm-basics-rancher-pr-${{ github.event.pull_request.number }}.training.acend.ch>
