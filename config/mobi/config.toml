@@ -14,7 +14,7 @@ url = "https://www.puzzle.ch"
 [[params.links.developer]]
 name = "GitHub"
 icon = "fab fa-github"
-url = "https://github.com/acend/container-basics-training"
+url = "https://github.com/acend/helm-basics-training"
 
 [[params.links.user]]
 name = "Twitter"
