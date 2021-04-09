@@ -117,9 +117,19 @@ Namespaces created via `kubectl` have to be assigned to the correct Rancher Proj
 
 You can create your namespace with:
 
+{{% onlyWhenNot openshift %}}
+
 ```bash
 kubectl create namespace <namespace>
 ```
+
+{{% /onlyWhenNot %}}{{% onlyWhen openshift %}}
+
+```bash
+oc new-project <namespace>
+```
+
+{{% /onlyWhen %}}
 
 {{% alert title="Note" color="primary" %}}
 We are going to use `<namespace>` as a placeholder for your created namespace. Each time you see a `<namespace>` somewhere in a command, replace it with your chosen namespace name.
