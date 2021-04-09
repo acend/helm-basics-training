@@ -1,6 +1,7 @@
 ---
 title: "3. Your own Helm chart"
 weight: 3
+sectionnumber: 3
 ---
 
 Remember [lab 1 "A simple chart"](../01/) where you created your first chart? Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
@@ -306,7 +307,7 @@ spec:
 ```
 
 
-## Task 1: Change Chart.yaml
+## Task {{% param sectionnumber %}}.1: Change Chart.yaml
 
 Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/topics/charts/#the-chartyaml-file), then change the description to `My awesome app` and add yourself to the list of maintainers.
 

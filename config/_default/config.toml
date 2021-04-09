@@ -79,6 +79,8 @@ github_repo = "https://github.com/acend/helm-basics-training"
 github_branch = "main"
 
 enabledModule = "base"
+distroName = "Kubernetes"
+cliToolName = "kubectl"
 
 # Enable Lunr.js offline search
 offlineSearch = true

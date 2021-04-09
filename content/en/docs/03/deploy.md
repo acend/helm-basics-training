@@ -1,12 +1,13 @@
 ---
 title: "Your awesome application"
 weight: 31
+sectionnumber: 3.1
 ---
 
 Using the generated and modified Helm chart, we are going to deploy our own awesome application.
 
 
-## Task 1: Adapt the chart
+## Task {{% param sectionnumber %}}.1: Adapt the chart
 
 {{% onlyWhenNot mobi %}}
 Our container image has the name `quay.io/acend/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so that a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 1.
@@ -277,12 +278,12 @@ helm upgrade myfirstrelease --namespace <namespace> ./mychart
 ```
 
 
-## Task 2: Make the app accessible
+## Task {{% param sectionnumber %}}.2: Make the app accessible
 
 The template folder already has a file for an ingress resource. There are even some variables in `values.yaml` to configure it. Set the correct values for our app and upgrade it.
 
 {{% alert title="Warning" color="secondary" %}}
-The current values for the ingress depends on the Kubernetes cluster. Ask your instructor for the correct values if you are not sure.
+The current values for the ingress depends on the {{% param distroName %}} cluster. Ask your instructor for the correct values if you are not sure.
 {{% /alert %}}
 
 {{% onlyWhen mobi %}}
@@ -290,7 +291,7 @@ Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some tim
 {{% /onlyWhen %}}
 
 
-### Solution Task 2
+### Solution Task {{% param sectionnumber %}}.2
 
 The `values.yaml` should look like this:
 
