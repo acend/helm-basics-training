@@ -60,10 +60,10 @@ jobs:
           context: .
           file: ./Dockerfile
           build-args: |
-            ACEND_HUGO_ENV=puzzle
+            ACEND_HUGO_ENV=openshift
           push: true
           tags: |
-            quay.io/acend/helm-basics-training:latest-puzzle
+            quay.io/acend/helm-basics-training:latest-openshift
       -
         name: Build and Push Rancher Version
         uses: docker/build-push-action@v2

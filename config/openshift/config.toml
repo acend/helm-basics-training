@@ -1,0 +1,4 @@
+[params]
+enabledModule = "base openshift"
+distroName = "OpenShift"
+cliToolName = "oc"
