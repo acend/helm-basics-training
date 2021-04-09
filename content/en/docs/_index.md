@@ -50,4 +50,4 @@ With these concepts in mind, we can now explain Helm like this:
 
 ### Getting started
 
-After this short introduction, make sure you have completed [setup](../setup/]. You're then ready to start [with the first lab](./01/)!
+After this short introduction, make sure you have completed [setup](../setup/). You're then ready to start [with the first lab](./01/)!
