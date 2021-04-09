@@ -1,153 +1,329 @@
 ---
-title: "4. Debugging Helm"
+title: "4. Your own Helm chart"
 weight: 4
 sectionnumber: 4
 ---
 
-Debugging templates can be tricky because the rendered templates are sent to the {{% param distroName %}} API server which may reject the YAML files for reasons other than formatting.
-
-There are a few commands that can help you debug:
-
-* `helm lint` is your go-to tool for verifying that your chart follows best practices.
-* `helm install --dry-run --debug --generate-name <chart>` or `helm template --debug <chart>`: We’ve seen this trick already. It’s a great way to have the server render your templates, then return the resulting manifest file.
-* `helm get manifest <release>`: This is a good way to see what templates are installed on the server.
-* `helm get values <release>`: This helps you to understand which values are used for a release.
-
-When your YAML is failing to parse but you want to see what is generated, one easy way to retrieve the YAML is to comment out the problem section in the template and then re-run `helm install --dry-run --debug --generate-name <chart>`.
+Remember [lab 2 "A simple chart"](../02/) where you created your first chart? Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
 
 ```
-apiVersion: v2
-# some: problem section
-# {{ .Values.foo | quote }}
+./
+├── charts
+├── Chart.yaml
+├── templates
+│   ├── deployment.yaml
+│   ├── _helpers.tpl
+│   ├── hpa.yaml
+│   ├── ingress.yaml
+│   ├── NOTES.txt
+│   ├── serviceaccount.yaml
+│   ├── service.yaml
+│   └── tests
+│       └── test-connection.yaml
+└── values.yaml
 ```
 
-The above will be rendered and returned with the comments intact:
+Looking at the `mychart/templates/` directory, we notice that there already are a few files:
 
+* `NOTES.txt`: The "help text" for your chart which will be displayed to your users when they run `helm install`
+* `deployment.yaml`: A basic manifest for creating a Kubernetes deployment
+* `service.yaml`: A basic manifest for creating a service endpoint for your deployment
+* `_helpers.tpl`: A place to put template helpers that you can re-use throughout the chart
+
+{{% alert title="Note" color="primary" %}}
+For details on chart templating, check out the [Helm's getting started guide](https://helm.sh/docs/chart_template_guide/getting_started/).
+{{% /alert %}}
+
+
+## values.yaml
+
+In the `values.yaml` file we define our values used in our templates:
+
+```yaml
+# Default values for mychart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
 ```
-apiVersion: v2
-# some: problem section
-#  "bar"
+
+When instantiating a release from a chart, we can overwrite these values according to our own environment-specific conditions.
+
+So, we can for instance create a `values-dev.yaml` where we keep our development environment values and then use `helm upgrade/install -f values-dev.yaml` to update or instantiate a release for the given environment. A different approach is to keep the files under version control and use branches for the different stages.
+
+{{% alert title="Note" color="primary" %}}
+For details on the values file, check out the [Helm documentation about values files](https://helm.sh/docs/chart_template_guide/values_files/).
+{{% /alert %}}
+
+
+## Templates
+
+All our Kubernetes resource files are in the `templates` folder. Let's have a closer look at `templates/deployment.yaml`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mychart.fullname" . }}
+  labels:
+    {{- include "mychart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "mychart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "mychart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 ```
 
-This provides a quick way of viewing the generated content without YAML parse errors blocking.
+We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go template](https://golang.org/pkg/text/template/) rendering engine. More will be covered on `Go templates` in an upcoming lab.
+
+{{% alert title="Note" color="primary" %}}
+For details on templating, check out the [Helm documentation about template functions and pipelines](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/).
+{{% /alert %}}
 
 
-## Task {{% param sectionnumber %}}.1: Get the chart
+### _helpers.tpl
 
-Get the `error-chart` chart by either [downloading the repository's ZIP file](https://github.com/acend/error-chart/archive/main.zip) or by cloning it from GitHub:
+Inside the template folder you can also find a `_helpers.tpl` file.
 
-```bash
-git clone https://github.com/acend/error-chart.git
+```yaml
+{{/*
+Expand the name of the chart.
+*/}}
+{{- define "mychart.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "mychart.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "mychart.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Common labels
+*/}}
+{{- define "mychart.labels" -}}
+helm.sh/chart: {{ include "mychart.chart" . }}
+{{ include "mychart.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "mychart.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "mychart.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "mychart.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "mychart.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+```
+
+As you can see, you can also define [named templates](https://helm.sh/docs/chart_template_guide/named_templates/) in Helm and then use these named templates.
+
+Have a look at:
+
+```yaml
+[...]
+{{- define "mychart.labels" -}}
+helm.sh/chart: {{ include "mychart.chart" . }}
+{{ include "mychart.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+[...]
+```
+
+you can then access this `mychart.labels` in your `deployment.yaml` like follows:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mychart.fullname" . }}
+  labels:
+    {{- include "mychart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+[...]
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Fix the chart
+## Task {{% param sectionnumber %}}.1: Change Chart.yaml
 
-The `error-chart` chart contains some deliberate errors. Try to find all of these errors and fix them, then install the chart using `myrelease` as release name. You can use one or several ways shown above to do so.
-The goal of this task is a successfully running `myrelease-error-chart` pod in your own namespace.
-
-
-### Hints
-
-
-#### YAML
-
-YAML has some strict formatting rules. Check if all files conform to these rules.
-
-
-#### Kubernetes resource definitions
-
-Find out what resource files are not correct resource definitions.
-
-
-#### Values
-
-Check whether all defined values in `values.yaml` look ok to you. Also check if those values used in the templates reference the correct ones.
+Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/topics/charts/#the-chartyaml-file), then change the description to `My awesome app` and add yourself to the list of maintainers.
 
 
 ### Solution
 
-
-#### Ingress path
-
-The first error we get when trying to install the chart or when using the `helm lint` command is this:
-
-```
-[ERROR] templates/ingress.yaml: unable to parse YAML
-  error converting YAML to JSON: yaml: line 15: found character that cannot start any token
-```
-
-"found character that cannot start any token" probably doesn't ring a bell so we try to find out what's wrong with line 15 in file `templates/ingress.yaml`. Beware that line 15 corresponds to line 15 of the rendered file! Opening the file and going to the appropriate line containing `paths:`, we notice that a tab instead of whitespace characters was used to indent. Replace it with whitespace characters.
-
-
-#### Deployment empty selector
-
-The second error we get when trying to install the chart reads:
-
-```
-Error: release myrelease failed: Deployment.apps "myrelease-error-chart" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string(nil), MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: empty selector is invalid for deployment
+```yaml
+apiVersion: v2
+name: mychart
+description: My awesome app
+type: application
+version: 0.1.0
+appVersion: 1.16.0
+maintainers:
+  - name: YOUR NAME
+    email: YOUR E-MAIL ADDRESS
 ```
 
-If you look at the deployment template or its rendered form you'll notice that something's wrong with the selector:
-
-```
-  selector:
-    matchLabels:
-    app.kubernetes.io/name: {{ include "error-chart.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-```
-
-Those two key-value pairs `app.kubernetes.io/name` and `app.kubernetes.io/instance` should be indented by two more whitespaces to look like this:
-
-```
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: {{ include "error-chart.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
-```
-
-
-#### Ingress host
-
-The host value seems to be incorrect:
-
-```
-Error: release myrelease failed: Ingress.extensions "myrelease-error-chart" is invalid: spec.rules[0].host: Invalid value: "helmtechlab-errorchart-<namespace>.phoenix.mobicorp.ch": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
-```
-
-If you look closely, you'll notice that the placeholder `<namespace>` is still in the host's value. This does not correspond to hostname conventions. The file `templates/ingress.yaml` reveals that the host's value is defined in the `values.yaml` file. Fix the `host` value.
-
-
-#### Deployment image tag
-
-Even though the chart could successfully be installed the pod has a status of `InvalidImageName`. Looking at the rendered deployment we notice that the image is missing a tag:
-
-```
-    spec:
-      containers:
-      - image: 'nginx:'
-        imagePullPolicy: IfNotPresent
-```
-
-As with the ingress host, the used value seems to be wrong. The ingress template has the following definition of `image:`:
-
-```
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tags }}"
-```
-
-So let's have a look at the `values.yaml` file:
-
-```
-image:
-  repository: nginx
-  tag: stable
-  pullPolicy: IfNotPresent
-```
-
-There's no variable `tags`, instead it's named `tag`. Fix that in the template so that the `image:` line reads:
-
-```
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-```
-
-You might also have to change the `repository:` value because Docker Hub might not be accessible from the used environment.
+Continue with the lab "[Your awesome application](./deploy/)".

@@ -1,7 +1,7 @@
 ---
 title: "A new backend"
-weight: 32
-sectionnumber: 3.2
+weight: 42
+sectionnumber: 4.2
 ---
 
 In this lab we are going to create the templates that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start creating those templates we want to have a look at a couple of best practices.
