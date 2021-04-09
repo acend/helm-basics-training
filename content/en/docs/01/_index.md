@@ -1,289 +1,96 @@
 ---
-title: "1. A simple chart"
+title: "1. Getting started"
 weight: 1
 sectionnumber: 1
 ---
 
-In this lab we are going to create our very first Helm chart and deploy it.
+## Task {{% param sectionnumber %}}.1: `{{% param cliToolName %}}` installation
+
+You should have a current version of `{{% param cliToolName %}}` installed on your machine.
 
 
-## Task {{% param sectionnumber %}}.1: Create Chart
-
-First, let's create our chart. Open your favorite terminal and make sure you're in the workspace for this lab, e.g. `cd ~/<workspace-helm-training>`:
-
-```bash
-helm create mychart
-```
-
-You will now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
+## Task {{% param sectionnumber %}}.2: Login
 
 {{% onlyWhen mobi %}}
-Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to match the following:
-
-```yaml
-[...]
-image:
-  repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx
-  tag: stable
-  pullPolicy: IfNotPresent
-[...]
-```
-
+Make sure you have access to the Mobiliar `kubedev` Kubernetes cluster and `kubectl` is configured to use the right context.
+For these labs, we use the Rancher project with name `helm`.
 {{% /onlyWhen %}}
-{{% onlyWhen openshift %}}
-The default image freshly created chart deploys is a simple nginx image listening on port `80`.
-
-Since OpenShift doesn't allow to run containers as root by default, we need to change the default image to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) and also change the containerPort to `8080`.
-
-Change the image in the `mychart/values.yaml`
-
-```yaml
-...
-image:
-  repository: nginxinc/nginx-unprivileged
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
-...
-```
-
-And then change the containerPort in the `mychart/templates/deployment.yaml`
-
-```yaml
-...
-ports:
-- name: http
-  containerPort: 8080
-  protocol: TCP
-...
-```
-
-{{% /onlyWhen %}}
-
-
-## Task {{% param sectionnumber %}}.2: Install Release
-
-Before actually deploying our generated chart, we can check the (to be) generated Kubernetes resources with the following command:
-
-
-```bash
-helm install --dry-run --debug --namespace <namespace> myfirstrelease ./mychart
-```
-
-
-Finally, the following command creates a new release and deploys the application:
-
-```bash
-helm install --namespace <namespace> myfirstrelease ./mychart
-```
-
-
-With `{{% param cliToolName %}} get pods --namespace <namespace>` you should see a new Pod:
-
-```bash
-NAME                                     READY   STATUS    RESTARTS   AGE
-myfirstrelease-mychart-6d4956b75-ng8x4   1/1     Running   0          2m21s
-```
-
-You can list the newly created Helm release with the following command:
-
-```bash
-helm ls --namespace <namespace>
-```
-
-
-## Task {{% param sectionnumber %}}.3: Expose Application
-
-Our freshly deployed nginx is not yet accessible from outside the {{% param distroName %}} cluster.
-To expose it, we have to make sure a so called ingress resource will be deployed as well.
-{{% onlyWhenNot mobi %}}<!-- No TLS on mobi ingress-->
-Also make sure the application is accessible via TLS.
-{{% /onlyWhenNot %}}
-
-A look into the file `templates/ingress.yaml` reveals that the rendering of the ingress and its values is configurable through values(`values.yaml`):
-
-```yaml
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "mychart.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
-kind: Ingress
-metadata:
-  name: {{ $fullName }}
-  labels:
-    {{- include "mychart.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-spec:
-  {{- if .Values.ingress.tls }}
-  tls:
-    {{- range .Values.ingress.tls }}
-    - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
-  {{- end }}
-  rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
-          {{- end }}
-    {{- end }}
-  {{- end }}
-```
 
 {{% onlyWhenNot mobi %}}
-Thus, we need to change this value inside our `mychart/values.yaml` file. This is also where we enable the TLS part:
+{{% onlyWhen rancher %}}
+Please make sure you have `{{% param cliToolName %}}` installed on your laptop, if not follow the [instructions](https://kubernetes-basics.training.acend.ch/docs/02/) and install it.
+
+Our Kubernetes cluster of the lab environment runs on [cloudscale.ch](https://cloudscale.ch) (a Swiss IaaS provider) and has been provisioned with [Rancher](https://rancher.com/). You can log in to the cluster with a Rancher user.
 
 {{% alert title="Note" color="primary" %}}
-Make sure to replace the `<namespace>` and `<appdomain>` accordingly.
+Your teacher will provide you with the credentials to log in.
 {{% /alert %}}
 
-{{% onlyWhen openshift %}}
+Log in to the Rancher web console and choose the desired cluster.
 
-```yaml
-[...]
-ingress:
-  enabled: true
-  annotations:
-    # kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: mychart-<namespace>.<appdomain>
-      paths:
-        - path: /
-  tls:
-    - secretName: mychart-<namespace>-<appdomain>
-      hosts:
-        - mychart-<namespace>.<appdomain>
-[...]
+You now see a button at the top right that says **Kubeconfig File**. Click it, scroll down to the bottom and click **Copy to Clipboard**.
+
+![Download kubeconfig File](kubectlconfigfilebutton.png)
+
+The copied kubeconfig now needs to be put into a file. The default location for the kubeconfig file is `~/.kube/config`.
+
+{{% alert title="Note" color="primary" %}}
+If you already have a kubeconfig file, you might need to merge the Rancher entries with yours. Or use a dedicated file as described below.
+{{% /alert %}}
+
+Put the copied content into a kubeconfig file on your system.
+If you decide to not use the default kubeconfig location at `~/.kube/config` then let `{{% param cliToolName %}}` know where you put it with the KUBECONFIG environment variable:
+
+```
+export KUBECONFIG=$KUBECONFIG:~/.kube-techlab/config
 ```
 
+{{% alert title="Note" color="primary" %}} When using PowerShell on a Windows Computer use the following command. You'll have to replace `<user>` with your actual user
+
+```
+$Env:KUBECONFIG = "C:\Users\<user>\.kube-techlab\config"
+```
+
+To set the environment variable (`KUBECONFIG` = `C:\Users\<user>\.kube-techlab\config`) permenantly, check the following documentation:
+
+The `PATH` can be set in Windows in the advanced system settings. It depends on the version:
+
+* [Windows 7](http://geekswithblogs.net/renso/archive/2009/10/21/how-to-set-the-windows-path-in-windows-7.aspx)
+* [Windows 8](http://www.itechtics.com/customize-windows-environment-variables/)
+* [Windows 10](http://techmixx.de/windows-10-umgebungsvariablen-bearbeiten/)
+
+{{% /alert %}}
+
 {{% /onlyWhen %}}
+{{% /onlyWhenNot %}}
+
+
+## Task {{% param sectionnumber %}}.3: Namespace
+
+For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username.
+
+{{% onlyWhen rancher %}}
+{{% alert title="Note" color="primary" %}}
+Namespaces created via `kubectl` have to be assigned to the correct Rancher Project in order to be visible in the Rancher web console. Please ask your trainer for this assignment or create the namespace directly within this project on the Rancher web console.
+{{% /alert %}}
+{{% /onlyWhen %}}
+
+You can create your namespace with:
+
 {{% onlyWhenNot openshift %}}
 
-```yaml
-[...]
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: mychart-<namespace>.<appdomain>
-      paths:
-        - path: /
-  tls:
-    - secretName: mychart-<namespace>-<appdomain>
-      hosts:
-        - mychart-<namespace>.<appdomain>
-[...]
+```bash
+kubectl create namespace <namespace>
 ```
 
-{{% /onlyWhenNot %}}
+{{% /onlyWhenNot %}}{{% onlyWhen openshift %}}
 
-{{% /onlyWhenNot %}}
-{{% onlyWhen mobi %}}
-Therefore, we need to change this value inside our `values.yaml` file.
-
-```yaml
-...
-ingress:
-  enabled: true
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: mychart-<namespace>.<appdomain>
-      paths:
-      - path: /
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-...
+```bash
+oc new-project <namespace>
 ```
 
 {{% /onlyWhen %}}
 
 {{% alert title="Note" color="primary" %}}
-Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
-{{% onlyWhen mobi %}}
-Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
-{{% /onlyWhen %}}
+We are going to use `<namespace>` as a placeholder for your created namespace. Each time you see a `<namespace>` somewhere in a command, replace it with your chosen namespace name.
 {{% /alert %}}
-
-Apply the change by upgrading our release:
-
-```bash
-helm upgrade --namespace <namespace> myfirstrelease ./mychart
-```
-
-This will result in something similar to:
-
-```
-Release "myfirstrelease" has been upgraded. Happy Helming!
-NAME: myfirstrelease
-LAST DEPLOYED: Wed Dec  2 14:44:42 2020
-NAMESPACE: <namespace>
-STATUS: deployed
-REVISION: 2
-NOTES:
-1. Get the application URL by running these commands:
-  http://<namespace>.<appdomain>/
-```
-
-{{% onlyWhenNot mobi %}}
-Check whether the ingress was successfully deployed by accessing the URL `http://<namespace>.<appdomain>/`
-
-{{% /onlyWhenNot %}}
-{{% onlyWhen mobi %}}
-Check whether the ingress was successfully deployed by accessing the URL `https://<namespace>.<appdomain>/`
-
-{{% /onlyWhen %}}
-
-
-## Task {{% param sectionnumber %}}.4: Overwrite value using commandline param
-
-An alternative way to set or overwrite values for charts we want to deploy is the `--set name=value` parameter. `--set name=value` can be used when installing a chart as well as upgrading.
-
-Update the replica count of your nginx Deployment to 2 using `--set name=value`
-
-
-### Solution Task {{% param sectionnumber %}}.5
-
-```bash
-helm upgrade --namespace <namespace> --set replicaCount=2 myfirstrelease ./mychart
-```
-
-Values that have been set using `--set` can be reset by helm upgrade with `--reset-values`.
-
-
-## Task {{% param sectionnumber %}}.6
-
-Have a look at the `values.yaml` file in your chart and study all the possible configuration params introduced in a freshly created chart.
-
-
-## Task {{% param sectionnumber %}}.7: Remove release
-
-To remove an application, simply remove the Helm release with the following command:
-
-```bash
-helm uninstall myfirstrelease --namespace <namespace>
-```
-
-Do this with our deployed release. With `{{% param cliToolName %}} get pods --namespace <namespace>` you should no longer see your application Pod.

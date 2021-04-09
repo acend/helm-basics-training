@@ -1,329 +1,329 @@
 ---
-title: "3. Your own Helm chart"
+title: "3. A more complex application"
 weight: 3
 sectionnumber: 3
 ---
 
-Remember [lab 1 "A simple chart"](../01/) where you created your first chart? Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
+In this extended lab, we are going to deploy an existing, more complex application with a Helm chart from the Artifact Hub.
+
+
+## Artifact Hub
+
+Check out [Artifact Hub](https://artifacthub.io/) where you'll find a huge number of different Helm charts. For this lab, we'll use the [WordPress chart by Bitnami](https://artifacthub.io/packages/helm/bitnami/wordpress), a publishing platform for building blogs and websites.
+
+
+## WordPress
+
+As this WordPress Helm chart is published in Bitnami's Helm repository, we're first going to add it to our local repo list:
+
+{{% onlyWhen mobi %}}
+You have to set your `HTTP_PROXY` environment variable in order to access the bitnami helm repository:
+
+```bash
+# Linux
+export HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+export HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+
+# Windows cmd
+setx HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+setx HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+setx http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+setx https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+
+# Windows Powershell
+$env:HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+$env:HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+$env:http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+$env:https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+```
+
+Replace `u...:PASSWORD` with your account details. If you have special chars in your password, you have to escape them with hexadecimal value according to [this](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters)
+{{% /onlyWhen %}}
+
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+
+Let's check if that worked:
+
+```bash
+helm repo list
+```
 
 ```
-./
-├── charts
-├── Chart.yaml
-├── templates
-│   ├── deployment.yaml
-│   ├── _helpers.tpl
-│   ├── hpa.yaml
-│   ├── ingress.yaml
-│   ├── NOTES.txt
-│   ├── serviceaccount.yaml
-│   ├── service.yaml
-│   └── tests
-│       └── test-connection.yaml
-└── values.yaml
+NAME    URL
+bitnami https://charts.bitnami.com/bitnami
 ```
 
-Looking at the `mychart/templates/` directory, we notice that there already are a few files:
+Now look at the available configuration for this Helm chart. Usually you can find it in the [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) or in the chart's readme file. You can also check it on its [Artifact Hub page](https://artifacthub.io/packages/helm/bitnami/wordpress).
 
-* `NOTES.txt`: The "help text" for your chart which will be displayed to your users when they run `helm install`
-* `deployment.yaml`: A basic manifest for creating a Kubernetes deployment
-* `service.yaml`: A basic manifest for creating a service endpoint for your deployment
-* `_helpers.tpl`: A place to put template helpers that you can re-use throughout the chart
-
-{{% alert title="Note" color="primary" %}}
-For details on chart templating, check out the [Helm's getting started guide](https://helm.sh/docs/chart_template_guide/getting_started/).
-{{% /alert %}}
-
-
-## values.yaml
-
-In the `values.yaml` file we define our values used in our templates:
+We are going to override some of the values. For that purpose, create a new `values.yaml` file locally on your workstation (e.g. `~/<workspace>/values.yaml`) with the following content:
 
 ```yaml
-# Default values for mychart.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-replicaCount: 1
-
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
+---
+persistence:
+  size: 1Gi
 service:
   type: ClusterIP
-  port: 80
+updateStrategy:
+  type: Recreate
+{{% onlyWhen openshift %}}
+podSecurityContext:
+  enabled: false
+containerSecurityContext:
+  enabled: false
+{{% /onlyWhen %}}
+ingress:
+  enabled: true
+  hostname: wordpress-<namespace>.<appdomain>
+
+mariadb:
+  primary:
+    persistence:
+      size: 1Gi
+{{% onlyWhen openshift %}}
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false
+{{% /onlyWhen %}}
+```
+
+{{% alert title="Note" color="primary" %}}
+Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
+{{% /alert %}}
+
+{{% onlyWhen mobi %}}
+Use `wordpress-<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
+{{% /onlyWhen %}}
+
+If you look inside the [Chart.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/Chart.yaml) file of the WordPress chart, you'll see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
+
+{{% onlyWhen mobi %}}
+The WordPress and MariaDB charts use the following container images (at the time of writing):
+
+* `docker.io/bitnami/wordpress:5.4.0-debian-10-r6`
+* `docker.io/bitnami/mariadb:10.3.22-debian-10-r60`
+
+As we cannot access these images, we'll have to overwrite them. Add the following to your `values.yaml` file in order to do so:
+
+```yaml
+[...]
+image:
+  registry: docker-registry.mobicorp.ch
+  repository: puzzle/helm-techlab/wordpress
+
+mariadb:
+  image:
+    registry: docker-registry.mobicorp.ch
+    repository: puzzle/helm-techlab/mariadb
+[...]
+```
+
+You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above. Your final `values.yaml` should look like:
+
+```yaml
+---
+image:
+  registry: docker-registry.mobicorp.ch
+  repository: puzzle/helm-techlab/wordpress
+
+persistence:
+  size: 1Gi
+service:
+  type: ClusterIP
+updateStrategy:
+  type: Recreate
 
 ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths: []
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  enabled: true
+  hostname: wordpress-<namespace>.kubedev.mobicorp.test
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+mariadb:
+  image:
+    registry: docker-registry.mobicorp.ch
+    repository: puzzle/helm-techlab/mariadb
+  primary:
+    persistence:
+      size: 1Gi
 ```
 
-When instantiating a release from a chart, we can overwrite these values according to our own environment-specific conditions.
+Make sure to replace `<namespace>`.
 
-So, we can for instance create a `values-dev.yaml` where we keep our development environment values and then use `helm upgrade/install -f values-dev.yaml` to update or instantiate a release for the given environment. A different approach is to keep the files under version control and use branches for the different stages.
+The image tag remains as already defined in the orginial [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) file from the chart.
+
+{{% /onlyWhen %}}
+
+The `Chart.yaml` file allows us to define dependencies on other charts. In our Wordpress chart we use the `Chart.yaml` to add a `mariadb` to store the WordPress data in.
+
+```yaml
+dependencies:
+  - condition: mariadb.enabled
+    name: mariadb
+    repository: https://charts.bitnami.com/bitnami
+    version: 9.x.x
+```
+
+[Helm's best practices](https://helm.sh/docs/chart_best_practices/) suggest to use version ranges instead of a fixed version whenever possible.
+The suggested default therefore is patch-level version match:
+
+```
+version: ~3.5.7
+```
+
+This is e.g. equivalent to `>= 3.5.7, < 3.6.0`
+Check [this SemVer readme chapter](https://github.com/Masterminds/semver#checking-version-constraints) for more information on version ranges.
 
 {{% alert title="Note" color="primary" %}}
-For details on the values file, check out the [Helm documentation about values files](https://helm.sh/docs/chart_template_guide/values_files/).
+For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://helm.sh/docs/chart_best_practices/dependencies/).
 {{% /alert %}}
 
+Subcharts are an alternative way to define dependencies within a chart: A chart may contain another chart (inside of its `charts/` directory) upon which it depends. As a result, when installing the chart, it will install all of its dependencies from the `charts/` directory.
 
-## Templates
+We are now going to deploy the application in a specific version (which is not the latest release on purpose). Also note that we define our custom `values.yaml` file with the `-f` parameter:
 
-All our Kubernetes resource files are in the `templates` folder. Let's have a closer look at `templates/deployment.yaml`:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "mychart.fullname" . }}
-  labels:
-    {{- include "mychart.labels" . | nindent 4 }}
-spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
-  selector:
-    matchLabels:
-      {{- include "mychart.selectorLabels" . | nindent 6 }}
-  template:
-    metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "mychart.selectorLabels" . | nindent 8 }}
-    spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+```bash
+helm install wordpress bitnami/wordpress -f values.yaml --version 10.7.1 --namespace <namespace>
 ```
 
-We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go template](https://golang.org/pkg/text/template/) rendering engine. More will be covered on `Go templates` in an upcoming lab.
+Look for the newly created resources with `helm ls` and `{{% param cliToolName %}} get deploy,pod,ingress,pvc`:
+
+```bash
+helm ls --namespace <namespace>
+```
+
+which gives you:
+
+```bash
+NAME      NAMESPACE       REVISION  UPDATED                                     STATUS    CHART             APP VERSION
+wordpress <namespace>         1     2021-03-25 14:27:38.231722961 +0100 CET     deployed  wordpress-10.7.1  5.7.0
+```
+
+and
+
+```bash
+{{% param cliToolName %}} get deploy,pod,ingress,pvc --namespace <namespace>
+```
+
+which gives you:
+
+```bash
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/wordpress   1/1     1            1           2m6s
+
+NAME                             READY   STATUS    RESTARTS   AGE
+pod/wordpress-6bf6df9c5d-w4fpx   1/1     Running   0          2m6s
+pod/wordpress-mariadb-0          1/1     Running   0          2m6s
+
+NAME                           HOSTS                                          ADDRESS       PORTS   AGE
+ingress.extensions/wordpress   wordpress-<namespace>.<appdomain>              10.100.1.10   80      2m6s
+
+NAME                                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS            AGE
+persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86-b7ed-a3a183f700fd   1Gi        RWO            cloudscale-volume-ssd   2m6s
+persistentvolumeclaim/wordpress                  Bound    pvc-83ebf739-0b0e-45a2-936e-e925141a0d35   1Gi        RWO            cloudscale-volume-ssd   2m7s
+```
+
+In order to check the values used in a given release, execute:
+
+```bash
+helm get values wordpress --namespace <namespace>
+```
+
+which gives you:
+{{% onlyWhen openshift %}}
+
+```yaml
+USER-SUPPLIED VALUES:
+containerSecurityContext:
+  enabled: false
+ingress:
+  enabled: true
+  hostname: wordpress--<namespace>.<appdomain>
+mariadb:
+  primary:
+    containerSecurityContext:
+      enabled: false
+    persistence:
+      size: 1Gi
+    podSecurityContext:
+      enabled: false
+persistence:
+  size: 1Gi
+podSecurityContext:
+  enabled: false
+service:
+  type: ClusterIP
+updateStrategy:
+  type: Recreate
+```
+
+{{% /onlyWhen %}}
+{{% onlyWhenNot openshift %}}
+
+```yaml
+USER-SUPPLIED VALUES:
+ingress:
+  enabled: true
+  hostname: wordpress--<namespace>.<appdomain>
+mariadb:
+  primary:
+    persistence:
+      size: 1Gi
+persistence:
+  size: 1Gi
+service:
+  type: ClusterIP
+updateStrategy:
+  type: Recreate
+```
+
+{{% /onlyWhenNot %}}
+
+As soon as all deployments are ready (meaning pods `wordpress` and `mariadb` are running) you can open the application with the URL from your Ingress resource defined in `values.yaml`.
+
+
+## Upgrade
+
+We are now going to upgrade the application to a newer Helm chart version. When we installed the Chart, a couple of secrets were needed during this process. In order to do the upgrade of the Chart now, we need to provide those secrets to the upgrade command, to be sure no sensitive data will be overwritten:
+
+* wordpressPassword
+* mariadb.auth.rootPassword
+* mariadb.auth.password
 
 {{% alert title="Note" color="primary" %}}
-For details on templating, check out the [Helm documentation about template functions and pipelines](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/).
+This is specific to the wordpress Bitami Chart, and might be different when installing other Charts.
 {{% /alert %}}
 
+Use the following commands to gather the secrets and store them in environment variables. Make sure to replace `<namespace>` with your current value.
 
-### _helpers.tpl
-
-Inside the template folder you can also find a `_helpers.tpl` file.
-
-```yaml
-{{/*
-Expand the name of the chart.
-*/}}
-{{- define "mychart.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
-{{- define "mychart.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
-{{- end }}
-
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
-{{- define "mychart.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
-Common labels
-*/}}
-{{- define "mychart.labels" -}}
-helm.sh/chart: {{ include "mychart.chart" . }}
-{{ include "mychart.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
-{{/*
-Selector labels
-*/}}
-{{- define "mychart.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "mychart.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "mychart.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "mychart.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
+```bash
+export WORDPRESS_PASSWORD=$({{% param cliToolName %}} get secret wordpress -o jsonpath="{.data.wordpress-password}" --namespace <namespace> | base64 --decode)
 ```
 
-As you can see, you can also define [named templates](https://helm.sh/docs/chart_template_guide/named_templates/) in Helm and then use these named templates.
-
-Have a look at:
-
-```yaml
-[...]
-{{- define "mychart.labels" -}}
-helm.sh/chart: {{ include "mychart.chart" . }}
-{{ include "mychart.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-[...]
+```bash
+export MARIADB_ROOT_PASSWORD=$({{% param cliToolName %}} get secret wordpress-mariadb -o jsonpath="{.data.mariadb-root-password}" --namespace <namespace> | base64 --decode)
 ```
 
-you can then access this `mychart.labels` in your `deployment.yaml` like follows:
+```bash
+export MARIADB_PASSWORD=$({{% param cliToolName %}} get secret wordpress-mariadb -o jsonpath="{.data.mariadb-password}" --namespace <namespace> | base64 --decode)
+```
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "mychart.fullname" . }}
-  labels:
-    {{- include "mychart.labels" . | nindent 4 }}
-spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-[...]
+Then do the upgrade with the following command:
+
+```bash
+helm upgrade -f values.yaml --set wordpressPassword=$WORDPRESS_PASSWORD --set mariadb.auth.rootPassword=$MARIADB_ROOT_PASSWORD --set mariadb.auth.password=$MARIADB_PASSWORD --version 10.7.2 wordpress bitnami/wordpress --namespace <namespace>
+```
+
+And then observe the changes in your WordPress and MariaDB Apps
+
+
+## Cleanup
+
+```bash
+helm uninstall wordpress --namespace <namespace>
 ```
 
 
-## Task {{% param sectionnumber %}}.1: Change Chart.yaml
+## Additional Task
 
-Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/topics/charts/#the-chartyaml-file), then change the description to `My awesome app` and add yourself to the list of maintainers.
-
-
-### Solution
-
-```yaml
-apiVersion: v2
-name: mychart
-description: My awesome app
-type: application
-version: 0.1.0
-appVersion: 1.16.0
-maintainers:
-  - name: YOUR NAME
-    email: YOUR E-MAIL ADDRESS
-```
-
-Continue with the lab "[Your awesome application](./deploy/)".
+Study the Helm [best practices](https://helm.sh/docs/chart_best_practices/) as an optional and additional task.

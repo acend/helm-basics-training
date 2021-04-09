@@ -1,329 +1,289 @@
 ---
-title: "2. A more complex application"
+title: "2. A simple chart"
 weight: 2
 sectionnumber: 2
 ---
 
-In this extended lab, we are going to deploy an existing, more complex application with a Helm chart from the Artifact Hub.
+In this lab we are going to create our very first Helm chart and deploy it.
 
 
-## Artifact Hub
+## Task {{% param sectionnumber %}}.1: Create Chart
 
-Check out [Artifact Hub](https://artifacthub.io/) where you'll find a huge number of different Helm charts. For this lab, we'll use the [WordPress chart by Bitnami](https://artifacthub.io/packages/helm/bitnami/wordpress), a publishing platform for building blogs and websites.
-
-
-## WordPress
-
-As this WordPress Helm chart is published in Bitnami's Helm repository, we're first going to add it to our local repo list:
-
-{{% onlyWhen mobi %}}
-You have to set your `HTTP_PROXY` environment variable in order to access the bitnami helm repository:
+First, let's create our chart. Open your favorite terminal and make sure you're in the workspace for this lab, e.g. `cd ~/<workspace-helm-training>`:
 
 ```bash
-# Linux
-export HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-export HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-
-# Windows cmd
-setx HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-setx HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-setx http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-setx https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-
-# Windows Powershell
-$env:HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-$env:HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-$env:http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-$env:https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
+helm create mychart
 ```
 
-Replace `u...:PASSWORD` with your account details. If you have special chars in your password, you have to escape them with hexadecimal value according to [this](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters)
-{{% /onlyWhen %}}
-
-```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-```
-
-Let's check if that worked:
-
-```bash
-helm repo list
-```
-
-```
-NAME    URL
-bitnami https://charts.bitnami.com/bitnami
-```
-
-Now look at the available configuration for this Helm chart. Usually you can find it in the [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) or in the chart's readme file. You can also check it on its [Artifact Hub page](https://artifacthub.io/packages/helm/bitnami/wordpress).
-
-We are going to override some of the values. For that purpose, create a new `values.yaml` file locally on your workstation (e.g. `~/<workspace>/values.yaml`) with the following content:
-
-```yaml
----
-persistence:
-  size: 1Gi
-service:
-  type: ClusterIP
-updateStrategy:
-  type: Recreate
-{{% onlyWhen openshift %}}
-podSecurityContext:
-  enabled: false
-containerSecurityContext:
-  enabled: false
-{{% /onlyWhen %}}
-ingress:
-  enabled: true
-  hostname: wordpress-<namespace>.<appdomain>
-
-mariadb:
-  primary:
-    persistence:
-      size: 1Gi
-{{% onlyWhen openshift %}}
-    podSecurityContext:
-      enabled: false
-    containerSecurityContext:
-      enabled: false
-{{% /onlyWhen %}}
-```
-
-{{% alert title="Note" color="primary" %}}
-Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
-{{% /alert %}}
+You will now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
 
 {{% onlyWhen mobi %}}
-Use `wordpress-<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
-{{% /onlyWhen %}}
-
-If you look inside the [Chart.yaml](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/Chart.yaml) file of the WordPress chart, you'll see a dependency to the [MariaDB Helm chart](https://github.com/bitnami/charts/tree/master/bitnami/mariadb). All the MariaDB values are used by this dependent Helm chart and the chart is automatically deployed when installing WordPress.
-
-{{% onlyWhen mobi %}}
-The WordPress and MariaDB charts use the following container images (at the time of writing):
-
-* `docker.io/bitnami/wordpress:5.4.0-debian-10-r6`
-* `docker.io/bitnami/mariadb:10.3.22-debian-10-r60`
-
-As we cannot access these images, we'll have to overwrite them. Add the following to your `values.yaml` file in order to do so:
+Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to match the following:
 
 ```yaml
 [...]
 image:
-  registry: docker-registry.mobicorp.ch
-  repository: puzzle/helm-techlab/wordpress
-
-mariadb:
-  image:
-    registry: docker-registry.mobicorp.ch
-    repository: puzzle/helm-techlab/mariadb
+  repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx
+  tag: stable
+  pullPolicy: IfNotPresent
 [...]
 ```
 
-You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above. Your final `values.yaml` should look like:
+{{% /onlyWhen %}}
+{{% onlyWhen openshift %}}
+The default image freshly created chart deploys is a simple nginx image listening on port `80`.
+
+Since OpenShift doesn't allow to run containers as root by default, we need to change the default image to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) and also change the containerPort to `8080`.
+
+Change the image in the `mychart/values.yaml`
 
 ```yaml
----
+...
 image:
-  registry: docker-registry.mobicorp.ch
-  repository: puzzle/helm-techlab/wordpress
-
-persistence:
-  size: 1Gi
-service:
-  type: ClusterIP
-updateStrategy:
-  type: Recreate
-
-ingress:
-  enabled: true
-  hostname: wordpress-<namespace>.kubedev.mobicorp.test
-
-mariadb:
-  image:
-    registry: docker-registry.mobicorp.ch
-    repository: puzzle/helm-techlab/mariadb
-  primary:
-    persistence:
-      size: 1Gi
+  repository: nginxinc/nginx-unprivileged
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+...
 ```
 
-Make sure to replace `<namespace>`.
+And then change the containerPort in the `mychart/templates/deployment.yaml`
 
-The image tag remains as already defined in the orginial [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) file from the chart.
+```yaml
+...
+ports:
+- name: http
+  containerPort: 8080
+  protocol: TCP
+...
+```
 
 {{% /onlyWhen %}}
 
-The `Chart.yaml` file allows us to define dependencies on other charts. In our Wordpress chart we use the `Chart.yaml` to add a `mariadb` to store the WordPress data in.
 
-```yaml
-dependencies:
-  - condition: mariadb.enabled
-    name: mariadb
-    repository: https://charts.bitnami.com/bitnami
-    version: 9.x.x
-```
+## Task {{% param sectionnumber %}}.2: Install Release
 
-[Helm's best practices](https://helm.sh/docs/chart_best_practices/) suggest to use version ranges instead of a fixed version whenever possible.
-The suggested default therefore is patch-level version match:
+Before actually deploying our generated chart, we can check the (to be) generated Kubernetes resources with the following command:
 
-```
-version: ~3.5.7
-```
-
-This is e.g. equivalent to `>= 3.5.7, < 3.6.0`
-Check [this SemVer readme chapter](https://github.com/Masterminds/semver#checking-version-constraints) for more information on version ranges.
-
-{{% alert title="Note" color="primary" %}}
-For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://helm.sh/docs/chart_best_practices/dependencies/).
-{{% /alert %}}
-
-Subcharts are an alternative way to define dependencies within a chart: A chart may contain another chart (inside of its `charts/` directory) upon which it depends. As a result, when installing the chart, it will install all of its dependencies from the `charts/` directory.
-
-We are now going to deploy the application in a specific version (which is not the latest release on purpose). Also note that we define our custom `values.yaml` file with the `-f` parameter:
 
 ```bash
-helm install wordpress bitnami/wordpress -f values.yaml --version 10.7.1 --namespace <namespace>
+helm install --dry-run --debug --namespace <namespace> myfirstrelease ./mychart
 ```
 
-Look for the newly created resources with `helm ls` and `{{% param cliToolName %}} get deploy,pod,ingress,pvc`:
+
+Finally, the following command creates a new release and deploys the application:
+
+```bash
+helm install --namespace <namespace> myfirstrelease ./mychart
+```
+
+
+With `{{% param cliToolName %}} get pods --namespace <namespace>` you should see a new Pod:
+
+```bash
+NAME                                     READY   STATUS    RESTARTS   AGE
+myfirstrelease-mychart-6d4956b75-ng8x4   1/1     Running   0          2m21s
+```
+
+You can list the newly created Helm release with the following command:
 
 ```bash
 helm ls --namespace <namespace>
 ```
 
-which gives you:
 
-```bash
-NAME      NAMESPACE       REVISION  UPDATED                                     STATUS    CHART             APP VERSION
-wordpress <namespace>         1     2021-03-25 14:27:38.231722961 +0100 CET     deployed  wordpress-10.7.1  5.7.0
+## Task {{% param sectionnumber %}}.3: Expose Application
+
+Our freshly deployed nginx is not yet accessible from outside the {{% param distroName %}} cluster.
+To expose it, we have to make sure a so called ingress resource will be deployed as well.
+{{% onlyWhenNot mobi %}}<!-- No TLS on mobi ingress-->
+Also make sure the application is accessible via TLS.
+{{% /onlyWhenNot %}}
+
+A look into the file `templates/ingress.yaml` reveals that the rendering of the ingress and its values is configurable through values(`values.yaml`):
+
+```yaml
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "mychart.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "mychart.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+          {{- end }}
+    {{- end }}
+  {{- end }}
 ```
 
-and
+{{% onlyWhenNot mobi %}}
+Thus, we need to change this value inside our `mychart/values.yaml` file. This is also where we enable the TLS part:
 
-```bash
-{{% param cliToolName %}} get deploy,pod,ingress,pvc --namespace <namespace>
-```
+{{% alert title="Note" color="primary" %}}
+Make sure to replace the `<namespace>` and `<appdomain>` accordingly.
+{{% /alert %}}
 
-which gives you:
-
-```bash
-NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/wordpress   1/1     1            1           2m6s
-
-NAME                             READY   STATUS    RESTARTS   AGE
-pod/wordpress-6bf6df9c5d-w4fpx   1/1     Running   0          2m6s
-pod/wordpress-mariadb-0          1/1     Running   0          2m6s
-
-NAME                           HOSTS                                          ADDRESS       PORTS   AGE
-ingress.extensions/wordpress   wordpress-<namespace>.<appdomain>              10.100.1.10   80      2m6s
-
-NAME                                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS            AGE
-persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86-b7ed-a3a183f700fd   1Gi        RWO            cloudscale-volume-ssd   2m6s
-persistentvolumeclaim/wordpress                  Bound    pvc-83ebf739-0b0e-45a2-936e-e925141a0d35   1Gi        RWO            cloudscale-volume-ssd   2m7s
-```
-
-In order to check the values used in a given release, execute:
-
-```bash
-helm get values wordpress --namespace <namespace>
-```
-
-which gives you:
 {{% onlyWhen openshift %}}
 
 ```yaml
-USER-SUPPLIED VALUES:
-containerSecurityContext:
-  enabled: false
+[...]
 ingress:
   enabled: true
-  hostname: wordpress--<namespace>.<appdomain>
-mariadb:
-  primary:
-    containerSecurityContext:
-      enabled: false
-    persistence:
-      size: 1Gi
-    podSecurityContext:
-      enabled: false
-persistence:
-  size: 1Gi
-podSecurityContext:
-  enabled: false
-service:
-  type: ClusterIP
-updateStrategy:
-  type: Recreate
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: mychart-<namespace>.<appdomain>
+      paths:
+        - path: /
+  tls:
+    - secretName: mychart-<namespace>-<appdomain>
+      hosts:
+        - mychart-<namespace>.<appdomain>
+[...]
 ```
 
 {{% /onlyWhen %}}
 {{% onlyWhenNot openshift %}}
 
 ```yaml
-USER-SUPPLIED VALUES:
+[...]
 ingress:
   enabled: true
-  hostname: wordpress--<namespace>.<appdomain>
-mariadb:
-  primary:
-    persistence:
-      size: 1Gi
-persistence:
-  size: 1Gi
-service:
-  type: ClusterIP
-updateStrategy:
-  type: Recreate
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: mychart-<namespace>.<appdomain>
+      paths:
+        - path: /
+  tls:
+    - secretName: mychart-<namespace>-<appdomain>
+      hosts:
+        - mychart-<namespace>.<appdomain>
+[...]
 ```
 
 {{% /onlyWhenNot %}}
 
-As soon as all deployments are ready (meaning pods `wordpress` and `mariadb` are running) you can open the application with the URL from your Ingress resource defined in `values.yaml`.
+{{% /onlyWhenNot %}}
+{{% onlyWhen mobi %}}
+Therefore, we need to change this value inside our `values.yaml` file.
 
+```yaml
+...
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: mychart-<namespace>.<appdomain>
+      paths:
+      - path: /
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+...
+```
 
-## Upgrade
-
-We are now going to upgrade the application to a newer Helm chart version. When we installed the Chart, a couple of secrets were needed during this process. In order to do the upgrade of the Chart now, we need to provide those secrets to the upgrade command, to be sure no sensitive data will be overwritten:
-
-* wordpressPassword
-* mariadb.auth.rootPassword
-* mariadb.auth.password
+{{% /onlyWhen %}}
 
 {{% alert title="Note" color="primary" %}}
-This is specific to the wordpress Bitami Chart, and might be different when installing other Charts.
+Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
+{{% onlyWhen mobi %}}
+Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
+{{% /onlyWhen %}}
 {{% /alert %}}
 
-Use the following commands to gather the secrets and store them in environment variables. Make sure to replace `<namespace>` with your current value.
+Apply the change by upgrading our release:
 
 ```bash
-export WORDPRESS_PASSWORD=$({{% param cliToolName %}} get secret wordpress -o jsonpath="{.data.wordpress-password}" --namespace <namespace> | base64 --decode)
+helm upgrade --namespace <namespace> myfirstrelease ./mychart
 ```
+
+This will result in something similar to:
+
+```
+Release "myfirstrelease" has been upgraded. Happy Helming!
+NAME: myfirstrelease
+LAST DEPLOYED: Wed Dec  2 14:44:42 2020
+NAMESPACE: <namespace>
+STATUS: deployed
+REVISION: 2
+NOTES:
+1. Get the application URL by running these commands:
+  http://<namespace>.<appdomain>/
+```
+
+{{% onlyWhenNot mobi %}}
+Check whether the ingress was successfully deployed by accessing the URL `http://<namespace>.<appdomain>/`
+
+{{% /onlyWhenNot %}}
+{{% onlyWhen mobi %}}
+Check whether the ingress was successfully deployed by accessing the URL `https://<namespace>.<appdomain>/`
+
+{{% /onlyWhen %}}
+
+
+## Task {{% param sectionnumber %}}.4: Overwrite value using commandline param
+
+An alternative way to set or overwrite values for charts we want to deploy is the `--set name=value` parameter. `--set name=value` can be used when installing a chart as well as upgrading.
+
+Update the replica count of your nginx Deployment to 2 using `--set name=value`
+
+
+### Solution Task {{% param sectionnumber %}}.5
 
 ```bash
-export MARIADB_ROOT_PASSWORD=$({{% param cliToolName %}} get secret wordpress-mariadb -o jsonpath="{.data.mariadb-root-password}" --namespace <namespace> | base64 --decode)
+helm upgrade --namespace <namespace> --set replicaCount=2 myfirstrelease ./mychart
 ```
+
+Values that have been set using `--set` can be reset by helm upgrade with `--reset-values`.
+
+
+## Task {{% param sectionnumber %}}.6
+
+Have a look at the `values.yaml` file in your chart and study all the possible configuration params introduced in a freshly created chart.
+
+
+## Task {{% param sectionnumber %}}.7: Remove release
+
+To remove an application, simply remove the Helm release with the following command:
 
 ```bash
-export MARIADB_PASSWORD=$({{% param cliToolName %}} get secret wordpress-mariadb -o jsonpath="{.data.mariadb-password}" --namespace <namespace> | base64 --decode)
+helm uninstall myfirstrelease --namespace <namespace>
 ```
 
-Then do the upgrade with the following command:
-
-```bash
-helm upgrade -f values.yaml --set wordpressPassword=$WORDPRESS_PASSWORD --set mariadb.auth.rootPassword=$MARIADB_ROOT_PASSWORD --set mariadb.auth.password=$MARIADB_PASSWORD --version 10.7.2 wordpress bitnami/wordpress --namespace <namespace>
-```
-
-And then observe the changes in your WordPress and MariaDB Apps
-
-
-## Cleanup
-
-```bash
-helm uninstall wordpress --namespace <namespace>
-```
-
-
-## Additional Task
-
-Study the Helm [best practices](https://helm.sh/docs/chart_best_practices/) as an optional and additional task.
+Do this with our deployed release. With `{{% param cliToolName %}} get pods --namespace <namespace>` you should no longer see your application Pod.
