@@ -30,6 +30,20 @@ acendTraining:
         appname: helm-basics-mobi
         domain: k8s.puzzle.ch
     - 
+      name: puzzle
+      replicaCount: 1
+      image:
+        repository: quay.io/acend/helm-basics-training
+        pullPolicy: Always
+        tag: ""
+        tagsuffix: "-puzzle"
+      ingress:
+        annotations: 
+          kubernetes.io/ingress.class: nginx-public
+        useDefaultSecret: true
+        appname: helm-basics
+        domain: k8s.puzzle.ch
+    - 
       name: rancher
       replicaCount: 1
       image:
