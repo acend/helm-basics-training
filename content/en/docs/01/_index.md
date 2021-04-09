@@ -7,7 +7,7 @@ sectionnumber: 1
 In this lab we are going to create our very first Helm chart and deploy it.
 
 
-## Task {{% param sectionnumber %}}.1
+## Task {{% param sectionnumber %}}.1: Create Chart
 
 First, let's create our chart. Open your favorite terminal and make sure you're in the workspace for this lab, e.g. `cd ~/<workspace-helm-training>`:
 
@@ -30,15 +30,46 @@ image:
 ```
 
 {{% /onlyWhen %}}
+{{% onlyWhen openshift %}}
+The default image freshly created chart deploys is a simple nginx image listening on port `80`.
+
+Since OpenShift doesn't allow to run containers as root by default, we need to change the default image to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) and also change the containerPort to `8080`.
+
+Change the image in the `mychart/values.yaml`
+
+```yaml
+...
+image:
+  repository: nginxinc/nginx-unprivileged
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+...
+```
+
+And then change the containerPort in the `mychart/templates/deployment.yaml`
+
+```yaml
+...
+ports:
+- name: http
+  containerPort: 8080
+  protocol: TCP
+...
+```
+
+{{% /onlyWhen %}}
 
 
-## Task {{% param sectionnumber %}}.2
+## Task {{% param sectionnumber %}}.2: Install Release
 
 Before actually deploying our generated chart, we can check the (to be) generated Kubernetes resources with the following command:
+
 
 ```bash
 helm install --dry-run --debug --namespace <namespace> myfirstrelease ./mychart
 ```
+
 
 Finally, the following command creates a new release and deploys the application:
 
@@ -46,7 +77,8 @@ Finally, the following command creates a new release and deploys the application
 helm install --namespace <namespace> myfirstrelease ./mychart
 ```
 
-With `{{% param cliToolName %}} get pods --namespace <namespace>` you should see a new pod:
+
+With `{{% param cliToolName %}} get pods --namespace <namespace>` you should see a new Pod:
 
 ```bash
 NAME                                     READY   STATUS    RESTARTS   AGE
@@ -60,14 +92,15 @@ helm ls --namespace <namespace>
 ```
 
 
-## Task {{% param sectionnumber %}}.3
+## Task {{% param sectionnumber %}}.3: Expose Application
 
-Our freshly deployed nginx is not yet accessible from outside the {{% param distroName %}} cluster. To expose it, we have to enable the ingress part in the `values.yaml`, which will then make helm create an ingress resource. Also make sure the application is accessible via TLS.
+Our freshly deployed nginx is not yet accessible from outside the {{% param distroName %}} cluster.
+To expose it, we have to make sure a so called ingress resource will be deployed as well.
+{{% onlyWhenNot mobi %}}<!-- No TLS on mobi ingress-->
+Also make sure the application is accessible via TLS.
+{{% /onlyWhenNot %}}
 
-
-### Solution Task {{% param sectionnumber %}}.3 Ingress
-
-A look into the file `templates/ingress.yaml` reveals that the whole Ingress definition will only be part of the rendered resources, if the condition `{{- if .Values.ingress.enabled -}}` is true:
+A look into the file `templates/ingress.yaml` reveals that the rendering of the ingress and its values is configurable through values(`values.yaml`):
 
 ```yaml
 {{- if .Values.ingress.enabled -}}
@@ -104,7 +137,7 @@ spec:
       http:
         paths:
           {{- range .paths }}
-          - path: {{ . }}
+          - path: {{ .path }}
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
@@ -114,7 +147,34 @@ spec:
 ```
 
 {{% onlyWhenNot mobi %}}
-Thus, we need to change this value inside our `values.yaml` file. This is also where we enable the TLS part:
+Thus, we need to change this value inside our `mychart/values.yaml` file. This is also where we enable the TLS part:
+
+{{% alert title="Note" color="primary" %}}
+Make sure to replace the `<namespace>` and `<appdomain>` accordingly.
+{{% /alert %}}
+
+{{% onlyWhen openshift %}}
+
+```yaml
+[...]
+ingress:
+  enabled: true
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: mychart-<namespace>.<appdomain>
+      paths:
+        - path: /
+  tls:
+    - secretName: mychart-<namespace>-<appdomain>
+      hosts:
+        - mychart-<namespace>.<appdomain>
+[...]
+```
+
+{{% /onlyWhen %}}
+{{% onlyWhenNot openshift %}}
 
 ```yaml
 [...]
@@ -124,52 +184,53 @@ ingress:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: <namespace>.<appdomain>
+    - host: mychart-<namespace>.<appdomain>
       paths:
         - path: /
   tls:
-    - secretName: <namespace>-<appdomain>
+    - secretName: mychart-<namespace>-<appdomain>
       hosts:
-        - <namespace>.<appdomain>
+        - mychart-<namespace>.<appdomain>
 [...]
 ```
+
+{{% /onlyWhenNot %}}
 
 {{% /onlyWhenNot %}}
 {{% onlyWhen mobi %}}
 Therefore, we need to change this value inside our `values.yaml` file.
 
 ```yaml
-[...]
+...
 ingress:
   enabled: true
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: <namespace>.<appdomain>
+    - host: mychart-<namespace>.<appdomain>
       paths:
-        - path: /
+      - path: /
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-[...]
+...
 ```
 
 {{% /onlyWhen %}}
 
 {{% alert title="Note" color="primary" %}}
 Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
-{{% /alert %}}
-
 {{% onlyWhen mobi %}}
 Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
 {{% /onlyWhen %}}
+{{% /alert %}}
 
-Apply the change by upgrading the release:
+Apply the change by upgrading our release:
 
 ```bash
-helm upgrade myfirstrelease ./mychart --namespace <namespace>
+helm upgrade --namespace <namespace> myfirstrelease ./mychart
 ```
 
 This will result in something similar to:
@@ -196,75 +257,7 @@ Check whether the ingress was successfully deployed by accessing the URL `https:
 {{% /onlyWhen %}}
 
 
-## Task {{% param sectionnumber %}}.4: NodePort
-
-We can also expose the application using a `NodePort`.
-First, set `ingress.enabled` back to `false` in your `values.yaml` file.
-Now search for the Service type definition in your chart and make the change.
-
-
-### Solution Task {{% param sectionnumber %}}.4 NodePort
-
-A look into the file `templates/service.yaml` reveals that the service type is set by the value `service.type`:
-
-```yaml
-[...]
-spec:
-  type: {{ .Values.service.type }}
-[...]
-```
-
-Thus, we need to change it inside our `values.yaml` file:
-
-```yaml
-[...]
-service:
-  type: NodePort
-  port: 80
-[...]
-```
-
-Apply the change by upgrading the release:
-
-```bash
-helm upgrade myfirstrelease ./mychart --namespace <namespace>
-```
-
-This will result in something similar to:
-
-```
-Release "myfirstrelease" has been upgraded. Happy Helming!
-NAME: myfirstrelease
-LAST DEPLOYED: Wed Dec  2 14:58:59 2020
-NAMESPACE: <namespace>
-STATUS: deployed
-REVISION: 3
-NOTES:
-1. Get the application URL by running these commands:
-  export NODE_PORT=$({{% param cliToolName %}} get --namespace <namespace> -o jsonpath="{.spec.ports[0].nodePort}" services myfirstrelease-mychart)
-  export NODE_IP=$({{% param cliToolName %}} get nodes --namespace <namespace> -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-```
-
-You will see in the following command's output when the service gets a `NodePort` (because we use `--watch` you'll have to terminate the command with CTRL-C):
-
-```bash
-{{% param cliToolName %}} get svc --namespace <namespace> --watch
-```
-
-nginx is now available at the given port number indicated by the `NodePort` and should display a welcome page when accessing it with `curl` or your browser of choice.
-
-
-{{% alert title="Note" color="primary" %}}
-Use either the output of the `helm upgrade` command, or `{{% param cliToolName %}} get node -o wide` to get a node IP address. Remember, [NodePort's](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) are open on any kubernetes node
-{{% /alert %}}
-
-{{% onlyWhen mobi %}}
-In case you do not have permission to list the nodes with `{{% param cliToolName %}} get node`, please ask the trainer for a valid node IP address to access the welcome page.
-{{% /onlyWhen %}}
-
-
-## Task {{% param sectionnumber %}}.5
+## Task {{% param sectionnumber %}}.4: Overwrite value using commandline param
 
 An alternative way to set or overwrite values for charts we want to deploy is the `--set name=value` parameter. `--set name=value` can be used when installing a chart as well as upgrading.
 
@@ -274,7 +267,7 @@ Update the replica count of your nginx Deployment to 2 using `--set name=value`
 ### Solution Task {{% param sectionnumber %}}.5
 
 ```bash
-helm upgrade myfirstrelease --set replicaCount=2 ./mychart --namespace <namespace>
+helm upgrade --namespace <namespace> --set replicaCount=2 myfirstrelease ./mychart
 ```
 
 Values that have been set using `--set` can be reset by helm upgrade with `--reset-values`.
@@ -285,7 +278,7 @@ Values that have been set using `--set` can be reset by helm upgrade with `--res
 Have a look at the `values.yaml` file in your chart and study all the possible configuration params introduced in a freshly created chart.
 
 
-## Task {{% param sectionnumber %}}.7
+## Task {{% param sectionnumber %}}.7: Remove release
 
 To remove an application, simply remove the Helm release with the following command:
 
@@ -293,4 +286,4 @@ To remove an application, simply remove the Helm release with the following comm
 helm uninstall myfirstrelease --namespace <namespace>
 ```
 
-Do this with our deployed release. With `{{% param cliToolName %}} get pods --namespace <namespace>` you should no longer see your application pod.
+Do this with our deployed release. With `{{% param cliToolName %}} get pods --namespace <namespace>` you should no longer see your application Pod.
