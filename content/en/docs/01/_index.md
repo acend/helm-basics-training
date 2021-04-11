@@ -64,6 +64,10 @@ The `PATH` can be set in Windows in the advanced system settings. It depends on 
 {{% /onlyWhen %}}
 {{% /onlyWhenNot %}}
 
+{{% onlyWhen openshift %}}
+Please refer to the information your teacher provided you with.
+{{% /onlyWhen %}}
+
 
 ## Task {{% param sectionnumber %}}.3: Namespace
 
