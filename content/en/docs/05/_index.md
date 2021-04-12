@@ -151,3 +151,13 @@ There's no variable `tags`, instead it's named `tag`. Fix that in the template s
 ```
 
 You might also have to change the `repository:` value because Docker Hub might not be accessible from the used environment.
+
+{{% onlyWhen openshift %}}
+
+
+#### Deployment image
+
+We've already encountered this one in [lab 2](../02/). Because of the used image, which wants to have root and privileged port numbers, it cannot be started on OpenShift.
+
+We need to change the default image to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) and also change the containerPort to `8080`.
+{{% /onlyWhen %}}
