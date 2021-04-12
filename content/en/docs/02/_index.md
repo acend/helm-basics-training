@@ -31,11 +31,11 @@ image:
 
 {{% /onlyWhen %}}
 {{% onlyWhen openshift %}}
-The default image freshly created chart deploys is a simple nginx image listening on port `80`.
+The default image the freshly created chart deploys is a simple nginx image listening on port `80`.
 
-Since OpenShift doesn't allow to run containers as root by default, we need to change the default image to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) and also change the containerPort to `8080`.
+Since OpenShift doesn't allow to run containers as root by default, we need to change it to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) and also change the containerPort to `8080`.
 
-Change the image in the `mychart/values.yaml`
+Change the image in the `mychart/values.yaml`:
 
 ```yaml
 ...
@@ -47,7 +47,7 @@ image:
 ...
 ```
 
-And then change the containerPort in the `mychart/templates/deployment.yaml`
+And then change the containerPort in the `mychart/templates/deployment.yaml`:
 
 ```yaml
 ...
