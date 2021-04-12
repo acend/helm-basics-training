@@ -19,6 +19,11 @@ helm create gotemplatechart
 rm -rf gotemplatechart/templates/*
 ```
 
+{{% onlyWhen openshift %}}
+{{% alert title="Warning" color="secondary" %}}
+Don't forget to adapt the image name to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) so OpenShift can run it. See [lab 2](../02/) for details.
+{{% /alert %}}
+
 
 ## Task {{% param sectionnumber %}}.2: Add a ConfigMap template
 
@@ -78,7 +83,6 @@ metadata:
 data:
   simplevalue: "Hello Helm"
   chartnameversion: gotemplatechart-0.1.0
-
 ```
 
 The directives `{{ .Chart.Name }}` and `{{ .Chart.Version }}` inject the name and version of the actual chart. But where are those values coming from?
