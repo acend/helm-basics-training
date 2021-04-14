@@ -1,5 +1,5 @@
 ---
-title: "A new backend"
+title: "4.2 A new backend"
 weight: 42
 sectionnumber: 4.2
 ---
@@ -358,7 +358,7 @@ data:
 
 Note the `| b64enc`, which is a built-in function to encode strings with base64.
 
-The service at `templates/service-mysql.yaml` for our MySQL database should look similar to this:
+The service at `templates/service-mariadb.yaml` for our MySQL database should look similar to this:
 
 ```yaml
 apiVersion: v1

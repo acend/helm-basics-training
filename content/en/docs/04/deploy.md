@@ -1,5 +1,5 @@
 ---
-title: "Your awesome application"
+title: "4.1 Your awesome application"
 weight: 41
 sectionnumber: 4.1
 ---
@@ -28,7 +28,9 @@ The `docker-registry.mobicorp.ch/puzzle/k8s/kurs/example-web-python:latest` appl
 
 In our `values.yaml` we only have to change the value of `image.repository` and `image.tag`:
 
+
 {{% onlyWhenNot mobi %}}
+{{% onlyWhen openshift %}}
 
 ```yaml
 # Default values for mychart.
@@ -74,17 +76,18 @@ service:
   port: 80
 
 ingress:
-  enabled: false
-  annotations: {}
+  enabled: true
+  annotations:
     # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+    kubernetes.io/tls-acme: "true"
   hosts:
-    - host: chart-example.local
-      paths: []
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+    - host: mychart-<namespace>.<appdomain>
+      paths:
+        - path: /
+  tls:
+    - secretName: mychart-<namespace>-<appdomain>
+      hosts:
+        - mychart-<namespace>.<appdomain>
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -112,6 +115,93 @@ tolerations: []
 affinity: {}
 ```
 
+{{% /onlyWhen %}}
+{{% onlyWhenNot openshift %}}
+
+```yaml
+# Default values for mychart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: quay.io/acend/example-web-python
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: mychart-<namespace>.<appdomain>
+      paths:
+        - path: /
+  tls:
+    - secretName: mychart-<namespace>-<appdomain>
+      hosts:
+        - mychart-<namespace>.<appdomain>
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+```
+
+{{% /onlyWhenNot %}}
 {{% /onlyWhenNot %}}
 {{% onlyWhen mobi %}}
 
@@ -159,13 +249,14 @@ service:
   port: 80
 
 ingress:
-  enabled: false
+  enabled: true
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: chart-example.local
-      paths: []
+    - host: mychart-<namespace>.<appdomain>
+      paths:
+      - path: /
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -198,6 +289,13 @@ affinity: {}
 ```
 
 {{% /onlyWhen %}}
+
+{{% alert title="Note" color="primary" %}}
+Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
+{{% onlyWhen mobi %}}
+Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
+{{% /onlyWhen %}}
+{{% /alert %}}
 
 Afterwards our `deployment.yaml` should look as follows. Note the changed `.spec.containers[0].ports[0].containerPort`:
 
@@ -278,38 +376,78 @@ helm upgrade myfirstrelease --namespace <namespace> ./mychart
 ```
 
 
-## Task {{% param sectionnumber %}}.2: Make the app accessible
+## {{% param sectionnumber %}}.2: Explanation of the Ingress resource configuration
 
-The template folder already has a file for an ingress resource. There are even some variables in `values.yaml` to configure it. Set the correct values for our app and upgrade it.
-
-{{% alert title="Warning" color="secondary" %}}
-The current values for the ingress depends on the {{% param distroName %}} cluster. Ask your instructor for the correct values if you are not sure.
-{{% /alert %}}
-
-{{% onlyWhen mobi %}}
-Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible as the DNS name first has to be propagated correctly.
-{{% /onlyWhen %}}
-
-
-### Solution Task {{% param sectionnumber %}}.2
+The template folder already has a file for an ingress resource. There are even some variables in `values.yaml` to configure it.
 
 The `values.yaml` should look like this:
 
+{{% onlyWhenNot mobi %}}
+{{% onlyWhen openshift %}}
+
 ```yaml
+[...]
+ingress:
+  enabled: true
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: mychart-<namespace>.<appdomain>
+      paths:
+        - path: /
+  tls:
+    - secretName: mychart-<namespace>-<appdomain>
+      hosts:
+        - mychart-<namespace>.<appdomain>
+[...]
+```
+
+{{% /onlyWhen %}}
+{{% onlyWhenNot openshift %}}
+
+```yaml
+[...]
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: mychart-<namespace>.<appdomain>
+      paths:
+        - path: /
+  tls:
+    - secretName: mychart-<namespace>-<appdomain>
+      hosts:
+        - mychart-<namespace>.<appdomain>
+[...]
+```
+
+{{% /onlyWhenNot %}}
+
+{{% /onlyWhenNot %}}
+{{% onlyWhen mobi %}}
+
+```yaml
+...
 ingress:
   enabled: true
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: <namespace>.<appdomain>
+    - host: mychart-<namespace>.<appdomain>
       paths:
-        - path: /
+      - path: /
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+...
 ```
+
+{{% /onlyWhen %}}
 
 So `ingress.enabled` is set to `true` and we have to define a `host` for the ingress resource. Furthermore, we have to define a `path` to our app. Lets have a look into the ingress template file to understand what's happening with the `host` & `path` array.
 
