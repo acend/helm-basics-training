@@ -278,6 +278,12 @@ Verify the replicaCount with the following command:
 {{% param cliToolName %}} get pods --namespace <namespace>
 ```
 
+```
+NAME                                     READY   STATUS    RESTARTS   AGE
+myfirstrelease-mychart-c95cb97d6-g76rc   1/1     Running   0          10m
+myfirstrelease-mychart-c95cb97d6-tqztc   1/1     Running   0          8m25s
+```
+
 
 ## Task {{% param sectionnumber %}}.5: Rollback a release
 
@@ -305,6 +311,11 @@ The replicaCount should be back down to 1 after the rollback. Check if that's tr
 
 ```bash
 {{% param cliToolName %}} get pods --namespace <namespace>
+```
+
+```
+NAME                                     READY   STATUS    RESTARTS   AGE
+myfirstrelease-mychart-c95cb97d6-g76rc   1/1     Running   0          10m
 ```
 
 
