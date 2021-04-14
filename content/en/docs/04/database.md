@@ -568,7 +568,7 @@ helm upgrade myapp ./mychart --namespace <namespace>
 
 ## Task {{% param sectionnumber %}}.3: Check
 
-Check whether the attachment of the new backend worked by either looking at the Pod's logs. In there the application tells you which backend it uses, this should of course be the database. You can also simply access the application in your browser, create an entry, re-deploy the application Pod (e.g. by scaling it down and up again) and check if your entry is still there.
+Check whether the attachment of the new backend worked by either looking at the Pod's logs: In there the application tells you which backend it uses, this should of course be the database. Or simply access the application in your browser, create an entry, re-deploy the application Pod (e.g. by scaling it down and up again) and check if your entry is still there.
 
 
 ## Task {{% param sectionnumber %}}.4: Cleanup
