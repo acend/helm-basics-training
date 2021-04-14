@@ -243,6 +243,12 @@ NOTES:
 {{% onlyWhenNot mobi %}}
 Check whether the ingress was successfully deployed by accessing the URL `http://mychart-<namespace>.<appdomain>/`
 
+{{% onlyWhen openshift %}}
+{{% alert title="Note" color="primary" %}}
+It might take a moment until the app is accessible.
+{{% /alert %}}
+{{% /onlyWhen %}}
+
 {{% /onlyWhenNot %}}
 {{% onlyWhen mobi %}}
 Check whether the ingress was successfully deployed by accessing the URL `http://mychart-<namespace>.<appdomain>/`
