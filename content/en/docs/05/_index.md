@@ -9,9 +9,9 @@ Debugging templates can be tricky because the rendered templates are sent to the
 There are a few commands that can help you debug:
 
 * `helm lint` is your go-to tool for verifying that your chart follows best practices.
-* `helm install --dry-run --debug --generate-name <chart>` or `helm template --debug <chart>`: We’ve seen this trick already. It’s a great way to have the server render your templates, then return the resulting manifest file.
-* `helm get manifest <release>`: This is a good way to see what templates are installed on the server.
-* `helm get values <release>`: This helps you to understand which values are used for a release.
+* `helm install --dry-run --debug --generate-name <chart> --namespace <namespace>` or `helm template --debug <chart>` : We’ve seen this trick already. It’s a great way to render your templates without applying them to the cluster.
+* `helm get manifest <release> --namespace <namespace>`: This is a good way to see what templates are installed on the server.
+* `helm get values <release> --namespace <namespace>`: This helps you to understand which values are used for a release.
 
 When your YAML is failing to parse but you want to see what is generated, one easy way to retrieve the YAML is to comment out the problem section in the template and then re-run `helm install --dry-run --debug --generate-name <chart>`.
 
