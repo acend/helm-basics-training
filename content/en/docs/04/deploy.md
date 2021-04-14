@@ -386,7 +386,6 @@ The `values.yaml` should look like this:
 {{% onlyWhen openshift %}}
 
 ```yaml
-[...]
 ingress:
   enabled: true
   annotations:
@@ -400,14 +399,12 @@ ingress:
     - secretName: mychart-<namespace>-<appdomain>
       hosts:
         - mychart-<namespace>.<appdomain>
-[...]
 ```
 
 {{% /onlyWhen %}}
 {{% onlyWhenNot openshift %}}
 
 ```yaml
-[...]
 ingress:
   enabled: true
   annotations:
@@ -421,7 +418,6 @@ ingress:
     - secretName: mychart-<namespace>-<appdomain>
       hosts:
         - mychart-<namespace>.<appdomain>
-[...]
 ```
 
 {{% /onlyWhenNot %}}
@@ -430,7 +426,6 @@ ingress:
 {{% onlyWhen mobi %}}
 
 ```yaml
-...
 ingress:
   enabled: true
   annotations: {}
@@ -444,7 +439,6 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-...
 ```
 
 {{% /onlyWhen %}}

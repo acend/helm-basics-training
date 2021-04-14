@@ -279,7 +279,6 @@ As you can see, you can also define [named templates](https://helm.sh/docs/chart
 Have a look at:
 
 ```yaml
-[...]
 {{- define "mychart.labels" -}}
 helm.sh/chart: {{ include "mychart.chart" . }}
 {{ include "mychart.selectorLabels" . }}
@@ -288,7 +287,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
-[...]
 ```
 
 you can then access this `mychart.labels` in your `deployment.yaml` like follows:
@@ -303,7 +301,6 @@ metadata:
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-[...]
 ```
 
 

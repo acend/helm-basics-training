@@ -200,7 +200,6 @@ data:
   database-password: bXlzdXBlcnBhc3N3b3JkMTIz
   database-root-password: bXlzdXBlcnJvb3RwYXNzd29yZDEyMw==
   database-user: YWNlbmQ=
-
 ```
 
 When creating the template files, make sure that a user can specify the `database-name`, `database-password`, `database-root-password` and `database-user` from the secret using a variable.
@@ -332,7 +331,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
 ```
 
 The secret `templates/secret-mysql.yaml` file should look like this:
@@ -353,7 +351,6 @@ data:
   database-password: {{ .Values.database.databasepassword | b64enc }}
   database-root-password: {{ .Values.database.databaserootpassword | b64enc }}
   database-user: {{ .Values.database.databaseuser | b64enc }}
-
 ```
 
 Note the `| b64enc`, which is a built-in function to encode strings with base64.

@@ -110,7 +110,7 @@ Use `helm template gotemplatechart ...` again (as in task 2) to see what your re
 {{% alert title="Note" color="primary" %}}
 The output should look like this:
 
-```yaml
+```
 ---
 # Source: gotemplatechart/templates/configmap.yaml
 apiVersion: v1

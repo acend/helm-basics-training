@@ -18,15 +18,13 @@ helm create mychart
 You will now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
 
 {{% onlyWhen mobi %}}
-Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to match the following:
+Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to contain the following part:
 
 ```yaml
-[...]
 image:
   repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx
   tag: stable
   pullPolicy: IfNotPresent
-[...]
 ```
 
 {{% /onlyWhen %}}
@@ -38,24 +36,20 @@ Since OpenShift doesn't allow to run containers as root by default, we need to c
 Change the image in the `mychart/values.yaml`:
 
 ```yaml
-...
 image:
   repository: nginxinc/nginx-unprivileged
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
-...
 ```
 
 And then change the containerPort in the `mychart/templates/deployment.yaml`:
 
 ```yaml
-...
 ports:
 - name: http
   containerPort: 8080
   protocol: TCP
-...
 ```
 
 {{% /onlyWhen %}}
@@ -161,7 +155,6 @@ Make sure to replace the `<namespace>` and `<appdomain>` accordingly.
 {{% onlyWhen openshift %}}
 
 ```yaml
-[...]
 ingress:
   enabled: true
   annotations:
@@ -175,14 +168,12 @@ ingress:
     - secretName: mychart-<namespace>-<appdomain>
       hosts:
         - mychart-<namespace>.<appdomain>
-[...]
 ```
 
 {{% /onlyWhen %}}
 {{% onlyWhenNot openshift %}}
 
 ```yaml
-[...]
 ingress:
   enabled: true
   annotations:
@@ -196,7 +187,6 @@ ingress:
     - secretName: mychart-<namespace>-<appdomain>
       hosts:
         - mychart-<namespace>.<appdomain>
-[...]
 ```
 
 {{% /onlyWhenNot %}}
@@ -206,7 +196,6 @@ ingress:
 Therefore, we need to change this value inside our `values.yaml` file.
 
 ```yaml
-...
 ingress:
   enabled: true
   annotations: {}
@@ -220,7 +209,6 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-...
 ```
 
 {{% /onlyWhen %}}
