@@ -114,3 +114,10 @@ jobs:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
         with:
           args: rollout restart deployment/latest-acend-helm-basics-rancher --namespace acend-helm-basics-training-prod
+      -
+        name: Redeploy openshift Deployment
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG_BASE64 }}
+        with:
+          args: rollout restart deployment/latest-acend-helm-basics-openshift --namespace acend-helm-basics-training-prod
