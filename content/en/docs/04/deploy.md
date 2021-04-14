@@ -376,7 +376,7 @@ helm upgrade myfirstrelease --namespace <namespace> ./mychart
 ```
 
 
-## {{% param sectionnumber %}}.2: Explanation Ingress Configuration
+## {{% param sectionnumber %}}.2: Explanation of the Ingress resource configuration
 
 The template folder already has a file for an ingress resource. There are even some variables in `values.yaml` to configure it.
 
