@@ -288,11 +288,6 @@ Verify the replicaCount with the following command:
 ## Task {{% param sectionnumber %}}.5: Rollback a release
 
 Helm also provides the functionality to roll back a release to a specific revision number.
-
-
-## Task {{% param sectionnumber %}}.6 Explore values.yaml
-
-Have a look at the `values.yaml` file in your chart and study all the possible configuration params introduced in a freshly created chart.
 In the previous tasks, you might have noticed the `REVISION` be increased each time you installed or updated a release.
 
 Every change you make to a release by installing or upgrading it, will increase the `REVISION`. The actual deployed revision can be displayed with the following command:
@@ -317,6 +312,11 @@ The replicaCount should be back down to 1 after the rollback. Check that with th
 ```bash
 {{% param cliToolName %}} get pods --namespace <namespace>
 ```
+
+
+## Task {{% param sectionnumber %}}.6 Explore values.yaml
+
+Have a look at the `values.yaml` file in your chart and study all the possible configuration params introduced in a freshly created chart.
 
 
 ## Task {{% param sectionnumber %}}.7: Remove release
