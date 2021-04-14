@@ -91,7 +91,7 @@ myfirstrelease  <namespace>     1         2021-04-14 14:29:58.808282266 +0200 CE
 ```
 
 
-## Task {{% param sectionnumber %}}.3: Expose Application
+## Task {{% param sectionnumber %}}.3: Expose the application
 
 Our freshly deployed nginx is not yet accessible from outside the {{% param distroName %}} cluster.
 To expose it, we have to make sure a so called ingress resource will be deployed as well.
