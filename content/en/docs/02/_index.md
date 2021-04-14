@@ -85,8 +85,13 @@ You can list the newly created Helm release with the following command:
 helm ls --namespace <namespace>
 ```
 
+```
+NAME            NAMESPACE       REVISION  UPDATED                                   STATUS    CHART        APP VERSION
+myfirstrelease  <namespace>     1         2021-04-14 14:29:58.808282266 +0200 CEST  deployed  mychart-0.1.01.16.0  
+```
 
-## Task {{% param sectionnumber %}}.3: Expose Application
+
+## Task {{% param sectionnumber %}}.3: Expose the application
 
 Our freshly deployed nginx is not yet accessible from outside the {{% param distroName %}} cluster.
 To expose it, we have to make sure a so called ingress resource will be deployed as well.
@@ -211,7 +216,7 @@ ingress:
 {{% alert title="Note" color="primary" %}}
 Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
 {{% onlyWhen mobi %}}
-Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
+Use `mychart-<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
 {{% /onlyWhen %}}
 {{% /alert %}}
 
@@ -232,15 +237,21 @@ STATUS: deployed
 REVISION: 2
 NOTES:
 1. Get the application URL by running these commands:
-  http://<namespace>.<appdomain>/
+  http://mychart-<namespace>.<appdomain>/
 ```
 
 {{% onlyWhenNot mobi %}}
-Check whether the ingress was successfully deployed by accessing the URL `http://<namespace>.<appdomain>/`
+Check whether the ingress was successfully deployed by accessing the URL `http://mychart-<namespace>.<appdomain>/`
+
+{{% onlyWhen openshift %}}
+{{% alert title="Note" color="primary" %}}
+It might take a moment until the app is accessible.
+{{% /alert %}}
+{{% /onlyWhen %}}
 
 {{% /onlyWhenNot %}}
 {{% onlyWhen mobi %}}
-Check whether the ingress was successfully deployed by accessing the URL `https://<namespace>.<appdomain>/`
+Check whether the ingress was successfully deployed by accessing the URL `http://mychart-<namespace>.<appdomain>/`
 
 {{% /onlyWhen %}}
 
@@ -252,7 +263,7 @@ An alternative way to set or overwrite values for charts we want to deploy is th
 Update the replica count of your nginx Deployment to 2 using `--set name=value`
 
 
-### Solution Task {{% param sectionnumber %}}.5
+### Solution Task {{% param sectionnumber %}}.4
 
 ```bash
 helm upgrade --namespace <namespace> --set replicaCount=2 myfirstrelease ./mychart
@@ -260,8 +271,55 @@ helm upgrade --namespace <namespace> --set replicaCount=2 myfirstrelease ./mycha
 
 Values that have been set using `--set` can be reset by helm upgrade with `--reset-values`.
 
+Verify the replicaCount with the following command:
 
-## Task {{% param sectionnumber %}}.6
+
+```bash
+{{% param cliToolName %}} get pods --namespace <namespace>
+```
+
+```
+NAME                                     READY   STATUS    RESTARTS   AGE
+myfirstrelease-mychart-c95cb97d6-g76rc   1/1     Running   0          10m
+myfirstrelease-mychart-c95cb97d6-tqztc   1/1     Running   0          8m25s
+```
+
+
+## Task {{% param sectionnumber %}}.5: Rollback a release
+
+Helm also provides the functionality to roll back a release to a specific revision number.
+In the previous tasks, you might have noticed the `REVISION` be increased each time you installed or updated a release.
+
+Every change you make to a release by installing or upgrading it will increase the `REVISION`. The actual deployed revision can be displayed with the following command:
+
+```bash
+helm ls --namespace <namespace>
+```
+
+```
+NAME            NAMESPACE       REVISION  UPDATED                                   STATUS    CHART        APP VERSION
+myfirstrelease  <namespace>     3         2021-04-14 14:29:58.808282266 +0200 CEST  deployed  mychart-0.1.01.16.0  
+```
+
+Let's now rollback our release `myfirstrelease` to revision 2.
+
+```bash
+helm rollback myfirstrelease 2 --namespace <namespace>
+```
+
+The replicaCount should be back down to 1 after the rollback. Check if that's true with the following command:
+
+```bash
+{{% param cliToolName %}} get pods --namespace <namespace>
+```
+
+```
+NAME                                     READY   STATUS    RESTARTS   AGE
+myfirstrelease-mychart-c95cb97d6-g76rc   1/1     Running   0          10m
+```
+
+
+## Task {{% param sectionnumber %}}.6 Explore values.yaml
 
 Have a look at the `values.yaml` file in your chart and study all the possible configuration params introduced in a freshly created chart.
 
