@@ -87,14 +87,19 @@ You can create your namespace with:
 kubectl create namespace <namespace>
 ```
 
-{{% /onlyWhenNot %}}{{% onlyWhen openshift %}}
+{{% alert title="Note" color="primary" %}}
+We are going to use `<namespace>` as a placeholder for your created namespace. Each time you see a `<namespace>` somewhere in a command, replace it with your chosen namespace name.
+{{% /alert %}}
+
+{{% /onlyWhenNot %}}
+{{% onlyWhen openshift %}}
 
 ```bash
 oc new-project <namespace>
 ```
 
-{{% /onlyWhen %}}
-
 {{% alert title="Note" color="primary" %}}
-We are going to use `<namespace>` as a placeholder for your created namespace. Each time you see a `<namespace>` somewhere in a command, replace it with your chosen namespace name.
+We are going to use `<namespace>` as a placeholder for your created project. Each time you see a `<namespace>` somewhere in a command, replace it with your chosen project name.
 {{% /alert %}}
+
+{{% /onlyWhen %}}
