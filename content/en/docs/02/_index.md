@@ -295,7 +295,7 @@ Let's now rollback our release `myfirstrelease` to revision 2.
 helm rollback myfirstrelease 2 --namespace <namespace>
 ```
 
-The replicaCount should be back down to 1 after the rollback. Check that with the following command:
+The replicaCount should be back down to 1 after the rollback. Check if that's true with the following command:
 
 ```bash
 {{% param cliToolName %}} get pods --namespace <namespace>
