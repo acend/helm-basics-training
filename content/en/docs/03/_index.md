@@ -236,7 +236,7 @@ containerSecurityContext:
   enabled: false
 ingress:
   enabled: true
-  hostname: wordpress--<namespace>.<appdomain>
+  hostname: wordpress-<namespace>.<appdomain>
 mariadb:
   primary:
     containerSecurityContext:
@@ -262,7 +262,7 @@ updateStrategy:
 USER-SUPPLIED VALUES:
 ingress:
   enabled: true
-  hostname: wordpress--<namespace>.<appdomain>
+  hostname: wordpress-<namespace>.<appdomain>
 mariadb:
   primary:
     persistence:

@@ -333,7 +333,7 @@ spec:
       {{- end }}
 ```
 
-The secret `templates/secret-mysql.yaml` file should look like this:
+The secret `templates/secret-mariadb.yaml` file should look like this:
 
 ```yaml
 apiVersion: v1
