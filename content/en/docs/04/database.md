@@ -433,6 +433,10 @@ Finally, to upgrade the existing release run:
 helm upgrade myapp ./mychart --namespace <namespace>
 ```
 
+{{% alert title="Note" color="primary" %}}
+Remember the `--dry-run` option from lab 2. This allows you to render the templates without applying them to the cluster.
+{{% /alert %}}
+
 
 ## Task {{% param sectionnumber %}}.2: Connect to the database
 
