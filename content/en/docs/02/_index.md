@@ -216,7 +216,7 @@ ingress:
 {{% alert title="Note" color="primary" %}}
 Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
 {{% onlyWhen mobi %}}
-Use `<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
+Use `mychart-<namespace>.kubedev.mobicorp.test` as your hostname. It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
 {{% /onlyWhen %}}
 {{% /alert %}}
 
@@ -245,7 +245,7 @@ Check whether the ingress was successfully deployed by accessing the URL `http:/
 
 {{% /onlyWhenNot %}}
 {{% onlyWhen mobi %}}
-Check whether the ingress was successfully deployed by accessing the URL `https://mychart-<namespace>.<appdomain>/`
+Check whether the ingress was successfully deployed by accessing the URL `http://mychart-<namespace>.<appdomain>/`
 
 {{% /onlyWhen %}}
 
