@@ -16,7 +16,6 @@ disableSVG = true
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 
-
 disableKinds = ["taxonomy", "taxonomyTerm"]
 
 # Highlighting config
@@ -45,13 +44,11 @@ resampleFilter = "CatmullRom"
 quality = 75
 anchor = "smart"
 
-
 [Languages]
 [Languages.en]
 title = "Helm Basics Training"
 languageName = "English"
 weight = 1
-
 
 # navigation
 [Languages.en.menu]
@@ -73,7 +70,6 @@ url = "https://www.acend.ch"
 
 
 [params]
-
 copyright = "acend gmbh"
 github_repo = "https://github.com/acend/helm-basics-training"
 github_branch = "main"
