@@ -13,7 +13,7 @@ jobs:
         with:
           submodules: recursive
       -
-        name: 'Remove PR Environment'
+        name: 'Remove PR Environment Helm Release'
         uses: 'deliverybot/helm@v1'
         with:
           # Task remove means to remove the helm release.
