@@ -23,6 +23,7 @@ rm -rf gotemplatechart/templates/*
 {{% alert title="Warning" color="secondary" %}}
 Don't forget to adapt the image name to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) so OpenShift can run it. See [lab 2](../02/) for details.
 {{% /alert %}}
+{{% /onlyWhen %}}
 
 
 ## Task {{% param sectionnumber %}}.2: Add a ConfigMap template
