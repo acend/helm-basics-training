@@ -17,27 +17,9 @@ Check out [Artifact Hub](https://artifacthub.io/) where you'll find a huge numbe
 As this WordPress Helm chart is published in Bitnami's Helm repository, we're first going to add it to our local repo list:
 
 {{% onlyWhen mobi %}}
-You have to set your `HTTP_PROXY` environment variable in order to access the bitnami helm repository:
-
-```bash
-# Linux
-export HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-export HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-
-# Windows cmd
-setx HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-setx HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-setx http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-setx https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-
-# Windows Powershell
-$env:HTTP_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-$env:HTTPS_PROXY="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-$env:http_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-$env:https_proxy="http://u...:PASSWORD@dirproxy.mobi.ch:80"
-```
-
-Replace `u...:PASSWORD` with your account details. If you have special chars in your password, you have to escape them with hexadecimal value according to [this](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters)
+{{% alert title="Note" color="primary" %}}
+Note that the proxy variables must be set according to the instructions in the setup chapter.
+{{% /alert %}}
 {{% /onlyWhen %}}
 
 ```bash

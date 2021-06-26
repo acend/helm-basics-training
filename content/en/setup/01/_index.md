@@ -33,16 +33,17 @@ If the `$PATH` variable doesn't contain a suitable directory, it can be changed 
 If you have direct access to the internet from your location, the proxy configuration is not required.
 {{% /alert %}}
 
-Set your HTTP proxy environment variables so that a chart repository can be added to your Helm repos in a later lab.
+Set your HTTP proxy environment variables so that a chart repository can be added to your Helm repos in a later lab. It is recommended to set the lowercase and uppercase variables, as the helm command takes them all into account.
 
-In the Windows cmd:
+In Windows cmd:
 
 ```bash
 setx HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
 setx HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
+setx NO_PROXY="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
 setx http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
 setx https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-setx NO_PROXY="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
+setx no_proxy="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
 ```
 
 In Windows Powershell:
@@ -54,6 +55,17 @@ $env:NO_PROXY="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
 $env:http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
 $env:https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
 $env:no_proxy="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
+```
+
+In Git Bash:
+
+```bash
+export HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
+export HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
+export NO_PROXY="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
+export http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
+export https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
+export no_proxy="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
 ```
 
 Replace `<username`> and `<password>` with your credentials. If you have special characters in your password, escape them with their corresponding hexadecimal values according to [this article](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters).
