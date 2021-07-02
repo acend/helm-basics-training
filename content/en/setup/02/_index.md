@@ -23,12 +23,15 @@ Install the `helm` CLI binary on your system:
 If you have direct access to the internet from your location, the proxy configuration is not required.
 {{% /alert %}}
 
-Set your HTTP proxy environment variables so that a chart repository can be added to your Helm repos in a later lab:
+Set your HTTP proxy environment variables so that a chart repository can be added to your Helm repos in a later lab. It is recommended to set the lowercase and uppercase variables, as the helm command takes them all into account.
 
 ```bash
 export HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
 export HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
 export NO_PROXY="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
+export http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
+export https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
+export no_proxy="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
 ```
 
 Replace `<username`> and `<password>` with your credentials. If you have special characters in your password, escape them with their corresponding hexadecimal values according to [this article](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters).
