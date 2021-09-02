@@ -630,6 +630,13 @@ spec:
 {{- end }}
 ```
 
+To run the test manually:
+
+```bash
+helm test myapp
+```
+
+
 
 ## Task {{% param sectionnumber %}}.5: Cleanup
 
