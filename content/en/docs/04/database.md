@@ -575,7 +575,70 @@ helm upgrade myapp ./mychart --namespace <namespace>
 Check whether the attachment of the new backend worked by either looking at the Pod's logs: In there the application tells you which backend it uses, this should of course be the database. Or simply access the application in your browser, create an entry, re-deploy the application Pod (e.g. by scaling it down and up again) and check if your entry is still there.
 
 
-## Task {{% param sectionnumber %}}.4: Cleanup
+## Task {{% param sectionnumber %}}.4: Add a test to your awesome database chart
+
+As we learned in the previous section, Helm gives us the availability to run automated test during the Helm deplyoment.
+Now it's time wo write our first test.
+
+* Image
+* Env Variables:
+  * MYSQL_HOST
+  * MYSQL_USER
+  * MYSQL_PASSWORD
+* Command: `mysql --host=$MYSQL_HOST --user=$MYSQL_USER --password=$MYSQL_PASSWORD`
+* Annotation: `helm.sh/hook: test`
+
+
+## Solution Task {{% param sectionnumber %}}.4
+
+```yaml
+{{- $fullName := include "acend-training-chart.fullname" . -}}
+{{- $all := . -}}
+{{- $servicePort := .Values.acendTraining.servicePort -}}
+{{- range .Values.acendTraining.deployments }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ $fullName }}-{{ .name }}-test-connection"
+  labels:
+    {{- include "acend-training-chart.labels" $all | nindent 4 }}
+    app.kubernetes.io/name: {{ include "acend-training-chart.name" $all }}-{{ .name }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: mariadb
+      image: mariadb
+      command: ['wget']
+      args: ['{{ $fullName }}-{{ .name }}:{{ $servicePort }}']
+      env:
+      - name: MYSQL_DATABASE_NAME
+        valueFrom:
+          secretKeyRef:
+            key: database-name
+            name: {{ include "mychart.fullname" . }}-mariadb
+      - name: MYSQL_DATABASE_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: database-password
+            name: {{ include "mychart.fullname" . }}-mariadb
+      - name: MYSQL_DATABASE_ROOT_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: database-root-password
+            name: {{ include "mychart.fullname" . }}-mariadb
+      - name: MYSQL_DATABASE_USER
+        valueFrom:
+          secretKeyRef:
+            key: database-user
+            name: {{ include "mychart.fullname" . }}-mariadb
+  restartPolicy: Never
+{{- end }}
+```
+
+
+## Task {{% param sectionnumber %}}.5: Cleanup
 
 If you're happy with the result, clean up your namespace:
 
