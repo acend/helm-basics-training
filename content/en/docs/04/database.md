@@ -578,7 +578,7 @@ Check whether the attachment of the new backend worked by either looking at the 
 ## Task {{% param sectionnumber %}}.4: Add a test to your awesome database chart
 
 As we learned in the previous section, Helm gives us the availability to run automated test during the Helm deplyoment.
-Now it's time wo write our first test.
+Now it's time to write our first test.
 The test should meet following requirements:
 * Image: mariadb
 * Env Variables:
@@ -588,6 +588,7 @@ The test should meet following requirements:
 * Command: `mysql --host=$MYSQL_DATABASE_HOST --user=$MYSQL_DATABASE_USER --password=$MYSQL_DATABASE_PASSWORD`
 * Annotation: `helm.sh/hook: test`
 
+You can copy the test file from the previous section and start to modify it.
 
 ### Solution Task {{% param sectionnumber %}}.4
 
