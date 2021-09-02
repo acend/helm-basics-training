@@ -579,17 +579,17 @@ Check whether the attachment of the new backend worked by either looking at the 
 
 As we learned in the previous section, Helm gives us the availability to run automated test during the Helm deplyoment.
 Now it's time wo write our first test.
-
-* Image
+The test should meet following requirements:
+* Image: mariadb
 * Env Variables:
-  * MYSQL_HOST
-  * MYSQL_USER
-  * MYSQL_PASSWORD
-* Command: `mysql --host=$MYSQL_HOST --user=$MYSQL_USER --password=$MYSQL_PASSWORD`
+  * `MYSQL_DATABASE_HOST` from secret
+  * `MYSQL_DATABASE_USER` from secret
+  * `MYSQL_DATABASE_PASSWORD` from secret
+* Command: `mysql --host=$MYSQL_DATABASE_HOST --user=$MYSQL_DATABASE_USER --password=$MYSQL_DATABASE_PASSWORD`
 * Annotation: `helm.sh/hook: test`
 
 
-## Solution Task {{% param sectionnumber %}}.4
+### Solution Task {{% param sectionnumber %}}.4
 
 ```yaml
 {{- $fullName := include "acend-training-chart.fullname" . -}}
@@ -610,23 +610,15 @@ spec:
   containers:
     - name: mariadb
       image: mariadb
-      command: ['wget']
-      args: ['{{ $fullName }}-{{ .name }}:{{ $servicePort }}']
+      command: ['mysql']
+      args: ['--host=$MYSQL_DATABASE_HOST --user=$MYSQL_DATABASE_USER --password=$MYSQL_DATABASE_PASSWORD']
       env:
-      - name: MYSQL_DATABASE_NAME
-        valueFrom:
-          secretKeyRef:
-            key: database-name
-            name: {{ include "mychart.fullname" . }}-mariadb
+      - name: MYSQL_DATABASE_HOST
+        value: {{ include "mychart.fullname" . }}-mariadb
       - name: MYSQL_DATABASE_PASSWORD
         valueFrom:
           secretKeyRef:
             key: database-password
-            name: {{ include "mychart.fullname" . }}-mariadb
-      - name: MYSQL_DATABASE_ROOT_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            key: database-root-password
             name: {{ include "mychart.fullname" . }}-mariadb
       - name: MYSQL_DATABASE_USER
         valueFrom:
