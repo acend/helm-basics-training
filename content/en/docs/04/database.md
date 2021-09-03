@@ -583,6 +583,7 @@ Check whether the attachment of the new backend worked by either looking at the 
 As we learned in the previous section, Helm gives us the availability to run automated test during the Helm deplyoment.
 Now it's time to write our first test.
 The test should meet following requirements:
+
 * Image: mariadb
 * Env Variables:
   * `MYSQL_DATABASE_HOST` from secret
