@@ -462,87 +462,84 @@ Change your `templates/deployment.yaml` and include the new environment variable
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "mychart.fullname" . }}-mariadb
+  name: {{ include "mychart.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    helm.sh/chart: {{ include "mychart.chart" . }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "mychart.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb
-      app.kubernetes.io/instance: {{ .Release.Name }}
-  strategy:
-    type: Recreate
+      {{- include "mychart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.database.podAnnotations }}
+      {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "mychart.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.database.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.database.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-      - image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
-        name: mariadb
-        imagePullPolicy: {{ .Values.database.image.pullPolicy }}
-        args:
-          - "--ignore-db-dir=lost+found"
-        env:
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              key: database-user
-              name: {{ include "mychart.fullname" . }}-mariadb
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: database-password
-              name: {{ include "mychart.fullname" . }}-mariadb
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: database-root-password
-              name: {{ include "mychart.fullname" . }}-mariadb
-        - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              key: database-name
-              name: {{ include "mychart.fullname" . }}-mariadb
-        livenessProbe:
-          tcpSocket:
-            port: 3306
-        ports:
-        - containerPort: 3306
-          name: mariadb
-        volumeMounts:
-        - name: mariadb-persistent-storage
-          mountPath: /var/lib/mysql
-        resources:
-          {{- toYaml .Values.database.resources | nindent 12 }}
-      volumes:
-      - name: mariadb-persistent-storage
-        emptyDir: {}
-      {{- with .Values.database.nodeSelector }}
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: MYSQL_DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                key: database-name
+                name: {{ include "mychart.fullname" . }}-mariadb
+          - name: MYSQL_DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: {{ include "mychart.fullname" . }}-mariadb
+          - name: MYSQL_DATABASE_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-root-password
+                name: {{ include "mychart.fullname" . }}-mariadb
+          - name: MYSQL_DATABASE_USER
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: {{ include "mychart.fullname" . }}-mariadb
+          - name: MYSQL_URI
+            value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ include "mychart.fullname" . }}-mariadb/$(MYSQL_DATABASE_NAME)
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.database.affinity }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.database.tolerations }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
