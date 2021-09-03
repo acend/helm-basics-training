@@ -578,7 +578,7 @@ helm upgrade myapp ./mychart --namespace <namespace>
 Check whether the attachment of the new backend worked by either looking at the Pod's logs: In there the application tells you which backend it uses, this should of course be the database. Or simply access the application in your browser, create an entry, re-deploy the application Pod (e.g. by scaling it down and up again) and check if your entry is still there.
 
 
-## Task {{% param sectionnumber %}}.4: Add a test to your awesome database chart
+## Task {{% param sectionnumber %}}.4: Add a test to your chart
 
 As we learned in the previous section, Helm gives us the availability to run automated test during the Helm deplyoment.
 Now it's time to write our first test.
