@@ -676,3 +676,4 @@ If you're happy with the result, clean up your namespace:
 helm uninstall myapp --namespace <namespace>
 ```
 
+Continue with the lab "[Publish your chart](../publish/)".
