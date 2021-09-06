@@ -106,7 +106,7 @@ A look into the file `templates/ingress.yaml` reveals that the rendering of the 
 {{- $fullName := include "mychart.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
 {{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 {{- else -}}
 apiVersion: extensions/v1beta1
 {{- end }}
@@ -164,6 +164,7 @@ ingress:
     - host: mychart-<namespace>.<appdomain>
       paths:
         - path: /
+          pathType: Prefix
   tls:
     - secretName: mychart-<namespace>-<appdomain>
       hosts:
