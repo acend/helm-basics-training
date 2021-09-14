@@ -51,31 +51,34 @@ You can use the existing templates (`deployment.yaml`, `service.yaml`) as a star
 {{% onlyWhenNot mobi %}}
 
 ```yaml
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myfirstrelease-mychart-mariadb
+  name: mychart-mariadb
   labels:
     app.kubernetes.io/name: mychart-mariadb
-    app.kubernetes.io/instance: myfirstrelease
-    # additional Labels ...
+    app.kubernetes.io/instance: mychart
+    helm.sh/chart: mychart-0.1.0
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: mychart-mariadb
-      app.kubernetes.io/instance: myfirstrelease
+      app.kubernetes.io/instance: mychart
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app.kubernetes.io/name: mychart-mariadb
-        app.kubernetes.io/instance: myfirstrelease
+        app.kubernetes.io/instance: mychart
     spec:
       containers:
-      - image: mariadb:10.5
+      - image: "mariadb:10.5"
         name: mariadb
+        imagePullPolicy: IfNotPresent
         args:
           - "--ignore-db-dir=lost+found"
         env:
@@ -83,22 +86,22 @@ spec:
           valueFrom:
             secretKeyRef:
               key: database-user
-              name: mariadb
+              name: mychart-mariadb
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               key: database-password
-              name: mariadb
+              name: mychart-mariadb
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               key: database-root-password
-              name: mariadb
+              name: mychart-mariadb
         - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
               key: database-name
-              name: mariadb
+              name: mychart-mariadb
         livenessProbe:
           tcpSocket:
             port: 3306
@@ -575,7 +578,99 @@ helm upgrade myapp ./mychart --namespace <namespace>
 Check whether the attachment of the new backend worked by either looking at the Pod's logs: In there the application tells you which backend it uses, this should of course be the database. Or simply access the application in your browser, create an entry, re-deploy the application Pod (e.g. by scaling it down and up again) and check if your entry is still there.
 
 
-## Task {{% param sectionnumber %}}.4: Cleanup
+## Task {{% param sectionnumber %}}.4: Add a test to your chart
+
+As we learned in the previous section, Helm gives us the availability to run automated test during the Helm deplyoment.
+Now it's time to write our first test.
+The test should meet following requirements:
+
+* Image: mariadb
+* Env Variables:
+  * `MYSQL_DATABASE_HOST` from secret
+  * `MYSQL_DATABASE_USER` from secret
+  * `MYSQL_DATABASE_PASSWORD` from secret
+* Command: `mysql --host=$MYSQL_DATABASE_HOST --user=$MYSQL_DATABASE_USER --password=$MYSQL_DATABASE_PASSWORD`
+* Annotation: `helm.sh/hook: test`
+
+You can copy the test file from the previous section and start to modify it.
+
+
+### Solution Task {{% param sectionnumber %}}.4
+
+```yaml
+{{- $fullName := include "mychart.fullname" . -}}
+{{- $all := . -}}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ $fullName }}-{{ .name }}-test-connection"
+  labels:
+    app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb-test
+    app.kubernetes.io/instance: {{ .Release.Name }}-test
+    helm.sh/chart: {{ include "mychart.chart" . }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: mariadb
+      image: mariadb
+      command: ['mysql']
+      args: ['--host=$(MYSQL_DATABASE_HOST)', '--user=$(MYSQL_DATABASE_USER)', '--password=$(MYSQL_DATABASE_PASSWORD)']
+      env:
+      - name: MYSQL_DATABASE_HOST
+        value: {{ include "mychart.fullname" . }}-mariadb
+      - name: MYSQL_DATABASE_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: database-password
+            name: {{ include "mychart.fullname" . }}-mariadb
+      - name: MYSQL_DATABASE_USER
+        valueFrom:
+          secretKeyRef:
+            key: database-user
+            name: {{ include "mychart.fullname" . }}-mariadb
+  restartPolicy: Never
+{{- end }}
+```
+
+To upgrade your existing release run:
+
+```bash
+helm upgrade myapp ./mychart --namespace <namespace>
+```
+
+To run the test manually:
+
+```bash
+helm test myapp
+```
+
+Then you should see following output
+
+```bash
+Pod mychart--test-connection pending
+Pod mychart--test-connection pending
+Pod mychart--test-connection pending
+Pod mychart--test-connection succeeded
+NAME: mychart
+LAST DEPLOYED: Fri Sep  3 11:15:28 2021
+NAMESPACE: cschlatter-helm-lab
+STATUS: deployed
+REVISION: 1
+TEST SUITE:     mychart--test-connection
+Last Started:   Fri Sep  3 11:16:43 2021
+Last Completed: Fri Sep  3 11:16:49 2021
+Phase:          Succeeded
+NOTES:
+Welcome to the helm training chart
+This chart contains a fully working MariaDB.
+```
+
+
+## Task {{% param sectionnumber %}}.5: Cleanup
 
 If you're happy with the result, clean up your namespace:
 

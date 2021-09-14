@@ -29,6 +29,8 @@ Looking at the `mychart/templates/` directory, we notice that there already are 
 * `deployment.yaml`: A basic manifest for creating a Kubernetes deployment
 * `service.yaml`: A basic manifest for creating a service endpoint for your deployment
 * `_helpers.tpl`: A place to put template helpers that you can re-use throughout the chart
+* `tests/`: A directory to put test files for testing the deployed Helm chart
+
 
 {{% alert title="Note" color="primary" %}}
 For details on chart templating, check out the [Helm's getting started guide](https://helm.sh/docs/chart_template_guide/getting_started/).
@@ -302,6 +304,39 @@ metadata:
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+```
+
+
+### Tests
+
+Helm has the capability to test the deployed Kubernetes resources.
+In the `/test` directory we can define multiple test jobs for the deployed Helm chart.
+A test job is defined by a Pod resource which specifies a container with a given command to run. If the container exits succesfully (exit code 0), the test was successfull. Further the test Pod must must contain following annotation `helm.sh/hook: test` to run during the Helm deployment.
+Inside the `/test` directory you can find already a simple test job. This test job starts a busybox image with a wget command to check if the deployed app is reachable by its service name.
+
+```yaml
+{{- $fullName := include "acend-training-chart.fullname" . -}}
+{{- $all := . -}}
+{{- $servicePort := .Values.acendTraining.servicePort -}}
+{{- range .Values.acendTraining.deployments }}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ $fullName }}-{{ .name }}-test-connection"
+  labels:
+    {{- include "acend-training-chart.labels" $all | nindent 4 }}
+    app.kubernetes.io/name: {{ include "acend-training-chart.name" $all }}-{{ .name }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ $fullName }}-{{ .name }}:{{ $servicePort }}']
+  restartPolicy: Never
+{{- end }}
 ```
 
 
