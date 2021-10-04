@@ -634,7 +634,6 @@ spec:
             key: database-user
             name: {{ include "mychart.fullname" . }}-mariadb
   restartPolicy: Never
-{{- end }}
 ```
 
 To upgrade your existing release run:
