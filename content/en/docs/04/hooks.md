@@ -21,6 +21,39 @@ At some point when developing helm charts we would like to interact or alter cer
 * post-rollback: Executes on a rollback request after all resources have been modified
 * test: Executes when the Helm test subcommand is invoked
 
+Hooks are controlled and configured via kubernetes annotations. For example to configure the life cycle the hook should be hooked into we use the annotation:
+
+```yaml
+[...]
+  annotations:
+    "helm.sh/hook": post-install
+[...]
+```
+
+The resource can even implement multiple hooks:
+
+```yaml
+
+[...]
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+[...]
+
+```
+
+When working with multiple hooks hooking into the same life cycle stage, we can alter the execution or runtime behaviour by giving them different weights with the annotation:
+
+```yaml
+
+[...]
+  annotations:
+    "helm.sh/hook-weight": "-5"
+[...]
+
+```
+
+Hook weights can be positive or negative numbers but must be represented as strings. When Helm starts the execution cycle of hooks of a particular Kind it will sort those hooks in ascending order.
+
 
 ## Task {{% param sectionnumber %}}.2: Example hook
 
