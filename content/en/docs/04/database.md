@@ -615,8 +615,9 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: mariadb
-      image: mariadb
+    - image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
+      name: mariadb
+      imagePullPolicy: {{ .Values.database.image.pullPolicy }}
       command: ['mysql']
       args: ['--host=$(MYSQL_DATABASE_HOST)', '--user=$(MYSQL_DATABASE_USER)', '--password=$(MYSQL_DATABASE_PASSWORD)']
       env:
