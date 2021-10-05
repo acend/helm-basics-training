@@ -1,5 +1,5 @@
 ---
-title: "4.4 Publish your chart"
+title: "4.4 Helm hooks"
 weight: 44
 sectionnumber: 4.4
 ---
