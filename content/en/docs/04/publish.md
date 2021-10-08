@@ -18,7 +18,7 @@ GitHub pages provides an easy way to expose static files over HTTP(S) to the pub
 Linting the Helm chart and fix the errors before packaging and publishing is a good practice:
 
 ```bash
-helm lint ./mychart/*
+helm lint ./mychart
 ```
 
 The linter recommends to add an icon to the chart. We can safely ignore this hint :)
@@ -75,6 +75,8 @@ Replace `<GITHUB_USERNAME>` with your personal GitHub account.
 ```bash
 USERNAME=<GITHUB_USERNAME>
 git init
+git config --global user.email "$USERNAME@foo.ch"
+git config --global user.name "$USERNAME"
 git add .
 git commit -m "First chart version"
 git branch -M main

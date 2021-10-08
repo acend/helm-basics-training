@@ -240,7 +240,7 @@ When you created your hooks, install or upgrade your helm release with `helm ins
 
 ```s
 
-kubectl --namespace rhe-helm-hooks exec -it <mariadb-podname> -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"   
+kubectl --namespace <namespace> exec -it <mariadb-podname> -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"   
 
 +----+------------+
 | id | name       |
