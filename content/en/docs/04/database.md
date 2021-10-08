@@ -603,7 +603,7 @@ kubectl logs myapp-mychart-7cc85f99db-n4lsc
 As you can see in the log output, our application is now connected to the fresh deployed database
 > Never log sensitive informations like database connection strings which contain the password in plain text!
 
-{{< highlight bash "hl_lines=1" >}}
+```bash
 Using DB:  mysql://acend:mysuperpassword123@myapp-mychart-mariadb/acenddb
  * Serving Flask app 'run' (lazy loading)
  * Environment: production
@@ -615,7 +615,7 @@ Using DB:  mysql://acend:mysuperpassword123@myapp-mychart-mariadb/acenddb
 2021-10-08 11:17:17,784 INFO :  * Running on http://10.42.5.2:5000/ (Press CTRL+C to quit)
 2021-10-08 11:17:20,688 INFO : 185.79.235.174 - - [08/Oct/2021 11:17:20] "GET / HTTP/1.1" 200 -
 2021-10-08 11:17:21,758 INFO : 185.79.235.174 - - [08/Oct/2021 11:17:21] "GET / HTTP/1.1" 200 -
-{{< /highlight >}}
+```
 
 
 ## Task {{% param sectionnumber %}}.4: Add a test to your chart
