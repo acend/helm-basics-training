@@ -458,7 +458,7 @@ Add the following environment variables:
 
 Change your `templates/deployment.yaml` and include the new environment variables:
 
-```yaml
+{{< highlight YAML "hl_lines=36-58" >}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -544,6 +544,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 ```
+{{< /highlight >}}
 
 There should not be any changes in the `values.yaml`:
 
@@ -585,13 +586,13 @@ First we need to exectute following command to determine the pod name
 kubectl get pods -n <namespace>
 ```
 
-```
+{{< highlight bash "hl_lines=3" >}}
 NAME                                    READY   STATUS      RESTARTS   AGE
 myapp-mychart--test-connection          0/1     Completed   0          22m
 myapp-mychart-7cc85f99db-n4lsc          1/1     Running     0          12m
 myapp-mychart-mariadb-74ddcc878-268ts   1/1     Running     0          12m
 webshell-67f4cf8c59-st4rg               2/2     Running     0          2d22h
-```
+{{< /highlight >}}
 
 Next execute following command to show the logs
 ```bash
@@ -602,7 +603,7 @@ kubectl logs myapp-mychart-7cc85f99db-n4lsc
 As you can see in the log output, our application is now connected to the fresh deployed database
 > Never log sensitive informations like database connection strings which contain the password in plain text!
 
-```
+{{< highlight bash "hl_lines=1" >}}
 Using DB:  mysql://acend:mysuperpassword123@myapp-mychart-mariadb/acenddb
  * Serving Flask app 'run' (lazy loading)
  * Environment: production
@@ -614,7 +615,7 @@ Using DB:  mysql://acend:mysuperpassword123@myapp-mychart-mariadb/acenddb
 2021-10-08 11:17:17,784 INFO :  * Running on http://10.42.5.2:5000/ (Press CTRL+C to quit)
 2021-10-08 11:17:20,688 INFO : 185.79.235.174 - - [08/Oct/2021 11:17:20] "GET / HTTP/1.1" 200 -
 2021-10-08 11:17:21,758 INFO : 185.79.235.174 - - [08/Oct/2021 11:17:21] "GET / HTTP/1.1" 200 -
-```
+{{< /highlight >}}
 
 
 ## Task {{% param sectionnumber %}}.4: Add a test to your chart
