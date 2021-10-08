@@ -115,15 +115,15 @@ Notice the `metadata.annotations` block which tells Helm how the hook should int
 
 It's time to get our hands dirty! Write two hooks to alter the release's life cycle:
 
-* Create a post-install/post-upgrade hook to create a database table `test` and populate it with data of your favor. In the example solution we create a table `test` with two fields: An autoincrement index `id` and a char field called `name` to store some strings
-* Create a pre-install/pre-upgrade hook to drop the table `test` if it exists to have a clean state before releasing
+* Create a post-install/post-upgrade hook to create a database table `test` and populate it with data of your favor. In the example solution we create a table `test` with two fields: An autoincrement index `id` and a char field called `name` to store some strings.  Ensure this job is running after the job below.
+* Create a post-install/post-upgrade hook to drop the table `test` if it exists to have a clean state before releasing. Ensure this job is running before the job above.
 
 To interact with the MariaDB deployed you can use the image `mariadb:10.5` for example. You can interact and access the database with `$ mysql --host=<hostname> --user=<username> --password=<password> --database=<database> -e <sqlCommand>`.
 
 
 {{% details title="Solution" %}}
 
-Pre-install / -upgrade hook:
+First Post-install / -upgrade hook:
 
 ```yaml
 
@@ -137,7 +137,7 @@ metadata:
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
-    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded
 spec:
@@ -176,7 +176,7 @@ spec:
 
 ```
 
-Post-install / -upgrade hook:
+Second Post-install / -upgrade hook:
 
 ```yaml
 
@@ -191,7 +191,7 @@ metadata:
     helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
     "helm.sh/hook": post-install, post-upgrade
-    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-weight": "10"
     "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
@@ -240,7 +240,7 @@ When you created your hooks, install or upgrade your helm release with `helm ins
 
 ```s
 
-kubectl --namespace rhe-helm-hooks exec -it <mariadb-podname> -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"   
+kubectl --namespace <namespace> exec -it <mariadb-podname> -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"   
 
 +----+------------+
 | id | name       |
