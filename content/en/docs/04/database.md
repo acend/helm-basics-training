@@ -76,7 +76,7 @@ spec:
         app.kubernetes.io/instance: mychart
     spec:
       containers:
-      - image: "mariadb:10.5"
+      - image: "registry.puzzle.ch/docker.io/mariadb:10.5"
         name: mariadb
         imagePullPolicy: IfNotPresent
         args:
@@ -393,7 +393,7 @@ database:
   databasepassword: mysuperpassword123
   databaserootpassword: mysuperrootpassword123
   image:
-    repository: mariadb
+    repository: registry.puzzle.ch/docker.io/mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
   imagePullSecrets: []

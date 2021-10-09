@@ -118,7 +118,7 @@ It's time to get our hands dirty! Write two hooks to alter the release's life cy
 * Create a post-install/post-upgrade hook to create a database table `test` and populate it with data of your favor. In the example solution we create a table `test` with two fields: An autoincrement index `id` and a char field called `name` to store some strings.  Ensure this job is running after the job below.
 * Create a post-install/post-upgrade hook to drop the table `test` if it exists to have a clean state before releasing. Ensure this job is running before the job above.
 
-To interact with the MariaDB deployed you can use the image `mariadb:10.5` for example. You can interact and access the database with `$ mysql --host=<hostname> --user=<username> --password=<password> --database=<database> -e <sqlCommand>`.
+To interact with the MariaDB deployed you can use the image `registry.puzzle.ch/docker.io/mariadb:10.5` for example. You can interact and access the database with `$ mysql --host=<hostname> --user=<username> --password=<password> --database=<database> -e <sqlCommand>`.
 
 
 {{% details title="Solution" %}}
