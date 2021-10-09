@@ -165,8 +165,7 @@ mariadb:
 
 
 ```bash
-helm upgrade myapp ./mychart --namespace <namespace>
+helm upgrade --install myapp ./mychart --namespace <namespace>
 ```
 
 Verify the installation and check whether the new database was deployed.
-

@@ -710,3 +710,11 @@ Welcome to the helm training chart
 This chart contains a fully working MariaDB.
 ```
 
+
+## Task {{% param sectionnumber %}}.5: Cleanup
+
+If you're happy with the result, clean up your namespace:
+
+```bash
+helm uninstall myapp --namespace <namespace>
+```
