@@ -50,6 +50,7 @@ This will create an archive with the name `mychart-0.1.0.tgz` inside the `docs` 
 │   └── mychart-0.1.0.tgz
 └── mychart
     ├── Chart.yaml
+    ├── charts
     ├── templates
     │   ├── deployment-mariadb.yaml
     │   ├── deployment.yaml
@@ -75,6 +76,7 @@ Replace `<GITHUB_USERNAME>` with your personal GitHub account.
 ```bash
 USERNAME=<GITHUB_USERNAME>
 git init
+echo "charts/"> .gitignore
 git config --global user.email "$USERNAME@foo.ch"
 git config --global user.name "$USERNAME"
 git add .

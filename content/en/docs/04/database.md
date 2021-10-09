@@ -241,7 +241,7 @@ The template file for the MariaDB database `templates/deployment-mariadb.yaml` c
 
 The following points need to be taken into consideration when creating the template:
 
-* The helper `mychart.fullname` will return `release-mychart`. Since our first deployment for the `example-web-python` application already uses this name, we have to choose a name for the mariadb instead. 
+* The helper `mychart.fullname` will return `release-mychart`. Since our first deployment for the `example-web-python` application already uses this name, we have to choose a name for the mariadb instead.
   * Let's take `<releasename>-mariadb` instead. As an alternative we could also alter the fullname helper to accept an additional name, which would be different for each deployment.
 * The same applies to the label `app.kubernetes.io/name`. We can't therefore use the included `mychart.labels`. We could also alter the helper function or in our case simply just add the labels directly.
 * In the deployment templates we reference our secrets by again using the full name `<releasename>-mariadb`.
