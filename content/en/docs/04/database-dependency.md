@@ -163,12 +163,10 @@ mariadb:
 {{% /onlyWhen %}}
 ```
 
-TODO
-
-* service name of mariadb in deployment, hooks and such
-
 
 ```bash
 helm upgrade myapp ./mychart --namespace <namespace>
 ```
+
+Verify the installation and check whether the new database was deployed.
 

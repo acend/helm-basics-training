@@ -184,6 +184,7 @@ ingress:
     - host: mychart-<namespace>.<appdomain>
       paths:
         - path: /
+          pathType: ImplementationSpecific
   tls:
     - secretName: mychart-<namespace>-<appdomain>
       hosts:

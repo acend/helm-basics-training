@@ -160,19 +160,19 @@ spec:
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "DROP TABLE IF EXISTS test;"        
           env:
           - name: MYSQL_DATABASE_HOST
-            value: {{ include "mychart.fullname" . }}-mariadb
+            value: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE
             value: {{ .Values.database.databasename }}
           - name: MYSQL_DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: database-password
-                name: {{ include "mychart.fullname" . }}-mariadb
+                name: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE_USER
             valueFrom:
               secretKeyRef:
                 key: database-user
-                name: {{ include "mychart.fullname" . }}-mariadb
+                name: {{ .Release.Name }}-mariadb
 
 ```
 
@@ -215,19 +215,19 @@ spec:
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "INSERT INTO test (name) VALUES ('helm'), ('kubernetes'), ('openshift'), ('docker');"          
           env:
           - name: MYSQL_DATABASE_HOST
-            value: {{ include "mychart.fullname" . }}-mariadb
+            value: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE
             value: {{ .Values.database.databasename }}
           - name: MYSQL_DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: database-password
-                name: {{ include "mychart.fullname" . }}-mariadb
+                name: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE_USER
             valueFrom:
               secretKeyRef:
                 key: database-user
-                name: {{ include "mychart.fullname" . }}-mariadb
+                name: {{ .Release.Name }}-mariadb
 
 ```
 
