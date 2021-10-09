@@ -1,7 +1,7 @@
 ---
-title: "4.3 Publish your chart"
-weight: 43
-sectionnumber: 4.3
+title: "4.4 Publish your chart"
+weight: 44
+sectionnumber: 4.4
 ---
 
 In this lab we will learn how to publish our Helm chart and make it accessible to the public by using GitHub pages.
