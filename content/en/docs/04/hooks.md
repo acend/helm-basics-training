@@ -166,13 +166,10 @@ spec:
           - name: MYSQL_DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
-                key: database-password
+                key: mariadb-password
                 name: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE_USER
-            valueFrom:
-              secretKeyRef:
-                key: database-user
-                name: {{ .Release.Name }}-mariadb
+            value: {{ .Values.database.databaseuser }}
 
 ```
 
@@ -221,13 +218,10 @@ spec:
           - name: MYSQL_DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
-                key: database-password
+                key: mariadb-password
                 name: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE_USER
-            valueFrom:
-              secretKeyRef:
-                key: database-user
-                name: {{ .Release.Name }}-mariadb
+            value: {{ .Values.database.databaseuser }}
 
 ```
 
