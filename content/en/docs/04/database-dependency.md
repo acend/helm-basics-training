@@ -93,7 +93,11 @@ When adding dependencies to your helm charts there are a couple of things you sh
 
 Let's now replace the mariadb backend, we've manually created in the previous lab with a mariadb chart dependency.
 
-Delete the two templates from the previous lab. `templates/service-mariadb.yaml` and `templates/deployment-mariadb.yaml`
+Delete the three templates from the previous lab.
+
+* `templates/service-mariadb.yaml`
+* `templates/deployment-mariadb.yaml`
+* `templates/secret-mariadb.yaml`
 
 Then we need to add the dependency to the `Chart.yaml`
 
@@ -101,28 +105,10 @@ Then we need to add the dependency to the `Chart.yaml`
 ```yaml
 apiVersion: v2
 name: mychart
-description: A Helm chart for Kubernetes
-
-# A chart can be either an 'application' or a 'library' chart.
-#
-# Application charts are a collection of templates that can be packaged into versioned archives
-# to be deployed.
-#
-# Library charts provide useful utilities or functions for the chart developer. They're included as
-# a dependency of application charts to inject those utilities and functions into the rendering
-# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+description: My awesome app
 type: application
-
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-# Versions are expected to follow Semantic Versioning (https://semver.org/)
 version: 0.1.0
-
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application. Versions are not expected to
-# follow Semantic Versioning. They should reflect the version the application is using.
-# It is recommended to use it with quotes.
-appVersion: "1.16.0"
+appVersion: 1.16.0
 dependencies:
 - condition: mariadb.enabled
   name: mariadb
@@ -136,16 +122,20 @@ maintainers:
 Since we already added the bitnami repository in lab 3 (`helm repo add bitnami https://charts.bitnami.com/bitnami`), after we added the dependency to the Chart.yaml, we can simply run
 
 ```bash
-helm dependency build
+helm dependency build ./mychart/
 ```
 
 This will download the dependent chart to the `charts/` and update the `Chart.lock` file to the latest matching version according to the version defined in the `Chart.yaml`. The Chart.lock contains the exact version of the moment the dependencies were updates, and it's use to recreate that exact version combinations. In order to update the dependency versions of the Chart.lock file you can simply run `helm dependency update`.
 
 
-Next we have to configure the dependency in your `values.yaml`, let's add the following configuration right after the database section from lab 4.2
+Next we have to add the configuration of our mariadb dependency to the `values.yaml`.
+Since the name of our dependency in the `Chart.yaml` is `mariadb`, the configuration of the mariadb must be defined under the mariadb root element.
+Let's add the following configuration right after the database section from lab 4.2
 
 ```yaml
 mariadb:
+  global:
+    imageRegistry: quay.io
   enabled: true
   auth:
     rootPassword: mysuperrootpassword123
@@ -154,7 +144,7 @@ mariadb:
     password: mysuperpassword123
   primary:
     persistence:
-      size: 1Gi
+      enabled: false
 {{% onlyWhen openshift %}}
     podSecurityContext:
       enabled: false
@@ -163,9 +153,36 @@ mariadb:
 {{% /onlyWhen %}}
 ```
 
+After editing the `values.yaml` we can now install the release.
 
 ```bash
-helm upgrade --install myapp ./mychart --namespace <namespace>
+helm install myapp ./mychart --namespace <namespace>
 ```
 
 Verify the installation and check whether the new database was deployed.
+
+{{% alert title="Note" color="primary" %}}
+The whole deployment will take a while until both pods are ready and deployed.
+{{% /alert %}}
+
+Run your tests again as soon as the deployments are ready:
+
+```bash
+helm test myapp --namespace <namespace>
+```
+
+
+## Task {{% param sectionnumber %}}.2: Explore the bitnami mariadb chart
+
+Use the `--dry-run` option or the `template` command to have a look at the new k8s resources introduced by the dependency.
+Explore the [chart source code](https://github.com/bitnami/charts/tree/master/bitnami/mariadb) and have a look at alle the possible [configuration options](https://artifacthub.io/packages/helm/bitnami/mariadb).
+
+
+## Task {{% param sectionnumber %}}.3: Cleanup
+
+If you're happy with the result, clean up your namespace:
+
+```bash
+helm uninstall myapp --namespace <namespace>
+```
+
