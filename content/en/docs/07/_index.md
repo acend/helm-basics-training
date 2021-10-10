@@ -16,7 +16,7 @@ The bitnami mongodb chart is one of the charts, that is very mature, nicely main
 In this lab have a deeper look at the bitnami mongodb chart.
 
 * Use the artifact hub as starting point: <https://artifacthub.io/packages/helm/bitnami/mongodb>
-* You can find the source code for the chart [here]<https://github.com/bitnami/charts/tree/master/bitnami/mongodb>.
+* You can find the source code for the chart [here](https://github.com/bitnami/charts/tree/master/bitnami/mongodb).
 
 Explore the following parts of the chart:
 
