@@ -84,6 +84,7 @@ ingress:
     - host: mychart-<namespace>.<appdomain>
       paths:
         - path: /
+          pathType: Prefix
   tls:
     - secretName: mychart-<namespace>-<appdomain>
       hosts:
@@ -170,6 +171,7 @@ ingress:
     - host: mychart-<namespace>.<appdomain>
       paths:
         - path: /
+          pathType: ImplementationSpecific
   tls:
     - secretName: mychart-<namespace>-<appdomain>
       hosts:
@@ -372,7 +374,7 @@ helm install myapp ./mychart --namespace <namespace>
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
 
 ```bash
-helm upgrade myfirstrelease --namespace <namespace> ./mychart
+helm upgrade <existingrelease> --namespace <namespace> ./mychart
 ```
 
 Check whether the ingress was successfully deployed by accessing the URL `http://mychart-<namespace>.<appdomain>/`
