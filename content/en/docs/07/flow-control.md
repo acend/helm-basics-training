@@ -62,6 +62,18 @@ With the `range` keyword we can define for loop similar constructs:
 
 You can see immediatly that the scope inside the range block changed. To access the parent scope, we can use `$`. For example `$.Values.someList` would reference the same list.
 
+If you want to have information about the index in your loop, you can extend it like this:
+
+```yaml
+
+    {{- range $i, $a := .Values.someList }}
+    - {{ . | title | quote }}
+    {{- end }}    
+
+```
+
+Like this `$i` will hold the index during the iterations and `$a` will hold the context.
+
 
 ## Task {{% param sectionnumber %}}.1: Exercise
 
