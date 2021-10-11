@@ -311,22 +311,16 @@ spec:
 
 Helm has the capability to test the deployed Kubernetes resources.
 In the `/test` directory we can define multiple test jobs for the deployed Helm chart.
-A test job is defined by a Pod resource which specifies a container with a given command to run. If the container exits succesfully (exit code 0), the test was successfull. Further the test Pod must must contain following annotation `helm.sh/hook: test` to run during the Helm deployment.
+A test job is defined by a Pod resource which specifies a container with a given command to run. If the container exits successfully (exit code 0), the test was successful. Further the test Pod must contain following annotation `helm.sh/hook: test` to run during the Helm deployment.
 Inside the `/test` directory you can find already a simple test job. This test job starts a busybox image with a wget command to check if the deployed app is reachable by its service name.
 
 ```yaml
-{{- $fullName := include "acend-training-chart.fullname" . -}}
-{{- $all := . -}}
-{{- $servicePort := .Values.acendTraining.servicePort -}}
-{{- range .Values.acendTraining.deployments }}
----
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ $fullName }}-{{ .name }}-test-connection"
+  name: "{{ include "mychart.fullname" . }}-test-connection"
   labels:
-    {{- include "acend-training-chart.labels" $all | nindent 4 }}
-    app.kubernetes.io/name: {{ include "acend-training-chart.name" $all }}-{{ .name }}
+    {{- include "mychart.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -334,10 +328,21 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ $fullName }}-{{ .name }}:{{ $servicePort }}']
+      args: ['{{ include "mychart.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never
-{{- end }}
 ```
+
+You can execute the tests on a given release with the following command:
+
+```bash
+helm test myapp --namespace <namespace>
+```
+
+What tests are useful:
+
+* Verify the configuration, eg. username and passwords are correct
+* Make sure the deployed application is reachable over the service
+* Run functional smoke tests for example logging into an application
 
 
 ## Task {{% param sectionnumber %}}.1: Change Chart.yaml

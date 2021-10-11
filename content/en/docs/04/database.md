@@ -54,10 +54,10 @@ You can use the existing templates (`deployment.yaml`, `service.yaml`) as a star
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mychart-mariadb
+  name: myapp-mariadb
   labels:
-    app.kubernetes.io/name: mychart-mariadb
-    app.kubernetes.io/instance: mychart
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/instance: myapp
     helm.sh/chart: mychart-0.1.0
     app.kubernetes.io/version: "1.16.0"
     app.kubernetes.io/managed-by: Helm
@@ -65,15 +65,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: mychart-mariadb
-      app.kubernetes.io/instance: mychart
+      app.kubernetes.io/name: mariadb
+      app.kubernetes.io/instance: myapp
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: mychart-mariadb
-        app.kubernetes.io/instance: mychart
+        app.kubernetes.io/name: mariadb
+        app.kubernetes.io/instance: myapp
     spec:
       containers:
       - image: "registry.puzzle.ch/docker.io/mariadb:10.5"
@@ -83,25 +83,19 @@ spec:
           - "--ignore-db-dir=lost+found"
         env:
         - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              key: database-user
-              name: mychart-mariadb
+          value: "acend"
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: database-password
-              name: mychart-mariadb
+              key: mariadb-password
+              name: myapp-mariadb
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: database-root-password
-              name: mychart-mariadb
+              key: mariadb-root-password
+              name: myapp-mariadb
         - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              key: database-name
-              name: mychart-mariadb
+          value: "acenddb"
         livenessProbe:
           tcpSocket:
             port: 3306
@@ -126,23 +120,23 @@ You have to use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb:10.5` as th
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myfirstrelease-mychart-mariadb
+  name: myapp-mariadb
   labels:
-    app.kubernetes.io/name: mychart-mariadb
-    app.kubernetes.io/instance: myfirstrelease
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/instance: myapp
     # additional Labels ...
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: mychart-mariadb
-      app.kubernetes.io/instance: myfirstrelease
+      app.kubernetes.io/name: mariadb
+      app.kubernetes.io/instance: myapp
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: mychart-mariadb
-        app.kubernetes.io/instance: myfirstrelease
+        app.kubernetes.io/name: mariadb
+        app.kubernetes.io/instance: myapp
     spec:
       containers:
       - image: docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb:10.5
@@ -151,25 +145,19 @@ spec:
           - "--ignore-db-dir=lost+found"
         env:
         - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              key: database-user
-              name: myfirstrelease-mychart-mariadb
+          value: "acend"
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: database-password
-              name: myfirstrelease-mychart-mariadb
+              key: mariadb-password
+              name: myapp-mariadb
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: database-root-password
-              name: myfirstrelease-mychart-mariadb
+              key: mariadb-root-password
+              name: myapp-mariadb
         - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              key: database-name
-              name: myfirstrelease-mychart-mariadb
+          value: "acenddb"
         livenessProbe:
           tcpSocket:
             port: 3306
@@ -193,19 +181,17 @@ You also have to create a template for the secret:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: myfirstrelease-mychart-mariadb
+  name: myapp-mariadb
   labels:
-    app.kubernetes.io/name: mychart-mariadb
-    app.kubernetes.io/instance: myfirstrelease
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/instance: myapp
     # additional Labels ...
 data:
-  database-name: YWNlbmRkYg==
-  database-password: bXlzdXBlcnBhc3N3b3JkMTIz
-  database-root-password: bXlzdXBlcnJvb3RwYXNzd29yZDEyMw==
-  database-user: YWNlbmQ=
+  mariadb-root-password: "bXlzdXBlcnJvb3RwYXNzd29yZDEyMw=="
+  mariadb-password: "bXlzdXBlcnBhc3N3b3JkMTIz"
 ```
 
-When creating the template files, make sure that a user can specify the `database-name`, `database-password`, `database-root-password` and `database-user` from the secret using a variable.
+When creating the template files, make sure that a user can specify the `mariadb-password` and `mariadb-root-password` from the secret using a variable.
 
 To connect to the database, we also need a service:
 
@@ -213,10 +199,10 @@ To connect to the database, we also need a service:
 apiVersion: v1
 kind: Service
 metadata:
-  name: myfirstrelease-mychart-mariadb
+  name: myapp-mariadb
   labels:
-    app.kubernetes.io/name: mychart-mariadb
-    app.kubernetes.io/instance: myfirstrelease
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/instance: myapp
     # additional Labels ...
 spec:
   ports:
@@ -225,8 +211,8 @@ spec:
       protocol: TCP
       name: mariadb
   selector:
-    app.kubernetes.io/name: mychart-mariadb
-    app.kubernetes.io/instance: myfirstrelease
+    app.kubernetes.io/name: mariadb
+    app.kubernetes.io/instance: myapp
   clusterIP: None
 ```
 
@@ -241,17 +227,18 @@ The template file for the MariaDB database `templates/deployment-mariadb.yaml` c
 
 The following points need to be taken into consideration when creating the template:
 
-* The helper `mychart.fullname` will return `release-mychart`. Since our first deployment for the `example-web-python` application already uses this name, we use `-mariadb` as a postfix. As an alternative we could also alter the fullname helper to accept an additional name, which would be different for each deployment.
+* The helper `mychart.fullname` will return `release-mychart`. Since our first deployment for the `example-web-python` application already uses this name, we have to choose a name for the mariadb instead.
+  * Let's take `<releasename>-mariadb` instead. As an alternative we could also alter the fullname helper to accept an additional name, which would be different for each deployment.
 * The same applies to the label `app.kubernetes.io/name`. We can't therefore use the included `mychart.labels`. We could also alter the helper function or in our case simply just add the labels directly.
-* In the deployment templates we reference our secrets by again using the full name `{{ include "mychart.fullname" . }}-mariadb`.
+* In the deployment templates we reference our secrets by again using the full name `<releasename>-mariadb`.
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "mychart.fullname" . }}-mariadb
+  name: {{ .Release.Name }}-mariadb
   labels:
-    app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb
+    app.kubernetes.io/name: mariadb
     app.kubernetes.io/instance: {{ .Release.Name }}
     helm.sh/chart: {{ include "mychart.chart" . }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -260,7 +247,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb
+      app.kubernetes.io/name: mariadb
       app.kubernetes.io/instance: {{ .Release.Name }}
   strategy:
     type: Recreate
@@ -271,7 +258,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb
+        app.kubernetes.io/name: mariadb
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- with .Values.database.imagePullSecrets }}
@@ -289,25 +276,19 @@ spec:
           - "--ignore-db-dir=lost+found"
         env:
         - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              key: database-user
-              name: {{ include "mychart.fullname" . }}-mariadb
+          value: {{ .Values.database.databaseuser }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: database-password
-              name: {{ include "mychart.fullname" . }}-mariadb
+              key: mariadb-password
+              name: {{ .Release.Name }}-mariadb
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              key: database-root-password
-              name: {{ include "mychart.fullname" . }}-mariadb
+              key: mariadb-root-password
+              name: {{ .Release.Name }}-mariadb
         - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              key: database-name
-              name: {{ include "mychart.fullname" . }}-mariadb
+          value: {{ .Values.database.databasename }}
         livenessProbe:
           tcpSocket:
             port: 3306
@@ -342,18 +323,16 @@ The secret `templates/secret-mariadb.yaml` file should look like this:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ include "mychart.fullname" . }}-mariadb
+  name: {{ .Release.Name }}-mariadb
   labels:
-    app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb
+    app.kubernetes.io/name: mariadb
     app.kubernetes.io/instance: {{ .Release.Name }}
     helm.sh/chart: {{ include "mychart.chart" . }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-  database-name: {{ .Values.database.databasename | b64enc }}
-  database-password: {{ .Values.database.databasepassword | b64enc }}
-  database-root-password: {{ .Values.database.databaserootpassword | b64enc }}
-  database-user: {{ .Values.database.databaseuser | b64enc }}
+  mariadb-password: {{ .Values.database.databasepassword | b64enc }}
+  mariadb-root-password: {{ .Values.database.databaserootpassword | b64enc }}
 ```
 
 Note the `| b64enc`, which is a built-in function to encode strings with base64.
@@ -364,9 +343,9 @@ The service at `templates/service-mariadb.yaml` for our MySQL database should lo
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "mychart.fullname" . }}-mariadb
+  name: {{ .Release.Name }}-mariadb
   labels:
-    app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb
+    app.kubernetes.io/name: mariadb
     app.kubernetes.io/instance: {{ .Release.Name }}
     helm.sh/chart: {{ include "mychart.chart" . }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -378,7 +357,7 @@ spec:
       protocol: TCP
       name: mariadb
   selector:
-    app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb
+    app.kubernetes.io/name: mariadb
     app.kubernetes.io/instance: {{ .Release.Name }}
   clusterIP: None
 ```
@@ -495,28 +474,22 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: MYSQL_DATABASE_NAME
-            valueFrom:
-              secretKeyRef:
-                key: database-name
-                name: {{ include "mychart.fullname" . }}-mariadb
+          - name: MYSQL_DATABASE_USER
+            value: {{ .Values.database.databaseuser }}
           - name: MYSQL_DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
-                key: database-password
-                name: {{ include "mychart.fullname" . }}-mariadb
+                key: mariadb-password
+                name: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
-                key: database-root-password
-                name: {{ include "mychart.fullname" . }}-mariadb
-          - name: MYSQL_DATABASE_USER
-            valueFrom:
-              secretKeyRef:
-                key: database-user
-                name: {{ include "mychart.fullname" . }}-mariadb
+                key: mariadb-root-password
+                name: {{ .Release.Name }}-mariadb
+          - name: MYSQL_DATABASE_NAME
+            value: {{ .Values.database.databasename }}
           - name: MYSQL_URI
-            value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ include "mychart.fullname" . }}-mariadb/$(MYSQL_DATABASE_NAME)
+            value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE_NAME)
           ports:
             - name: http
               containerPort: 5000
@@ -620,7 +593,7 @@ Using DB:  mysql://acend:mysuperpassword123@myapp-mychart-mariadb/acenddb
 
 ## Task {{% param sectionnumber %}}.4: Add a test to your chart
 
-As we learned in the previous section, Helm gives us the availability to run automated test during the Helm deplyoment.
+As we learned in the previous section, Helm gives us the availability to run automated test during the Helm deployment.
 Now it's time to write our first test.
 The test should meet following requirements:
 
@@ -632,7 +605,7 @@ The test should meet following requirements:
 * Command: `mysql --host=$MYSQL_DATABASE_HOST --user=$MYSQL_DATABASE_USER --password=$MYSQL_DATABASE_PASSWORD`
 * Annotation: `helm.sh/hook: test`
 
-You can copy the test file from the previous section and start to modify it.
+You can copy the test file `templates/tests/test-connection.yaml` to `templates/tests/test-connection-database.yaml` from the previous section and start to modify it.
 
 
 ### Solution Task {{% param sectionnumber %}}.4
@@ -662,17 +635,14 @@ spec:
       args: ['--host=$(MYSQL_DATABASE_HOST)', '--user=$(MYSQL_DATABASE_USER)', '--password=$(MYSQL_DATABASE_PASSWORD)']
       env:
       - name: MYSQL_DATABASE_HOST
-        value: {{ include "mychart.fullname" . }}-mariadb
+        value: {{ .Release.Name }}-mariadb
       - name: MYSQL_DATABASE_PASSWORD
         valueFrom:
           secretKeyRef:
-            key: database-password
-            name: {{ include "mychart.fullname" . }}-mariadb
+            key: mariadb-password
+            name: {{ .Release.Name }}-mariadb
       - name: MYSQL_DATABASE_USER
-        valueFrom:
-          secretKeyRef:
-            key: database-user
-            name: {{ include "mychart.fullname" . }}-mariadb
+        value: {{ .Values.database.databaseuser }}
   restartPolicy: Never
 ```
 
@@ -685,28 +655,23 @@ helm upgrade myapp ./mychart --namespace <namespace>
 To run the test manually:
 
 ```bash
-helm test myapp
+helm test myapp --namespace <namespace>
 ```
 
 Then you should see following output
 
 ```bash
-Pod mychart--test-connection pending
-Pod mychart--test-connection pending
-Pod mychart--test-connection pending
-Pod mychart--test-connection succeeded
-NAME: mychart
-LAST DEPLOYED: Fri Sep  3 11:15:28 2021
-NAMESPACE: cschlatter-helm-lab
+NAME: myapp
+LAST DEPLOYED: Sun Oct 10 15:46:33 2021
+NAMESPACE: student3
 STATUS: deployed
-REVISION: 1
-TEST SUITE:     mychart--test-connection
-Last Started:   Fri Sep  3 11:16:43 2021
-Last Completed: Fri Sep  3 11:16:49 2021
+REVISION: 4
+TEST SUITE:     myapp-mychart--test-connection
+Last Started:   Sun Oct 10 15:46:44 2021
+Last Completed: Sun Oct 10 15:46:46 2021
 Phase:          Succeeded
-NOTES:
-Welcome to the helm training chart
-This chart contains a fully working MariaDB.
+TEST SUITE:     myapp-mychart-test-connection
+Last Started:   Sun Oct 10 15:46:46 2021
 ```
 
 
@@ -717,5 +682,3 @@ If you're happy with the result, clean up your namespace:
 ```bash
 helm uninstall myapp --namespace <namespace>
 ```
-
-Continue with the lab "[Publish your chart](../publish/)".

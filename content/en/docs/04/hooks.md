@@ -1,7 +1,7 @@
 ---
-title: "4.4 Helm hooks"
-weight: 44
-sectionnumber: 4.4
+title: "4.5 Helm hooks"
+weight: 45
+sectionnumber: 4.5
 ---
 
 In the previous lab we learned how to deploy our python example application and connect it to a MariaDB. In this chapter we are going to look at a mechanism of Helm called hooks, which let's chart developers intervene / interact at certain points in a release's life cycle.
@@ -57,14 +57,14 @@ Hook weights can be positive or negative numbers but must be represented as stri
 
 ## Task {{% param sectionnumber %}}.2: Example hook
 
-In this example we would like to populate our database with some test data before finishing our install / upgrade life cycle. We can use a helm hook to inject our logic after installing or upgrading our helm release. Take a look at the following example hook created:
+In this example we would like to populate our database with some test data before finishing our install / upgrade life cycle. We can use a helm hook to inject our logic after installing or upgrading our helm release. Create the following hook `templates/hook.yaml`:
 
 ```yaml
 
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}"
+  name: "{{ .Release.Name }}-post-install-hook"
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -110,6 +110,19 @@ Notice the `metadata.annotations` block which tells Helm how the hook should int
 
 ```
 
+Let's install the release and check whether the hook was deployed.
+First open a second terminal and run the following command:
+
+```bash
+kubectl get pod -w --namespace <namespace>
+```
+
+```bash
+helm install myapp ./mychart --namespace <namespace>
+```
+
+The output of the `kubectl get pod` command should show the deployment of the `post-install-hook` pod.
+
 
 ## Task {{% param sectionnumber %}}.3: Write your own hook
 
@@ -130,7 +143,7 @@ First Post-install / -upgrade hook:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}"
+  name: "{{ .Release.Name }}-hook1"
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -160,19 +173,16 @@ spec:
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "DROP TABLE IF EXISTS test;"        
           env:
           - name: MYSQL_DATABASE_HOST
-            value: {{ include "mychart.fullname" . }}-mariadb
+            value: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE
             value: {{ .Values.database.databasename }}
           - name: MYSQL_DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
-                key: database-password
-                name: {{ include "mychart.fullname" . }}-mariadb
+                key: mariadb-password
+                name: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE_USER
-            valueFrom:
-              secretKeyRef:
-                key: database-user
-                name: {{ include "mychart.fullname" . }}-mariadb
+            value: {{ .Values.database.databaseuser }}
 
 ```
 
@@ -183,7 +193,7 @@ Second Post-install / -upgrade hook:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}"
+  name: "{{ .Release.Name }}-hook1"
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -215,23 +225,26 @@ spec:
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "INSERT INTO test (name) VALUES ('helm'), ('kubernetes'), ('openshift'), ('docker');"          
           env:
           - name: MYSQL_DATABASE_HOST
-            value: {{ include "mychart.fullname" . }}-mariadb
+            value: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE
             value: {{ .Values.database.databasename }}
           - name: MYSQL_DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
-                key: database-password
-                name: {{ include "mychart.fullname" . }}-mariadb
+                key: mariadb-password
+                name: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE_USER
-            valueFrom:
-              secretKeyRef:
-                key: database-user
-                name: {{ include "mychart.fullname" . }}-mariadb
+            value: {{ .Values.database.databaseuser }}
 
 ```
 
 {{% /details %}}
+
+Deploy the new hooks with the following command:
+
+```bash
+helm upgrade myapp ./mychart --namespace <namespace>
+```
 
 
 ## Task {{% param sectionnumber %}}.4: Verify your hook
@@ -240,7 +253,7 @@ When you created your hooks, install or upgrade your helm release with `helm ins
 
 ```s
 
-kubectl --namespace <namespace> exec -it <mariadb-podname> -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"   
+kubectl --namespace <namespace> exec -it myapp-mariadb-0 -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"   
 
 +----+------------+
 | id | name       |
@@ -259,8 +272,6 @@ kubectl --namespace <namespace> exec -it <mariadb-podname> -- mysql --host=local
 
 Uninstall the app
 
-```s
-
-helm uninstall <releaseName>
-
+```bash
+helm uninstall myapp --namespace <namespace>
 ```
