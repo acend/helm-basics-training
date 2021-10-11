@@ -152,7 +152,6 @@ metadata:
   annotations:
     "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-weight": "-5"
-    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
     metadata:
@@ -193,7 +192,7 @@ Second Post-install / -upgrade hook:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ .Release.Name }}-hook1"
+  name: "{{ .Release.Name }}-hook2"
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -202,7 +201,6 @@ metadata:
   annotations:
     "helm.sh/hook": post-install, post-upgrade
     "helm.sh/hook-weight": "10"
-    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
     metadata:
