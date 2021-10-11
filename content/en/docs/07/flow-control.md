@@ -140,10 +140,10 @@ spec:
           command: ['/bin/bash', '-c']
           args: 
           - >
-            {{- range .Values.tables }}
+            {{- range $j, $b := .Values.tables }}
               mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "CREATE TABLE IF NOT EXISTS {{ .name }} (
                 {{- range $i, $a := .rows }}
-                  {{ .name }} {{ .type }}{{ if ne $i (sub (len $.Values.tables ) 1)  }},{{ end }}
+                  {{ .name }} {{ .type }}{{ if ne $i (sub (len $b.rows ) 1) }},{{ end }}
                 {{- end }}
                 );"
             {{- end }}
