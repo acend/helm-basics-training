@@ -186,7 +186,7 @@ The autocompletion feature can be enabled for `bash`, `zsh` and `fish`.
 The following example enables autocompletion in the current `bash`:
 
 ```bash
-source <(completion bash)
+source <(helm completion bash)
 ```
 
 After typing `helm` you can autocomplete the commands and subcommands with a double tap the tabulator key. This works even for installed releases on the cluster: A double tab after `helm get all` prints out all installed helm releases.
