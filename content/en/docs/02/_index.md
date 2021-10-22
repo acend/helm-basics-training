@@ -18,11 +18,15 @@ helm create mychart
 You will now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
 
 {{% onlyWhen mobi %}}
-Because you cannot pull the `nginx` container image on your cluster, you have to use the `docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to contain the following part:
+Because you cannot pull the `nginx` container image on your cluster, you have to use the `<docker-registry-host>/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to contain the following part:
+
+{{% alert title="Note" color="primary" %}}
+We are going to use `<docker-registry-host>` as a placeholder for the hostname of the docker registry. Each time you see a `<docker-registry-host>` somewhere in a command or file, replace it with the hostname provided by your trainer.
+{{% /alert %}}
 
 ```yaml
 image:
-  repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/nginx
+  repository: <docker-registry-host>/puzzle/k8s/kurs/nginx
   tag: stable
   pullPolicy: IfNotPresent
 ```

@@ -91,21 +91,22 @@ As we cannot access these images, we'll have to overwrite them. Add the followin
 
 ```yaml
 image:
-  registry: docker-registry.mobicorp.ch
+  registry: <docker-registry-host>
   repository: puzzle/helm-techlab/wordpress
 
 mariadb:
   image:
-    registry: docker-registry.mobicorp.ch
+    registry: <docker-registry-host>
     repository: puzzle/helm-techlab/mariadb
 ```
+Don't forget to replace `<docker-registry-host>` with the value provided by your trainer.
 
 You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above. Your final `values.yaml` should look like:
 
 ```yaml
 ---
 image:
-  registry: docker-registry.mobicorp.ch
+  registry: <docker-registry-host>
   repository: puzzle/helm-techlab/wordpress
 
 persistence:
@@ -121,7 +122,7 @@ ingress:
 
 mariadb:
   image:
-    registry: docker-registry.mobicorp.ch
+    registry: <docker-registry-host>
     repository: puzzle/helm-techlab/mariadb
   primary:
     persistence:
