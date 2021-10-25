@@ -113,7 +113,9 @@ spec:
 {{% /onlyWhenNot %}}
 
 {{% onlyWhen mobi %}}
-You have to use `docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb:10.5` as the container image.
+You have to use `<docker-registry-host>/puzzle/k8s/kurs/mariadb:10.5` as the container image.
+
+Replace `<docker-registry-host>` with the value provided by your trainer.
 
 ```yaml
 ---
@@ -139,7 +141,7 @@ spec:
         app.kubernetes.io/instance: myapp
     spec:
       containers:
-      - image: docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb:10.5
+      - image: <docker-registry-host>/puzzle/k8s/kurs/mariadb:10.5
         name: mariadb
         args:
           - "--ignore-db-dir=lost+found"
@@ -395,7 +397,7 @@ database:
   databasepassword: mysuperpassword123
   databaserootpassword: mysuperrootpassword123
   image:
-    repository: docker-registry.mobicorp.ch/puzzle/k8s/kurs/mariadb
+    repository: <docker-registry-host>/puzzle/k8s/kurs/mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
   imagePullSecrets: []
@@ -406,6 +408,8 @@ database:
   tolerations: []
   affinity: {}
 ```
+
+Don't forget to replace `<docker-registry-host>` with the value provided by your trainer.
 
 {{% /onlyWhen %}}
 

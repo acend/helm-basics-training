@@ -20,9 +20,7 @@ Windows quick hack: Copy the `helm` binary directly into the folder `C:\Windows`
 
 If the `$PATH` variable doesn't contain a suitable directory, it can be changed in the advanced system settings:
 
-* [Windows 7](http://geekswithblogs.net/renso/archive/2009/10/21/how-to-set-the-windows-path-in-windows-7.aspx)
-* [Windows 8](http://www.itechtics.com/customize-windows-environment-variables/)
-* [Windows 10](http://techmixx.de/windows-10-umgebungsvariablen-bearbeiten/)
+* [How to set the path and environment variables in Windows](https://www.computerhope.com/issues/ch000549.htm)
 
 {{% onlyWhen mobi %}}
 
@@ -38,37 +36,39 @@ Set your HTTP proxy environment variables so that a chart repository can be adde
 In Windows cmd:
 
 ```bash
-setx HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-setx HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-setx NO_PROXY="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
-setx http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-setx https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-setx no_proxy="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
+setx HTTP_PROXY="http://<username>:<password>@<proxy-and-port>"
+setx HTTPS_PROXY="http://<username>:<password>@<proxy-and-port>"
+setx NO_PROXY="<no-proxy-list>"
+setx http_proxy="http://<username>:<password>@<proxy-and-port>"
+setx https_proxy="http://<username>:<password>@<proxy-and-port>"
+setx no_proxy="<no-proxy-list>"
 ```
 
 In Windows Powershell:
 
 ```bash
-$env:HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-$env:HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-$env:NO_PROXY="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
-$env:http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-$env:https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-$env:no_proxy="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
+$env:HTTP_PROXY="http://<username>:<password>@<proxy-and-port>"
+$env:HTTPS_PROXY="http://<username>:<password>@<proxy-and-port>"
+$env:NO_PROXY="<no-proxy-list>"
+$env:http_proxy="http://<username>:<password>@<proxy-and-port>"
+$env:https_proxy="http://<username>:<password>@<proxy-and-port>"
+$env:no_proxy="<no-proxy-list>"
 ```
 
 In Git Bash:
 
 ```bash
-export HTTP_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-export HTTPS_PROXY="http://<username>:<password>@dirproxy.mobi.ch:80"
-export NO_PROXY="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
-export http_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-export https_proxy="http://<username>:<password>@dirproxy.mobi.ch:80"
-export no_proxy="localhost,127.0.0.1,.mobicorp.ch,.mobicorp.test,.mobi.ch"
+export HTTP_PROXY="http://<username>:<password>@<proxy-and-port>"
+export HTTPS_PROXY="http://<username>:<password>@<proxy-and-port>"
+export NO_PROXY="<no-proxy-list>"
+export http_proxy="http://<username>:<password>@<proxy-and-port>"
+export https_proxy="http://<username>:<password>@<proxy-and-port>"
+export no_proxy="<no-proxy-list>"
 ```
 
 Replace `<username`> and `<password>` with your credentials. If you have special characters in your password, escape them with their corresponding hexadecimal values according to [this article](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters).
+
+Replace the other variables with the values provided by your trainer.
 {{% /onlyWhen %}}
 
 
