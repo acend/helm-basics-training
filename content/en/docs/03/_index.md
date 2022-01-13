@@ -71,9 +71,11 @@ mariadb:
 {{% /onlyWhen %}}
 ```
 
+{{% onlyWhenNot mobi %}}
 {{% alert title="Note" color="primary" %}}
 Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
 {{% /alert %}}
+{{% /onlyWhen %}}
 
 {{% onlyWhen mobi %}}
 It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
@@ -91,22 +93,21 @@ As we cannot access these images, we'll have to overwrite them. Add the followin
 
 ```yaml
 image:
-  registry: <docker-registry-host>
+  registry: <registry-url>
   repository: puzzle/helm-techlab/wordpress
 
 mariadb:
   image:
-    registry: <docker-registry-host>
+    registry: <registry-url>
     repository: puzzle/helm-techlab/mariadb
 ```
-Don't forget to replace `<docker-registry-host>` with the value provided by your trainer.
 
 You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above. Your final `values.yaml` should look like:
 
 ```yaml
 ---
 image:
-  registry: <docker-registry-host>
+  registry: <registry-url>
   repository: puzzle/helm-techlab/wordpress
 
 persistence:
@@ -122,14 +123,14 @@ ingress:
 
 mariadb:
   image:
-    registry: <docker-registry-host>
+    registry: <registry-url>
     repository: puzzle/helm-techlab/mariadb
   primary:
     persistence:
       size: 1Gi
 ```
 
-Make sure to replace `<namespace>`, `<appdomain>` and `<docker-registry-host>`.
+Make sure to replace `<namespace>`.
 
 The image tag remains as already defined in the orginial [`values.yaml`](https://github.com/bitnami/charts/blob/master/bitnami/wordpress/values.yaml) file from the chart.
 

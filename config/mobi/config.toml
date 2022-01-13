@@ -9,6 +9,29 @@ imagePrefix = "puzzle_"
 copyright = "Puzzle ITC GmbH"
 url = "https://www.puzzle.ch"
 
+[params.replaceContent]
+allowedHrefHosts = ['localhost', 'puzzle.ch', 'acend.ch']
+
+[[params.replaceContent.placeholders]]
+placeholder = "<registry-url>"
+queryParam = "r"
+defaultValue = "<registry-url>"
+
+[[params.replaceContent.placeholders]]
+placeholder = "<proxy>:<port>"
+queryParam = "p"
+defaultValue = "<proxy>:<port>"
+
+[[params.replaceContent.placeholders]]
+placeholder = "<noproxy-list>"
+queryParam = "n"
+defaultValue = "<noproxy-list>"
+
+[[params.replaceContent.placeholders]]
+placeholder = "<appdomain>"
+queryParam = "a"
+defaultValue = "<appdomain>"
+
 ############################## social links ##############################
 [params.links]
 [[params.links.developer]]
