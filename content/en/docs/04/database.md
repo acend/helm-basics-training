@@ -437,7 +437,7 @@ Add the following environment variables:
 
 Change your `templates/deployment.yaml` and include the new environment variables:
 
-{{< highlight YAML "hl_lines=36-58" >}}
+{{< highlight YAML "hl_lines=36-52" >}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

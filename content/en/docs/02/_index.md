@@ -149,7 +149,7 @@ spec:
 Thus, we need to change this value inside our `mychart/values.yaml` file. This is also where we enable the TLS part:
 
 {{% alert title="Note" color="primary" %}}
-Make sure to replace the `<namespace>` and `<appdomain>` accordingly.
+Make sure to replace the `<namespace>` and `<appdomain>` accordingly. `<appdomain>` will be provided by the trainer.
 {{% /alert %}}
 
 {{% onlyWhen openshift %}}
@@ -215,12 +215,11 @@ ingress:
 
 {{% /onlyWhen %}}
 
-{{% alert title="Note" color="primary" %}}
-Make sure to replace the `<namespace>` accordingly.
 {{% onlyWhen mobi %}}
+{{% alert title="Note" color="primary" %}}
 It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
-{{% /onlyWhen %}}
 {{% /alert %}}
+{{% /onlyWhen %}}
 
 Apply the change by upgrading our release:
 

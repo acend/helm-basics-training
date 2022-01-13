@@ -73,9 +73,9 @@ mariadb:
 
 {{% onlyWhenNot mobi %}}
 {{% alert title="Note" color="primary" %}}
-Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
+Make sure to replace the `<namespace>` and `<appdomain>` accordingly.
 {{% /alert %}}
-{{% /onlyWhen %}}
+{{% /onlyWhenNot %}}
 
 {{% onlyWhen mobi %}}
 It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
