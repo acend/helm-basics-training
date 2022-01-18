@@ -36,39 +36,37 @@ Set your HTTP proxy environment variables so that a chart repository can be adde
 In Windows cmd:
 
 ```bash
-setx HTTP_PROXY="http://<username>:<password>@<proxy-and-port>"
-setx HTTPS_PROXY="http://<username>:<password>@<proxy-and-port>"
-setx NO_PROXY="<no-proxy-list>"
-setx http_proxy="http://<username>:<password>@<proxy-and-port>"
-setx https_proxy="http://<username>:<password>@<proxy-and-port>"
-setx no_proxy="<no-proxy-list>"
+setx HTTP_PROXY="http://<username>:<password>@<proxy>:<port>"
+setx HTTPS_PROXY="http://<username>:<password>@<proxy>:<port>"
+setx NO_PROXY="<noproxy-list>"
+setx http_proxy="http://<username>:<password>@<proxy>:<port>"
+setx https_proxy="http://<username>:<password>@<proxy>:<port>"
+setx no_proxy="<noproxy-list>"
 ```
 
 In Windows Powershell:
 
 ```bash
-$env:HTTP_PROXY="http://<username>:<password>@<proxy-and-port>"
-$env:HTTPS_PROXY="http://<username>:<password>@<proxy-and-port>"
-$env:NO_PROXY="<no-proxy-list>"
-$env:http_proxy="http://<username>:<password>@<proxy-and-port>"
-$env:https_proxy="http://<username>:<password>@<proxy-and-port>"
-$env:no_proxy="<no-proxy-list>"
+$env:HTTP_PROXY="http://<username>:<password>@<proxy>:<port>"
+$env:HTTPS_PROXY="http://<username>:<password>@<proxy>:<port>"
+$env:NO_PROXY="<noproxy-list>"
+$env:http_proxy="http://<username>:<password>@<proxy>:<port>"
+$env:https_proxy="http://<username>:<password>@<proxy>:<port>"
+$env:no_proxy="<noproxy-list>"
 ```
 
 In Git Bash:
 
 ```bash
-export HTTP_PROXY="http://<username>:<password>@<proxy-and-port>"
-export HTTPS_PROXY="http://<username>:<password>@<proxy-and-port>"
-export NO_PROXY="<no-proxy-list>"
-export http_proxy="http://<username>:<password>@<proxy-and-port>"
-export https_proxy="http://<username>:<password>@<proxy-and-port>"
-export no_proxy="<no-proxy-list>"
+export HTTP_PROXY="http://<username>:<password>@<proxy>:<port>"
+export HTTPS_PROXY="http://<username>:<password>@<proxy>:<port>"
+export NO_PROXY="<noproxy-list>"
+export http_proxy="http://<username>:<password>@<proxy>:<port>"
+export https_proxy="http://<username>:<password>@<proxy>:<port>"
+export no_proxy="<noproxy-list>"
 ```
 
 Replace `<username`> and `<password>` with your credentials. If you have special characters in your password, escape them with their corresponding hexadecimal values according to [this article](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters).
-
-Replace the other variables with the values provided by your trainer.
 {{% /onlyWhen %}}
 
 

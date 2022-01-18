@@ -18,15 +18,11 @@ helm create mychart
 You will now find a `mychart` directory with the newly created chart. It already is a valid and fully functional chart which deploys a nginx instance. Have a look at the generated files and their content. For an explanation of the files, visit the [Helm Developer Documentation](https://docs.helm.sh/developing_charts/#the-chart-file-structure). In a later section you'll find all the information about Helm templates.
 
 {{% onlyWhen mobi %}}
-Because you cannot pull the `nginx` container image on your cluster, you have to use the `<docker-registry-host>/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to contain the following part:
-
-{{% alert title="Note" color="primary" %}}
-We are going to use `<docker-registry-host>` as a placeholder for the hostname of the docker registry. Each time you see a `<docker-registry-host>` somewhere in a command or file, replace it with the hostname provided by your trainer.
-{{% /alert %}}
+Because you cannot pull the `nginx` container image on your cluster, you have to use the `<registry-url>/puzzle/k8s/kurs/nginx` container image. Change your `values.yaml` to contain the following part:
 
 ```yaml
 image:
-  repository: <docker-registry-host>/puzzle/k8s/kurs/nginx
+  repository: <registry-url>/puzzle/k8s/kurs/nginx
   tag: stable
   pullPolicy: IfNotPresent
 ```
@@ -153,7 +149,7 @@ spec:
 Thus, we need to change this value inside our `mychart/values.yaml` file. This is also where we enable the TLS part:
 
 {{% alert title="Note" color="primary" %}}
-Make sure to replace the `<namespace>` and `<appdomain>` accordingly.
+Make sure to replace the `<namespace>` and `<appdomain>` accordingly. `<appdomain>` will be provided by the trainer.
 {{% /alert %}}
 
 {{% onlyWhen openshift %}}
@@ -219,12 +215,11 @@ ingress:
 
 {{% /onlyWhen %}}
 
-{{% alert title="Note" color="primary" %}}
-Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
 {{% onlyWhen mobi %}}
+{{% alert title="Note" color="primary" %}}
 It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
-{{% /onlyWhen %}}
 {{% /alert %}}
+{{% /onlyWhen %}}
 
 Apply the change by upgrading our release:
 

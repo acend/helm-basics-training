@@ -18,11 +18,9 @@ The `quay.io/acend/example-web-python:latest` application is running on port `50
 After the changes, create or upgrade a release from your template.
 
 {{% onlyWhen mobi %}}
-Our container image has the name `<docker-registry-host>/puzzle/k8s/kurs/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so that a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 1.
+Our container image has the name `<registry-url>/puzzle/k8s/kurs/example-web-python:latest` and is a very basic python application. Change the content of your `deployment.yaml` and `values.yaml` so that a pod with the `example-web-python` image is started instead of the `nginx` image from the default chart we created with `helm create mychart` in lab 1.
 
-The `<docker-registry-host>/puzzle/k8s/kurs/example-web-python:latest` application is running on port `5000`. Change the existing `deployment.yaml` accordingly.
-
-Don't forget to replace `<docker-registry-host>` with the value provided by your trainer.
+The `<registry-url>/puzzle/k8s/kurs/example-web-python:latest` application is running on port `5000`. Change the existing `deployment.yaml` accordingly.
 {{% /onlyWhen %}}
 
 
@@ -217,7 +215,7 @@ affinity: {}
 replicaCount: 1
 
 image:
-  repository: <docker-registry-host>/puzzle/k8s/kurs/example-web-python
+  repository: <registry-url>/puzzle/k8s/kurs/example-web-python
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
@@ -294,8 +292,10 @@ affinity: {}
 
 {{% /onlyWhen %}}
 
+{{% onlyWhenNot mobi %}}
 {{% alert title="Note" color="primary" %}}
-Make sure to set the proper value as hostname. `<appdomain>` will be provided by the trainer.
+Don't forget to replace `<appdomain>` with the value provided by the trainer.
+{{% /onlyWhenNot %}}
 {{% onlyWhen mobi %}}
 It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
 {{% /onlyWhen %}}

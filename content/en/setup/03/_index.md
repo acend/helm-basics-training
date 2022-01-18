@@ -26,17 +26,15 @@ If you have direct access to the internet from your location, the proxy configur
 Set your HTTP proxy environment variables so that a chart repository can be added to your Helm repos in a later lab. It is recommended to set the lowercase and uppercase variables, as the helm command takes them all into account.
 
 ```bash
-export HTTP_PROXY="http://<username>:<password>@<proxy-and-port>"
-export HTTPS_PROXY="http://<username>:<password>@<proxy-and-port>"
-export NO_PROXY="<no-proxy-list>"
-export http_proxy="http://<username>:<password>@<proxy-and-port>"
-export https_proxy="http://<username>:<password>@<proxy-and-port>"
-export no_proxy="<no-proxy-list>"
+export HTTP_PROXY="http://<username>:<password>@<proxy>:<port>"
+export HTTPS_PROXY="http://<username>:<password>@<proxy>:<port>"
+export NO_PROXY="<noproxy-list>"
+export http_proxy="http://<username>:<password>@<proxy>:<port>"
+export https_proxy="http://<username>:<password>@<proxy>:<port>"
+export no_proxy="<noproxy-list>"
 ```
 
 Replace `<username`> and `<password>` with your credentials. If you have special characters in your password, escape them with their corresponding hexadecimal values according to [this article](https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters).
-
-Replace the other variables with the values provided by your trainer.
 {{% /onlyWhen %}}
 
 
