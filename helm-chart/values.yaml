@@ -29,7 +29,7 @@ acendTraining:
         useDefaultSecret: true
         appname: helm-basics-mobi
         domain: k8s.puzzle.ch
-    - 
+    -
       name: openshift
       replicaCount: 1
       image:
@@ -43,7 +43,7 @@ acendTraining:
         secretOverride: acend-wildcard
         appname: helm-basics-openshift
         domain: training.acend.ch
-    - 
+    -
       name: rancher
       replicaCount: 1
       image:
