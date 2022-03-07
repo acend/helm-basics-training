@@ -57,7 +57,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
       -
         name: Archive vulnerability scan results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: trivy-results-main
           path: trivy-results.txt
@@ -85,7 +85,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
       -
         name: Archive vulnerability scan results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: trivy-results-main
           path: trivy-results.txt
@@ -113,7 +113,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
       -
         name: Archive vulnerability scan results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: trivy-results-main
           path: trivy-results.txt
@@ -141,7 +141,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
       -
         name: Archive vulnerability scan results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: trivy-results-main
           path: trivy-results.txt
