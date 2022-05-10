@@ -134,8 +134,6 @@ Let's add the following configuration right after the database section from lab 
 
 ```yaml
 mariadb:
-  global:
-    imageRegistry: quay.io
   enabled: true
   auth:
     rootPassword: mysuperrootpassword123
