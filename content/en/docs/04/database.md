@@ -561,7 +561,7 @@ kubectl get pods -n <namespace>
 
 {{< highlight bash "hl_lines=3" >}}
 NAME                                    READY   STATUS      RESTARTS   AGE
-myapp-mychart--test-connection          0/1     Completed   0          22m
+myapp-mychart-test-connection          0/1     Completed   0          22m
 myapp-mychart-7cc85f99db-n4lsc          1/1     Running     0          12m
 myapp-mychart-mariadb-74ddcc878-268ts   1/1     Running     0          12m
 webshell-67f4cf8c59-st4rg               2/2     Running     0          2d22h
@@ -617,7 +617,7 @@ You can copy the test file `templates/tests/test-connection.yaml` to `templates/
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ $fullName }}-{{ .name }}-test-connection"
+  name: "{{ $fullName }}-test-connection"
   labels:
     app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb-test
     app.kubernetes.io/instance: {{ .Release.Name }}-test
