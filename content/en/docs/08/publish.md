@@ -152,7 +152,7 @@ helm search repo mycharts/mychart
 You should the the following output:
 
 ```
-NAME                    CHART VERSION   APP VERSION     DESCRIPTION                
+NAME                    CHART VERSION   APP VERSION     DESCRIPTION
 mycharts/mychart        0.1.0           1.16.0          A Helm chart for Kubernetes
 ```
 

@@ -13,7 +13,7 @@ In this section were going to show you how to create a Helm chart from an exisit
 git clone https://github.com/acend/helm-basic-chart.git
 ```
 
-After cloning the chart you have following structure. The Helm template files are already there. 
+After cloning the chart you have following structure. The Helm template files are already there.
 
 ```
 .
