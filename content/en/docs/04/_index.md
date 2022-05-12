@@ -6,6 +6,7 @@ sectionnumber: 4
 
 In this section were going to show you how to create a Helm chart from an exisiting Kubernetes deployment
 
+
 ## Task {{% param sectionnumber %}}.1: Get the chart skeleton
 
 ```bash
@@ -43,7 +44,7 @@ The goal of this task is a successfully running `myrelease-error-chart` pod in y
 After cloning the Helm basic chart, we can start to modify the chart. Add following modifications:
 
 * **deployment.yaml**
-  * Make the `.spec.replicas` configurable 
+  * Make the `.spec.replicas` configurable
   * Make the `.spec.containers.image` configurable. Make a seperate value for the image and the tag
 * **deployment-mariadb.yaml**  
   * Make the `.spec.containers.image` configurable. Make a seperate value for the image and the tag
@@ -58,10 +59,17 @@ After cloning the Helm basic chart, we can start to modify the chart. Add follow
 ## Solution Task {{% param sectionnumber %}}.2
 
 
-#### deployment.yaml
-#### deployment-mariadb.yaml
-#### secret-mariadb.yaml
-#### ingress.yaml
+### deployment.yaml
+
+
+### deployment-mariadb.yaml
+
+
+### secret-mariadb.yaml
+
+
+### ingress.yaml
+
 
 ### values.yaml
 
