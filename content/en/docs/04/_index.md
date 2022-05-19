@@ -164,13 +164,13 @@ Now we have preapred our values file for the production environment. Next we can
 Execute the Helm install command and pass the new created production values as paramter.
 
 ```bash
-helm install consumer-producer-prod --values values-production.yaml --namespace <namespace> ./helm-basic-chart 
+helm install consumer-producer-prod --values values-production.yaml --namespace <namespace> ./helm-basic-chart
 ```
 
 Use the helm list command to list all releases in your namespace
 
 ```bash
-helm ls --namespace <namespace> 
+helm ls --namespace <namespace>
 ```
 
 
