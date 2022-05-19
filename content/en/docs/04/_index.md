@@ -59,12 +59,7 @@ If you want to test the chart locally you can execute following command
 First let us define the new variables in our `values.yaml` file. Replace `<username>` with your username
 
 {{< highlight YAML "hl_lines=2 6" >}}
-producer:
-  host: producer-<username>.labapp.acend.ch
-
-consumer:
-  tag: latest
-  host: consumer-<username>.labapp.acend.ch
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/main/helm-basic-chart/values.yaml" %}}
 {{< /highlight >}}
 
 Next replace the hard coded values for the host value in our `consumer-ingress.yaml` file.
@@ -73,6 +68,18 @@ Next replace the hard coded values for the host value in our `consumer-ingress.y
 {{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/consumer-ingress.yaml" %}}
 {{< /highlight >}}
 
+Replace the same value in our `producer-ingress.yaml` file.
+
+{{< highlight YAML "hl_lines=9 21" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-ingress.yaml" %}}
+{{< /highlight >}}
+
+
+Afterwards we can install our Helm Chart with following command.
+
+```
+helm install myrelease --namespace <namespace> ./helm-basic-chart
+```
 
 ## Task {{% param sectionnumber %}}.3: Make the deployments more configurable
 
@@ -80,15 +87,15 @@ Next replace the hard coded values for the host value in our `consumer-ingress.y
 Make following values configurable
 Producer Deployment:
 
-* Extract the image tag from the `.spec.containers[0].image` on Line XX field as value
-* Extract the `.spec.containers[0].resources`   block from line XX as value
-* Extract the `.spec.containers[0].env["QUARKUS_LOG_LEVEL"]` on line XX block as value
+* Extract the image tag from the `.spec.containers[0].image` on Line 22 field as value
+* Extract the `.spec.containers[0].resources`   block from line 51 as value `consumer.resources`. Make use of the `toYaml` and the `nindent` function.
+* Extract the `.spec.containers[0].env["QUARKUS_LOG_LEVEL"]` on line 26 block as value
   
 
 Consumer Deployment:
 
-* Extract the `.spec.containers[0].resources`   block from line XX as value `producer.resources`
-* Extract the `.spec.containers[0].env["QUARKUS_LOG_LEVEL"]` on line XX block as value `producer.logLevel`
+* Extract the `.spec.containers[0].resources`   block from line 51 as value `producer.resources`. Make use of the `toYaml` and the `nindent` function.
+* Extract the `.spec.containers[0].env["QUARKUS_LOG_LEVEL"]` on line 26 block as value `producer.logLevel`
 
 
 ## Solution Task {{% param sectionnumber %}}.3
@@ -101,10 +108,10 @@ Consumer Deployment:
 {{< /highlight >}}
 
 
-### producer-deployment.yaml
+### consumer-deployment.yaml
 
-{{< highlight YAML "hl_lines=22 26 51" >}}
-{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-deployment.yaml" %}}
+{{< highlight YAML "hl_lines=26 51" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/consumer-deployment.yaml" %}}
 {{< /highlight >}}
 
 
@@ -118,16 +125,17 @@ Consumer Deployment:
 ## Task {{% param sectionnumber %}}.4: Upgrade the chart
 
 Execute following command to udate our helm release.
-`helm upgrade xxx`
 
-Finally, you can visit your application with the URL provided from the Route: `https://data-producer-<username>./data`
+`helm upgrade myrelease --namespace <namespace>`
+
+Finally, you can visit your application with the URL provided from the Route: `https://consumer-<username>.labapp.acend.ch/data`
 
 {{% alert  color="primary" %}}Replace **\<username>** with your username or get the URL from your route.{{% /alert %}}
 
 Or you could access the `data` endpoint using curl:
 
 ```BASH
-curl https://data-producer-<username>./data
+curl https://consumer-<username>.labapp.acend.ch/data
 ```
 
 When you open the URL you should see the producers data
@@ -153,18 +161,20 @@ Open the `values-productive.yaml` and change following values.
 ## Solution Task {{% param sectionnumber %}}.5
 
 
+### values-production.yaml
+
 {{< highlight YAML "hl_lines=" >}}
 {{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/values-production.yaml" %}}
 {{< /highlight >}}
 
 
-## Task {{% param sectionnumber %}}.6: Install and verify release
+## Task {{% param sectionnumber %}}.6: Install and verify production release
 
 Now we have preapred our values file for the production environment. Next we can install the chart again, but with a different name and different values.
 Execute the Helm install command and pass the new created production values as paramter.
 
 ```bash
-helm install consumer-producer-prod --values values-production.yaml --namespace <namespace> ./helm-basic-chart
+helm install myrelease-prod --values values-production.yaml --namespace <namespace> ./helm-basic-chart
 ```
 
 Use the helm list command to list all releases in your namespace
@@ -173,10 +183,17 @@ Use the helm list command to list all releases in your namespace
 helm ls --namespace <namespace>
 ```
 
+You should see following output with de development and the productoin release
+```
+NAME            NAMESPACE       REVISION        UPDATED                                         STATUS          CHART                   APP VERSION
+myrelease       default         1               2022-05-19 13:26:56.278026261 +0200 CEST        deployed        helm-basic-chart-0.1.0  1.16.0     
+myrelease-prod  default         1               2022-05-19 13:26:36.570013792 +0200 CEST        deployed        helm-basic-chart-0.1.0  1.16.0   
+```
+
 
 ## Task {{% param sectionnumber %}}.7: Cleanup
 
 ```bash
-helm delete consumer-producer --namespace <namespace>
-helm delete consumer-producer-prod --namespace <namespace>
+helm delete myrelease --namespace <namespace>
+helm delete myrelease-prod --namespace <namespace>
 ```
