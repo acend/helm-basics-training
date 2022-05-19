@@ -59,7 +59,15 @@ After cloning the Helm basic chart, we can start to modify the chart. Add follow
 ## Solution Task {{% param sectionnumber %}}.2
 
 
-### deployment.yaml
+### producer-deployment.yaml
+```yaml
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-deployment.yaml" %}}
+```
+
+### producer-deployment.yaml
+```yaml
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-deployment.yaml" %}}
+```
 
 
 ### deployment-mariadb.yaml
@@ -72,6 +80,13 @@ After cloning the Helm basic chart, we can start to modify the chart. Add follow
 
 
 ### values.yaml
+
+```yaml
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/values.yaml" %}}
+```
+
+## Task {{% param sectionnumber %}}.2: Make the Chart more configurable
+
 
 {{% onlyWhen openshift %}}
 
