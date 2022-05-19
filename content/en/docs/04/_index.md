@@ -58,7 +58,6 @@ If you want to test the chart locally you can execute following command
 
 First let us define the new variables in our `values.yaml` file. Replace `<username>` with your username
 
-```
 {{< highlight YAML "hl_lines=2 6" >}}
 producer:
   host: producer-<username>.labapp.acend.ch
@@ -67,47 +66,17 @@ consumer:
   tag: latest
   host: consumer-<username>.labapp.acend.ch
 {{< /highlight >}}
-```
 
 Next replace the hard coded values for the host value in our `consumer-ingress.yaml` file.
 
 {{< highlight YAML "hl_lines=9 21" >}}
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  labels:
-    app: {{ include "helm-basic-chart.fullname" . }}-consumer
-  name: {{ include "helm-basic-chart.fullname" . }}-consumer
-spec:
-  rules:
-    - host: {{ .Values.consumer.host }}
-      http:
-        paths:
-          - backend:
-              service:
-                name: {{ include "helm-basic-chart.fullname" . }}-consumer
-                port:
-                  number: 80
-            path: /
-            pathType: ImplementationSpecific
-  tls:
-    - hosts:
-        - {{ .Values.consumer.host }}
-      secretName: consumer-labapp-acend-ch
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/consumer-ingress.yaml" %}}
 {{< /highlight >}}
 
 
 ## Task {{% param sectionnumber %}}.3: Make the deployments more configurable
 
-### producer-deployment.yaml
-```yaml
-{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-deployment.yaml" %}}
-```
 
-### producer-deployment.yaml
-```yaml
-{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-deployment.yaml" %}}
-```
 Make following values configurable
 Producer Deployment:
 
@@ -125,92 +94,25 @@ Consumer Deployment:
 ## Solution Task {{% param sectionnumber %}}.3
 
 
-### Producer Deployment
+### producer-deployment.yaml
 
-{{< highlight YAML "hl_lines=22 26 50-51" >}}
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: {{ include "helm-basic-chart.fullname" . }}-producer
-  name: {{ include "helm-basic-chart.fullname" . }}-producer
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      deployment: {{ include "helm-basic-chart.fullname" . }}-producer
-      app: {{ include "helm-basic-chart.fullname" . }}-producer
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        deployment: {{ include "helm-basic-chart.fullname" . }}-producer
-        app: {{ include "helm-basic-chart.fullname" . }}-producer
-    spec:
-      containers:
-        - image: quay.io/puzzle/quarkus-techlab-data-producer:{{ .Values.producer.tag }}
-          imagePullPolicy: Always
-          env:
-          - name: QUARKUS_LOG_LEVEL
-            value: {{ .Values.producer.logLevel }}
-          livenessProbe:
-            failureThreshold: 5
-            httpGet:
-              path: /health/live
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 3
-            periodSeconds: 20
-            timeoutSeconds: 15
-          readinessProbe:
-            failureThreshold: 5
-            httpGet:
-              path: /health/ready
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 3
-            periodSeconds: 20
-            timeoutSeconds: 15
-          name: data-producer
-          ports:
-            - containerPort: 8080
-              name: http
-              protocol: TCP
-          resources:
-{{ .Values.consumer.resources}}
+{{< highlight YAML "hl_lines=22 26 51" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-deployment.yaml" %}}
 {{< /highlight >}}
 
 
-### values
+### producer-deployment.yaml
 
-```
-{{< highlight YAML "hl_lines=3-11 14 16-22" >}}
-producer:
-  host: producer-<username>.labapp.acend.ch
-  logLevel: DEBUG
-  resources:
-    limits:
-      cpu: '1'
-      memory: 500Mi
-    requests:
-      cpu: 50m
-      memory: 100Mi
-  tag: latest
-
-consumer:
-  logLevel: DEBUG
-  host: consumer-<username>.labapp.acend.ch
-  resources:
-    limits:
-      cpu: '1'
-      memory: 500Mi
-    requests:
-      cpu: 50m
-      memory: 100Mi
-  tag: latest
+{{< highlight YAML "hl_lines=22 26 51" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-deployment.yaml" %}}
 {{< /highlight >}}
-```
+
+
+### values.yaml
+
+{{< highlight YAML "hl_lines=2-11 14-22" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/values.yaml" %}}
+{{< /highlight >}}
 
 
 ## Task {{% param sectionnumber %}}.4: Upgrade the chart
@@ -225,7 +127,7 @@ Finally, you can visit your application with the URL provided from the Route: `h
 Or you could access the `data` endpoint using curl:
 
 ```BASH
-curl https://data-producer-$LAB_USER./data
+curl https://data-producer-<username>./data
 ```
 
 When you open the URL you should see the producers data
@@ -250,33 +152,10 @@ Open the `values-productive.yaml` and change following values.
 
 ## Solution Task {{% param sectionnumber %}}.5
 
-```
-{{< highlight YAML "hl_lines=2-3 7 11 14-15 19 23" >}}
-producer:
-  host: producer-<username>-prod.labapp.acend.ch
-  logLevel: INFO
-  resources:
-    limits:
-      cpu: '1'
-      memory: 750Mi
-    requests:
-      cpu: 50m
-      memory: 100Mi
-  tag: v1.0.0
 
-consumer:
-  logLevel: INFO
-  host: consumer-<username>-prod.labapp.acend.ch
-  resources:
-    limits:
-      cpu: '1'
-      memory: 750Mi
-    requests:
-      cpu: 50m
-      memory: 100Mi
-  tag: v1.0.0
+{{< highlight YAML "hl_lines=" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/values-production.yaml" %}}
 {{< /highlight >}}
-```
 
 
 ## Task {{% param sectionnumber %}}.6: Install and verify release
