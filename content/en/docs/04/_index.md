@@ -98,6 +98,12 @@ Consumer Deployment:
 * Extract the `.spec.containers[0].resources`   block from line 51 as value `producer.resources`. Make use of the `toYaml` and the `nindent` function.
 * Extract the `.spec.containers[0].env["QUARKUS_LOG_LEVEL"]` on line 26 block as value `producer.logLevel`
 
+{{% alert title="Note" color="primary" %}}
+Take a look at the official Helm documentation for a list of built in functions.
+
+[Built In Helm functions](https://helm.sh/docs/chart_template_guide/function_list/)
+{{% /alert %}}
+
 
 ## Solution Task {{% param sectionnumber %}}.3
 
