@@ -81,6 +81,7 @@ Afterwards we can install our Helm Chart with following command.
 helm install myrelease --namespace <namespace> ./helm-basic-chart
 ```
 
+
 ## Task {{% param sectionnumber %}}.3: Make the deployments more configurable
 
 
@@ -186,8 +187,8 @@ helm ls --namespace <namespace>
 You should see following output with de development and the productoin release
 ```
 NAME            NAMESPACE       REVISION        UPDATED                                         STATUS          CHART                   APP VERSION
-myrelease       default         1               2022-05-19 13:26:56.278026261 +0200 CEST        deployed        helm-basic-chart-0.1.0  1.16.0     
-myrelease-prod  default         1               2022-05-19 13:26:36.570013792 +0200 CEST        deployed        helm-basic-chart-0.1.0  1.16.0   
+myrelease       default         1               2022-05-19 13:26:56.278026261 +0200 CEST        deployed        helm-basic-chart-0.1.0  1.16.0
+myrelease-prod  default         1               2022-05-19 13:26:36.570013792 +0200 CEST        deployed        helm-basic-chart-0.1.0  1.16.0
 ```
 
 
