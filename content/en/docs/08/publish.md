@@ -1,7 +1,7 @@
 ---
-title: "4.5 Optional: Publish your chart"
-weight: 45
-sectionnumber: 4.5
+title: "8.5 Optional: Publish your chart"
+weight: 85
+sectionnumber: 8.5
 ---
 
 In this lab we will learn how to publish our Helm chart and make it accessible to the public by using GitHub pages.
@@ -152,7 +152,7 @@ helm search repo mycharts/mychart
 You should the the following output:
 
 ```
-NAME                    CHART VERSION   APP VERSION     DESCRIPTION                
+NAME                    CHART VERSION   APP VERSION     DESCRIPTION
 mycharts/mychart        0.1.0           1.16.0          A Helm chart for Kubernetes
 ```
 
