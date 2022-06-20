@@ -1,0 +1,3 @@
+{{- $url := .Get 0 }}
+{{- $remote := resources.GetRemote $url }}
+{{ $remote.Content | safeHTML }}

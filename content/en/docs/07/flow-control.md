@@ -56,7 +56,7 @@ With the `range` keyword we can define for loop similar constructs:
 
     {{- range .Values.someList }}
     - {{ . | title | quote }}
-    {{- end }}    
+    {{- end }}
 
 ```
 
@@ -68,7 +68,7 @@ If you want to have information about the index in your loop, you can extend it 
 
     {{- range $i, $a := .Values.someList }}
     - {{ . | title | quote }}
-    {{- end }}    
+    {{- end }}
 
 ```
 
@@ -123,7 +123,7 @@ metadata:
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": hook-succeeded, hook-failed
 spec:
-  backoffLimit: 3 
+  backoffLimit: 3
   template:
     metadata:
       name: {{ .Release.Name | quote }}
@@ -138,7 +138,7 @@ spec:
           image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
           imagePullPolicy: {{ .Values.database.image.pullPolicy }}
           command: ['/bin/bash', '-c']
-          args: 
+          args:
           - >
             {{- range $j, $b := .Values.tables }}
               mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "CREATE TABLE IF NOT EXISTS {{ .name }} (
