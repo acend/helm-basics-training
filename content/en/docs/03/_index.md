@@ -49,6 +49,7 @@ service:
   type: ClusterIP
 updateStrategy:
   type: Recreate
+  rollingUpdate: null
 {{% onlyWhen openshift %}}
 podSecurityContext:
   enabled: false
@@ -116,6 +117,7 @@ service:
   type: ClusterIP
 updateStrategy:
   type: Recreate
+  rollingUpdate: null
 
 ingress:
   enabled: true
@@ -236,7 +238,9 @@ podSecurityContext:
 service:
   type: ClusterIP
 updateStrategy:
+updateStrategy:
   type: Recreate
+  rollingUpdate: null
 ```
 
 {{% /onlyWhen %}}
@@ -257,6 +261,7 @@ service:
   type: ClusterIP
 updateStrategy:
   type: Recreate
+  rollingUpdate: null
 ```
 
 {{% /onlyWhenNot %}}
