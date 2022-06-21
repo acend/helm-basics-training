@@ -1,7 +1,7 @@
 ---
-title: "4.4 Helm hooks"
-weight: 44
-sectionnumber: 4.4
+title: "8.4 Helm hooks"
+weight: 84
+sectionnumber: 8.4
 ---
 
 In the previous lab we learned how to deploy our python example application and connect it to a MariaDB. In this chapter we are going to look at a mechanism of Helm called hooks, which let's chart developers intervene / interact at certain points in a release's life cycle.
@@ -167,9 +167,9 @@ spec:
           image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
           imagePullPolicy: {{ .Values.database.image.pullPolicy }}
           command: ['/bin/bash', '-c']
-          args: 
+          args:
           - >
-            mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "DROP TABLE IF EXISTS test;"        
+            mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "DROP TABLE IF EXISTS test;"
           env:
           - name: MYSQL_DATABASE_HOST
             value: {{ .Release.Name }}-mariadb
@@ -216,11 +216,11 @@ spec:
           image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
           imagePullPolicy: {{ .Values.database.image.pullPolicy }}
           command: ['/bin/bash', '-c']
-          args: 
+          args:
           - >
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) &&
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "CREATE TABLE test (id int AUTO_INCREMENT PRIMARY KEY, name CHAR(64));"  &&
-            mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "INSERT INTO test (name) VALUES ('helm'), ('kubernetes'), ('openshift'), ('docker');"          
+            mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "INSERT INTO test (name) VALUES ('helm'), ('kubernetes'), ('openshift'), ('docker');"
           env:
           - name: MYSQL_DATABASE_HOST
             value: {{ .Release.Name }}-mariadb
@@ -251,7 +251,7 @@ When you created your hooks, install or upgrade your helm release with `helm ins
 
 ```s
 
-kubectl --namespace <namespace> exec -it myapp-mariadb-0 -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"   
+kubectl --namespace <namespace> exec -it myapp-mariadb-0 -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"  
 
 +----+------------+
 | id | name       |
