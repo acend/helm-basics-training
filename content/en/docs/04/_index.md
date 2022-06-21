@@ -72,13 +72,13 @@ First let us define the new variables in our `values.yaml` file. Replace `<usern
 
 Next replace the hard coded values for the host value in our `consumer-ingress.yaml` file.
 
-{{< highlight YAML "hl_lines=9 21" >}}
+{{< highlight YAML "hl_lines=11 23" >}}
 {{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/consumer-ingress.yaml" %}}
 {{< /highlight >}}
 
 Replace the same value in our `producer-ingress.yaml` file.
 
-{{< highlight YAML "hl_lines=9 21" >}}
+{{< highlight YAML "hl_lines=11 23" >}}
 {{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-ingress.yaml" %}}
 {{< /highlight >}}
 
