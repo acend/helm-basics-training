@@ -165,7 +165,7 @@ Subcharts are an alternative way to define dependencies within a chart: A chart 
 We are now going to deploy the application in a specific version (which is not the latest release on purpose). Also note that we define our custom `values.yaml` file with the `-f` parameter:
 
 ```bash
-helm install wordpress bitnami/wordpress -f values.yaml --version 10.7.1 --namespace <namespace>
+helm install wordpress bitnami/wordpress -f values.yaml --version 15.0.2 --namespace <namespace>
 ```
 
 Look for the newly created resources with `helm ls` and `{{% param cliToolName %}} get deploy,pod,ingress,pvc`:
@@ -178,7 +178,7 @@ which gives you:
 
 ```bash
 NAME      NAMESPACE       REVISION  UPDATED                                     STATUS    CHART             APP VERSION
-wordpress <namespace>         1     2021-03-25 14:27:38.231722961 +0100 CET     deployed  wordpress-10.7.1  5.7.0
+wordpress <namespace>         1     2021-03-25 14:27:38.231722961 +0100 CET     deployed  wordpress-15.0.2  5.7.0
 ```
 
 and
