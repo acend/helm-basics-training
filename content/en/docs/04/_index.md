@@ -98,7 +98,7 @@ kubectl get pods
 This should return something like this:
 
 ```
-theia(user4) /home/project/helm-basic-chart $ kubectl get pods
+kubectl get pods
 NAME                             READY   STATUS    RESTARTS   AGE
 data-consumer-7686976d88-2wbh5   1/1     Running   0          72s
 data-producer-786d6bb688-qpg4c   1/1     Running   0          72s
@@ -124,7 +124,7 @@ When the problem will be a redirect or certificate problem, try the flags `-L` a
 
 ```bash
 
-theia(USERNAME) /home/project/helm-basic-chart $ curl -kL $(kubectl get ingress data-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $(kubectl get ingress data-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.15495350024595755}
 
 ```
@@ -155,7 +155,7 @@ Take a look at the official Helm documentation for a list of built in functions.
 [Built In Helm functions](https://helm.sh/docs/chart_template_guide/function_list/)
 {{% /alert %}}
 
-{{% details title="Solution Task {{% param sectionnumber %}}.3" %}}
+{{% details title="Solution" %}}
 
 
 ### producer-deployment.yaml
