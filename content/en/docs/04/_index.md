@@ -72,13 +72,13 @@ First let us define the new variables in our `values.yaml` file. Replace `<usern
 
 Next replace the hard coded values for the host value in our `consumer-ingress.yaml` file.
 
-{{< highlight YAML "hl_lines=9 21" >}}
+{{< highlight YAML "hl_lines=11 23" >}}
 {{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/consumer-ingress.yaml" %}}
 {{< /highlight >}}
 
 Replace the same value in our `producer-ingress.yaml` file.
 
-{{< highlight YAML "hl_lines=9 21" >}}
+{{< highlight YAML "hl_lines=11 23" >}}
 {{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-ingress.yaml" %}}
 {{< /highlight >}}
 
@@ -185,7 +185,7 @@ Take a look at the official Helm documentation for a list of built in functions.
 
 Execute following command to update our helm release.
 
-`helm upgrade myrelease --namespace <namespace>`
+`helm upgrade myrelease --namespace <namespace> ./helm-basic-chart`
 
 Finally, you can visit your application with the URL provided from the Route: `https://consumer-<username>.labapp.acend.ch/data`
 

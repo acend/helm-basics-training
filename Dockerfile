@@ -1,4 +1,4 @@
-FROM klakegg/hugo:0.95.0-ext-ubuntu AS builder
+FROM klakegg/hugo:0.101.0-ext-ubuntu AS builder
 
 ARG TRAINING_HUGO_ENV=default
 
@@ -19,7 +19,7 @@ COPY --from=builder /src/public /
 
 RUN wkhtmltopdf --outline-depth 4 --enable-internal-links --enable-local-file-access  ./pdf/index.html /pdf.pdf
 
-FROM nginxinc/nginx-unprivileged:1.22-alpine
+FROM nginxinc/nginx-unprivileged:1.23-alpine
 
 LABEL maintainer acend.ch
 LABEL org.opencontainers.image.title "acend.ch's Helm Basics Training"
