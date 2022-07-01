@@ -10,6 +10,7 @@ There are a few commands that can help you debug:
 
 * `helm lint` is your go-to tool for verifying that your chart follows best practices.
 * `helm install --dry-run --debug --generate-name <chart> --namespace <namespace>` or `helm template --debug <chart>`: We’ve seen this trick already. It’s a great way to render your templates without applying them to the cluster.
+* `helm template -s templates/<template-file> . --debug | cat -n -` render a single file to the standard output
 * `helm get manifest <release> --namespace <namespace>`: This is a good way to see what templates are installed on the server.
 * `helm get values <release> --namespace <namespace>`: This helps you to understand which values are used for a release.
 
@@ -52,7 +53,8 @@ The goal of this task is a successfully running `myrelease-error-chart` pod in y
 
 #### YAML
 
-YAML has some strict formatting rules. Check if all files conform to these rules.
+YAML has some strict formatting rules. Check if all files conform to these rules. There is a bad formatting in the `ingress.yaml` template.
+Use the `helm template -s templates/ingress.yaml . --debug | cat -n -` command to render the ingress template. Be aware that the first two lines (`---` YAML directive marker and the `# Source: error-chart/templates/ingress.yaml` YAML comment are not considered).
 
 
 #### Kubernetes resource definitions
@@ -77,7 +79,12 @@ The first error we get when trying to install the chart or when using the `helm 
   error converting YAML to JSON: yaml: line 15: found character that cannot start any token
 ```
 
-"found character that cannot start any token" probably doesn't ring a bell so we try to find out what's wrong with line 15 in file `templates/ingress.yaml`. Beware that line 15 corresponds to line 15 of the rendered file! Opening the file and going to the appropriate line containing `paths:`, we notice that a tab instead of whitespace characters was used to indent. Replace it with whitespace characters.
+"found character that cannot start any token" probably doesn't ring a bell so we try to find out what's wrong with line 15 in file `templates/ingress.yaml`. Beware that line 15 corresponds to line 15 of the rendered file!
+If you want to know what is on line 15 in the rendered file, you can execute the following command:
+```bash
+helm template -s templates/ingress.yaml . --debug | cat -n -
+```
+ Opening the file and going to the appropriate line containing `paths:`, we notice that a tab instead of whitespace characters was used to indent. Replace it with whitespace characters.
 
 
 #### Deployment empty selector
