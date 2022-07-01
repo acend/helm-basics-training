@@ -81,7 +81,7 @@ The first error we get when trying to install the chart or when using the `helm 
 
 "found character that cannot start any token" probably doesn't ring a bell so we try to find out what's wrong with line 15 in file `templates/ingress.yaml`. Beware that line 15 corresponds to line 15 of the rendered file!
 If you want to know what is online 15 in the rendered file, you can execute following command:
-```
+```bash
 helm template -s templates/ingress.yaml . --debug | cat -n -
 ```
  Opening the file and going to the appropriate line containing `paths:`, we notice that a tab instead of whitespace characters was used to indent. Replace it with whitespace characters.
