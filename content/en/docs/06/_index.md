@@ -183,7 +183,7 @@ When injecting strings like e.g. our favorite color in a template, we want to qu
 
 The quote function therefore adds double quotes around the value. Functions follow the syntax `functionName arg1 arg2 ...`.
 
-Helm has over 60 functions available. Some are defined in the [Go template language](https://godoc.org/text/template), others in the [Spring template library](https://godoc.org/github.com/Masterminds/sprig).
+Helm has over 60 functions available. Some are defined in the [Go template language](https://godoc.org/text/template), others in the [Sprig template library](https://godoc.org/github.com/Masterminds/sprig).
 
 Similar to Linux pipes known from shell commands, e.g. `ps -aux | grep ps`, you can use pipes in Go templates as well:
 
