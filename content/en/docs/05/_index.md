@@ -53,8 +53,8 @@ The goal of this task is a successfully running `myrelease-error-chart` pod in y
 
 #### YAML
 
-YAML has some strict formatting rules. Check if all files conform to these rules. There is a bad formatting in the ingress.yaml resource Template.
-Use the `helm template -s templates/ingress.yaml . --debug | cat -n -` command to render the ingress template. Be aware that the first two lines (`---` YAML directive marker and the `# Source: error-chart/templates/ingress.yaml` YAML comment are not counted)
+YAML has some strict formatting rules. Check if all files conform to these rules. There is a bad formatting in the `ingress.yaml` template.
+Use the `helm template -s templates/ingress.yaml . --debug | cat -n -` command to render the ingress template. Be aware that the first two lines (`---` YAML directive marker and the `# Source: error-chart/templates/ingress.yaml` YAML comment are not considered).
 
 
 #### Kubernetes resource definitions
