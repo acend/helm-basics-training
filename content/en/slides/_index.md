@@ -19,4 +19,7 @@ menu:
 {{% /blocks/feature %}}
 {{% /onlyWhen %}}
 
+{{% blocks/feature icon="fa-chalkboard-teacher" url="../pdf/pdf.pdf" title="Lab PDF" %}}
+{{% /blocks/feature %}}
+
 {{< /blocks/section >}}
