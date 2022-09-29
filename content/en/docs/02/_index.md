@@ -242,7 +242,7 @@ NOTES:
 ```
 
 {{% onlyWhenNot mobi %}}
-Check whether the ingress was successfully deployed by accessing the URL `http://mychart-<namespace>.<appdomain>/`
+Check whether the ingress was successfully deployed by accessing the URL `https://mychart-<namespace>.<appdomain>/`
 
 {{% onlyWhen openshift %}}
 {{% alert title="Note" color="primary" %}}
