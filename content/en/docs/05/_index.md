@@ -47,6 +47,11 @@ git clone https://github.com/acend/error-chart.git
 The `error-chart` chart contains some deliberate errors. Try to find all of these errors and fix them, then install the chart using `myrelease` as release name. You can use one or several ways shown above to do so.
 The goal of this task is a successfully running `myrelease-error-chart` pod in your own namespace.
 
+If you try to install the chart with following command, you will get an error:
+```bash
+helm install my-error-chart . --dry-run
+```
+
 
 ### Hints
 
@@ -85,6 +90,34 @@ If you want to know what is on line 15 in the rendered file, you can execute the
 helm template -s templates/ingress.yaml . --debug | cat -n -
 ```
  Opening the file and going to the appropriate line containing `paths:`, we notice that a tab instead of whitespace characters was used to indent. Replace it with whitespace characters.
+
+```yaml
+...
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+  paths:   #<------------- Replace tab with whitespace
+          {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+{{- end }}
+```
 
 
 #### Deployment empty selector
@@ -158,6 +191,16 @@ There's no variable `tags`, instead it's named `tag`. Fix that in the template s
 ```
 
 You might also have to change the `repository:` value because Docker Hub might not be accessible from the used environment.
+
+
+#### Compare with solution
+
+You can find the solution in the repository under the `solution` branch.
+If you want to check if your solution is correct, you can simply compare your workspace against the solution branch.
+
+```bash
+git diff solution
+```
 
 {{% onlyWhen openshift %}}
 
