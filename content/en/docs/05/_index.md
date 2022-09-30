@@ -192,6 +192,16 @@ There's no variable `tags`, instead it's named `tag`. Fix that in the template s
 
 You might also have to change the `repository:` value because Docker Hub might not be accessible from the used environment.
 
+
+#### Compare with solution
+
+You can find the solution in the repository under the `solution` branch.
+If you want to check if your solution is correct, you can simply compare your workspace against the solution branch.
+
+```bash
+git diff solution
+```
+
 {{% onlyWhen openshift %}}
 
 
