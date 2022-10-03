@@ -516,7 +516,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-```
 {{< /highlight >}}
 
 There should not be any changes in the `values.yaml`:
