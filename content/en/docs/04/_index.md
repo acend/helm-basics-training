@@ -322,7 +322,7 @@ Your `values.yaml` should look like this (might differ if you deleted the consum
 
 host: consumer-user4.labapp.acend.ch
 image:
-  name: puzzle/quarkus-techlab-data-consumer
+  name: quay.io/puzzle/quarkus-techlab-data-consumer
   tag: latest
 logLevel: INFO
 resources:
