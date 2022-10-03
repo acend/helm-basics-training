@@ -1,7 +1,7 @@
 ---
-title: "8.3 Backend as a Dependency"
-weight: 83
-sectionnumber: 8.3
+title: "7.3 Backend as a Dependency"
+weight: 73
+sectionnumber: 7.3
 ---
 
 In the previous lab we've manually added a database deployment to our awesome application. Instead of creating your own templates and deployments, we can also integrate other helm charts as dependencies. We have seen this already in lab 3 but are now going to go into more detail in this lab.
