@@ -343,6 +343,113 @@ Update your deployment, service and ingress and edit the values accordingly. So 
 
 Change the hard-coded occurrences of `data-producer` or `data-consumer` in your templates to `{{ .Values.serviceName }}`. If you fancy you can remove the suffixes `-producer` or `-consumer` in your templates as well.
 
+{{% details title="Solution" %}}
+
+**deployment.yaml**:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+  name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+      app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        deployment: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+        app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+    spec:
+      containers:
+        - image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+          imagePullPolicy: Always
+          env:
+          - name: QUARKUS_LOG_LEVEL
+            value: {{ .Values.logLevel }}
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /health/live
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 20
+            timeoutSeconds: 15
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 20
+            timeoutSeconds: 15
+          name: {{ .Values.serviceName }}
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+```
+
+**service.yaml**:
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+  name: {{ .Values.serviceName }}
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    deployment: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+  sessionAffinity: None
+  type: ClusterIP
+```
+
+**ingress.yaml**:
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/tls-acme: "true"
+  labels:
+    app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+  name: {{ .Values.serviceName }}
+spec:
+  rules:
+    - host: {{ .Values.host }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ .Values.serviceName }}
+                port:
+                  number: 8080
+            path: /
+            pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - {{ .Values.host }}
+      secretName: producer-labapp-acend-ch
+```
+
+{{% /details %}}
+
 
 ### Task {{% param sectionnumber %}}.8.1.4
 
@@ -358,7 +465,7 @@ Call the release data-producer and install it!
 
 ```bash
 
-helm install producer helm-basic-chart/. --set host=producer-user4.labapp.acend.ch --set image.name=puzzle/quarkus-techlab-data-producer --set serviceName=data-producer
+helm install producer helm-basic-chart/. --set host=producer-user4.labapp.acend.ch --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=data-producer
 
 ```
 
@@ -376,7 +483,7 @@ Let's do the same thing and deploy the consuming service accordingly. Overwrite 
 
 ```bash
 
-helm install consumer helm-basic-chart/. --set host=consumer-user4.labapp.acend.ch --set image.name=puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer
+helm install consumer helm-basic-chart/. --set host=consumer-user4.labapp.acend.ch --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer
 
 ```
 
@@ -552,9 +659,9 @@ producer:
 ```yaml
 
 consumer:
-  host: consumer-user4.labapp.acend.ch
+  host: consumer-<username>.labapp.acend.ch
   image:
-    name: puzzle/quarkus-techlab-data-consumer
+    name: quay.io/puzzle/quarkus-techlab-data-consumer
     tag: latest
   logLevel: INFO
   resources:
@@ -567,9 +674,9 @@ consumer:
   serviceName: data-consumer
 
 producer:
-  host: producer-user4.labapp.acend.ch
+  host: producer-<username>.labapp.acend.ch
   image:
-    name: puzzle/quarkus-techlab-data-producer
+    name: quay.io/puzzle/quarkus-techlab-data-producer
     tag: latest
   logLevel: INFO
   resources:
