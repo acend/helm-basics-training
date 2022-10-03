@@ -151,7 +151,23 @@ mariadb:
 {{% /onlyWhen %}}
 ```
 
-After editing the `values.yaml` we can now install the release.
+Update your deployment to match the keys in the `values.yaml` to your environment variables defined in the deployment:
+
+```yaml
+          env:
+          - name: MYSQL_DATABASE_USER
+            value: {{ .Values.mariadb.auth.username }}
+          - name: MYSQL_DATABASE_PASSWORD
+            value: {{ .Values.mariadb.auth.password }}
+          - name: MYSQL_DATABASE_ROOT_PASSWORD
+            value: {{ .Values.mariadb.auth.rootPassword }}
+          - name: MYSQL_DATABASE_NAME
+            value: {{ .Values.mariadb.auth.database }}
+          - name: MYSQL_URI
+            value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE_NAME)
+```
+
+After editing the files we can now install the release.
 
 ```bash
 helm install myapp ./mychart --namespace <namespace>
