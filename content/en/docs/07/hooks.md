@@ -171,17 +171,16 @@ spec:
           - >
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "DROP TABLE IF EXISTS test;"
           env:
-          - name: MYSQL_DATABASE_HOST
-            value: {{ .Release.Name }}-mariadb
-          - name: MYSQL_DATABASE
-            value: {{ .Values.database.databasename }}
-          - name: MYSQL_DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: mariadb-password
-                name: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE_USER
-            value: {{ .Values.database.databaseuser }}
+            value: {{ .Values.mariadb.auth.username }}
+          - name: MYSQL_DATABASE_PASSWORD
+            value: {{ .Values.mariadb.auth.password }}
+          - name: MYSQL_DATABASE_ROOT_PASSWORD
+            value: {{ .Values.mariadb.auth.rootPassword }}
+          - name: MYSQL_DATABASE
+            value: {{ .Values.mariadb.auth.database }}
+          - name: MYSQL_DATABASE_HOST
+            value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE)
 
 ```
 
@@ -222,17 +221,16 @@ spec:
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "CREATE TABLE test (id int AUTO_INCREMENT PRIMARY KEY, name CHAR(64));"  &&
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "INSERT INTO test (name) VALUES ('helm'), ('kubernetes'), ('openshift'), ('docker');"
           env:
-          - name: MYSQL_DATABASE_HOST
-            value: {{ .Release.Name }}-mariadb
-          - name: MYSQL_DATABASE
-            value: {{ .Values.database.databasename }}
-          - name: MYSQL_DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: mariadb-password
-                name: {{ .Release.Name }}-mariadb
           - name: MYSQL_DATABASE_USER
-            value: {{ .Values.database.databaseuser }}
+            value: {{ .Values.mariadb.auth.username }}
+          - name: MYSQL_DATABASE_PASSWORD
+            value: {{ .Values.mariadb.auth.password }}
+          - name: MYSQL_DATABASE_ROOT_PASSWORD
+            value: {{ .Values.mariadb.auth.rootPassword }}
+          - name: MYSQL_DATABASE
+            value: {{ .Values.mariadb.auth.database }}
+          - name: MYSQL_DATABASE_HOST
+            value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE)
 
 ```
 
