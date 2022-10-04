@@ -210,11 +210,11 @@ If you only see `Your new Cloud-Native application is ready!`, then you forgot t
 
 ## Task {{% param sectionnumber %}}.5: Prepare another release
 
-At this point we have a configurable Helm chart and a running release. Next we gonna use the cart for another release. We consider to release it into a productive environment. therefore we have to adjust some values. First copy the existing `values.yaml` to `values-productive.yaml`.
-Open the `values-productive.yaml` and change following values.
+At this point we have a configurable Helm chart and a running release. Next we gonna use the cart for another release. We consider to release it into a production environment. therefore we have to adjust some values. First copy the existing `values.yaml` to `values-production.yaml`.
+Open the `values-production.yaml` and change following values.
 
-* Debug log level is too high in a productive environment, change it to `INFO`
-* The resource requirements are usually higher in a productive environment than in a development environment. Increase the Memory Limits to `750Mi`
+* Debug log level is too high in a production environment, change it to `INFO`
+* The resource requirements are usually higher in a production environment than in a development environment. Increase the Memory Limits to `750Mi`
 * To avoid DNS collisions we need to chang the host to, change it to `producer-<username>-prod.labapp.acend.ch` and `consumer-<username>-prod.labapp.acend.ch`
 
 
