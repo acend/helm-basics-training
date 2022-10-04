@@ -573,7 +573,7 @@ Duplicate the Chart we created in the section before. Copy the duplicated Chart 
 
 Your new Chart's structure should look like this:
 
-```bash
+```shell
 
 $ tree parent/
 parent/
