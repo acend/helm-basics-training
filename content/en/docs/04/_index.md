@@ -124,7 +124,7 @@ When the problem will be a redirect or certificate problem, try the flags `-L` a
 
 ```bash
 
-curl -kL $(kubectl get ingress data-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.15495350024595755}
 
 ```
@@ -373,6 +373,8 @@ spec:
           env:
           - name: QUARKUS_LOG_LEVEL
             value: {{ .Values.logLevel }}
+          - name: DATA_PRODUCER_API_MP_REST_URL
+            value: http://{{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}:8080
           livenessProbe:
             failureThreshold: 5
             httpGet:
@@ -407,7 +409,7 @@ kind: Service
 metadata:
   labels:
     app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
-  name: {{ .Values.serviceName }}
+  name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
 spec:
   ports:
     - name: http
@@ -429,7 +431,7 @@ metadata:
     kubernetes.io/tls-acme: "true"
   labels:
     app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
-  name: {{ .Values.serviceName }}
+  name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
 spec:
   rules:
     - host: {{ .Values.host }}
@@ -456,8 +458,8 @@ spec:
 Install the release with the configuration for the producer. As we learned in previous chapters, we can overwrite values from the `values.yaml` with the help of the `--set variable=value` parameter of the helm-cli. Overwrite the values for the producer like the following:
 
 * `host`: `producer-user4.labapp.acend.ch`
-* `image.name`: `puzzle/quarkus-techlab-data-producer`
-* `serviceName`: `data-producer`
+* `image.name`: `quay.io/puzzle/quarkus-techlab-data-producer`
+* `serviceName`: `producer`
 
 Call the release data-producer and install it!
 
@@ -465,7 +467,7 @@ Call the release data-producer and install it!
 
 ```bash
 
-helm install producer helm-basic-chart/. --set host=producer-user4.labapp.acend.ch --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=data-producer
+helm install producer helm-basic-chart/. --set host=producer-user4.labapp.acend.ch --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=producer
 
 ```
 
@@ -493,7 +495,7 @@ At the end, verify your two releases again and test if they are still delivering
 
 ```bash
 
-curl -kL $(kubectl get ingress data-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.4145158804475594}
 
 ```
@@ -671,7 +673,7 @@ consumer:
     requests:
       cpu: 50m
       memory: 100Mi
-  serviceName: data-consumer
+  serviceName: consumer
 
 producer:
   host: producer-<username>.labapp.acend.ch
@@ -686,7 +688,7 @@ producer:
     requests:
       cpu: 50m
       memory: 100Mi
-  serviceName: data-producer
+  serviceName: producer
 
 ```
 
@@ -707,7 +709,7 @@ helm install myrelease parent/.
 
 ```bash
 
-curl -kL $(kubectl get ingress data-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.4145158804475594}
 
 ```
