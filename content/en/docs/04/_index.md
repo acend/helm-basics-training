@@ -196,7 +196,7 @@ Finally, you can visit your application with the URL provided from the Route: `h
 Or you could access the `data` endpoint using curl:
 
 ```BASH
-curl https://consumer-<username>.labapp.acend.ch/data
+curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 ```
 
 When you open the URL you should see the producers data
