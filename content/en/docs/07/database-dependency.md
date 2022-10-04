@@ -113,7 +113,7 @@ dependencies:
 - condition: mariadb.enabled
   name: mariadb
   repository: https://charts.bitnami.com/bitnami
-  version: 9.x.x
+  version: 10.x.x
 maintainers:
   - name: <name>
     email: <email>
