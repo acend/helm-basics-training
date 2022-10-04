@@ -196,7 +196,7 @@ Finally, you can visit your application with the URL provided from the Route: `h
 Or you could access the `data` endpoint using curl:
 
 ```BASH
-curl https://consumer-<username>.labapp.acend.ch/data
+curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 ```
 
 When you open the URL you should see the producers data
@@ -213,7 +213,6 @@ If you only see `Your new Cloud-Native application is ready!`, then you forgot t
 At this point we have a configurable Helm chart and a running release. Next we gonna use the cart for another release. We consider to release it into a productive environment. therefore we have to adjust some values. First copy the existing `values.yaml` to `values-productive.yaml`.
 Open the `values-productive.yaml` and change following values.
 
-* For a productive environment it is a bad practice to use the `latest` tag on a image. Pin the image to the `v1.0.0` tag.
 * Debug log level is too high in a productive environment, change it to `INFO`
 * The resource requirements are usually higher in a productive environment than in a development environment. Increase the Memory Limits to `750Mi`
 * To avoid DNS collisions we need to chang the host to, change it to `producer-<username>-prod.labapp.acend.ch` and `consumer-<username>-prod.labapp.acend.ch`
