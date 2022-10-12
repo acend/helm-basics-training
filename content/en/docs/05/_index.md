@@ -108,7 +108,7 @@ spec:
   {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
-	paths: #<----- replace tab with whitespace
+        paths: #<----- replace tab with whitespace
           {{- range .paths }}
           - path: {{ . }}
             pathType: ImplementationSpecific
