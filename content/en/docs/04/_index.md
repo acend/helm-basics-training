@@ -438,7 +438,7 @@ spec:
         paths:
           - backend:
               service:
-                name: {{ .Values.serviceName }}
+                name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
                 port:
                   number: 8080
             path: /
