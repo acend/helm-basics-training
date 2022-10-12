@@ -446,7 +446,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.host }}
-      secretName: producer-labapp-acend-ch
+      secretName: {{ .Values.serviceName }}-labapp-acend-ch
 ```
 
 {{% /details %}}
