@@ -108,12 +108,15 @@ spec:
   {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
-  paths:   #<------------- Replace tab with whitespace
+	paths: #<----- replace tab with whitespace
           {{- range .paths }}
           - path: {{ . }}
+            pathType: ImplementationSpecific
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
+              service:
+                name: {{ $fullName }}
+                port: 
+                  number: {{ $svcPort }}
         {{- end }}
   {{- end }}
 {{- end }}
