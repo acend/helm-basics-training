@@ -199,7 +199,7 @@ You can find the solution in the repository under the `solution` branch.
 If you want to check if your solution is correct, you can simply compare your workspace against the solution branch.
 
 ```bash
-git diff solution
+git diff origin/solution
 ```
 
 {{% onlyWhen openshift %}}
