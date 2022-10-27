@@ -86,9 +86,12 @@ The first error we get when trying to install the chart or when using the `helm 
 
 "found character that cannot start any token" probably doesn't ring a bell so we try to find out what's wrong with line 15 in file `templates/ingress.yaml`. Beware that line 15 corresponds to line 15 of the rendered file!
 If you want to know what is on line 15 in the rendered file, you can execute the following command:
+
 ```bash
 helm template -s templates/ingress.yaml . --debug | cat -n -
 ```
+
+{{% details title="Hint / Solution" %}}
  Opening the file and going to the appropriate line containing `paths:`, we notice that a tab instead of whitespace characters was used to indent. Replace it with whitespace characters.
 
 ```yaml
@@ -121,6 +124,7 @@ spec:
   {{- end }}
 {{- end }}
 ```
+{{% /details %}}
 
 
 #### Deployment empty selector
@@ -131,6 +135,7 @@ The second error we get when trying to install the chart reads:
 Error: release myrelease failed: Deployment.apps "myrelease-error-chart" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string(nil), MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: empty selector is invalid for deployment
 ```
 
+{{% details title="Hint / Solution" %}}
 If you look at the deployment template or its rendered form you'll notice that something's wrong with the selector:
 
 ```
@@ -148,6 +153,7 @@ Those two key-value pairs `app.kubernetes.io/name` and `app.kubernetes.io/instan
       app.kubernetes.io/name: {{ include "error-chart.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
 ```
+{{% /details %}}
 
 
 #### Ingress host
@@ -158,10 +164,13 @@ The host value seems to be incorrect (parts of the url were replaced by placehol
 Error: release myrelease failed: Ingress.extensions "myrelease-error-chart" is invalid: spec.rules[0].host: Invalid value: "helmtechlab-errorchart-<namespace>.<appdomain>": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
 ```
 
+{{% details title="Hint / Solution" %}}
 If you look closely, you'll notice that the placeholder `<namespace>` is still in the host's value. This does not correspond to hostname conventions. The file `templates/ingress.yaml` reveals that the host's value is defined in the `values.yaml` file. Fix the `host` value.
+{{% /details %}}
 
 
 #### Deployment image tag
+
 
 Even though the chart could successfully be installed the pod has a status of `InvalidImageName`. Looking at the rendered deployment we notice that the image is missing a tag:
 
@@ -187,6 +196,7 @@ image:
   pullPolicy: IfNotPresent
 ```
 
+{{% details title="Hint / Solution" %}}
 There's no variable `tags`, instead it's named `tag`. Fix that in the template so that the `image:` line reads:
 
 ```
@@ -194,7 +204,7 @@ There's no variable `tags`, instead it's named `tag`. Fix that in the template s
 ```
 
 You might also have to change the `repository:` value because Docker Hub might not be accessible from the used environment.
-
+{{% /details %}}
 
 #### Compare with solution
 
