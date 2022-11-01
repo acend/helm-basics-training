@@ -75,7 +75,6 @@ data:
 Rendering the new template again with `helm template gotemplatechart ...` (see task 2) will therefore result in the following output:
 
 ```yaml
----
 # Source: gotemplatechart/templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -201,7 +200,6 @@ Similar to Linux pipes known from shell commands, e.g. `ps -aux | grep ps`, you 
 Make the required changes to your ConfigMap template so that it renders to the following output:
 
 ```yaml
----
 # Source: gotemplatechart/templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap

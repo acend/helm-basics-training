@@ -116,7 +116,6 @@ spec:
 You have to use `<registry-url>/puzzle/k8s/kurs/mariadb:10.5` as the container image.
 
 ```yaml
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:

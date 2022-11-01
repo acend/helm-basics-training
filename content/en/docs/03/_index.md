@@ -42,7 +42,6 @@ Now look at the available configuration for this Helm chart. Usually you can fin
 We are going to override some of the values. For that purpose, create a new `values.yaml` file locally on your workstation (e.g. `~/<workspace>/values.yaml`) with the following content:
 
 ```yaml
----
 persistence:
   size: 1Gi
 service:
@@ -106,7 +105,6 @@ mariadb:
 You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above. Your final `values.yaml` should look like:
 
 ```yaml
----
 image:
   registry: <registry-url>
   repository: puzzle/helm-techlab/wordpress
