@@ -255,8 +255,8 @@ myrelease-prod  default         1               2022-05-19 13:26:36.570013792 +0
 ## Task {{% param sectionnumber %}}.7: Cleanup
 
 ```bash
-helm delete myrelease --namespace <namespace>
-helm delete myrelease-prod --namespace <namespace>
+helm uninstall myrelease --namespace <namespace>
+helm uninstall myrelease-prod --namespace <namespace>
 ```
 
 
