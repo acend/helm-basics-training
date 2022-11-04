@@ -296,7 +296,7 @@ export MARIADB_PASSWORD=$({{% param cliToolName %}} get secret wordpress-mariadb
 Then do the upgrade with the following command:
 
 ```bash
-helm upgrade -f values.yaml --set wordpressPassword=$WORDPRESS_PASSWORD --set mariadb.auth.rootPassword=$MARIADB_ROOT_PASSWORD --set mariadb.auth.password=$MARIADB_PASSWORD --version 15.0.2 wordpress bitnami/wordpress --namespace <namespace>
+helm upgrade -f values.yaml --set wordpressPassword=$WORDPRESS_PASSWORD --set mariadb.auth.rootPassword=$MARIADB_ROOT_PASSWORD --set mariadb.auth.password=$MARIADB_PASSWORD --version 15.2.11 wordpress bitnami/wordpress --namespace <namespace>
 ```
 
 And then observe the changes in your WordPress and MariaDB Apps
