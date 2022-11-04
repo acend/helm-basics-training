@@ -45,9 +45,9 @@ queryParam = "n"
 defaultValue = "<noproxy-list>"
 
 [[params.replaceContent.placeholders]]
-placeholder = "<appdomain>"
+placeholder = "{{% param labAppUrl %}}"
 queryParam = "a"
-defaultValue = "<appdomain>"
+defaultValue = "{{% param labAppUrl %}}"
 
 ############################## social links ##############################
 [params.links]
