@@ -57,7 +57,7 @@ containerSecurityContext:
 {{% /onlyWhen %}}
 ingress:
   enabled: true
-  hostname: wordpress-<namespace>.<appdomain>
+  hostname: wordpress-<namespace>.{{% param labAppUrl %}}
 
 mariadb:
   primary:
@@ -73,7 +73,7 @@ mariadb:
 
 {{% onlyWhenNot mobi %}}
 {{% alert title="Note" color="primary" %}}
-Make sure to replace the `<namespace>` and `<appdomain>` accordingly.
+Make sure to replace the `<namespace>` and `{{% param labAppUrl %}}` accordingly.
 {{% /alert %}}
 {{% /onlyWhenNot %}}
 
@@ -119,7 +119,7 @@ updateStrategy:
 
 ingress:
   enabled: true
-  hostname: wordpress-<namespace>.<appdomain>
+  hostname: wordpress-<namespace>.{{% param labAppUrl %}}
 
 mariadb:
   image:
@@ -198,7 +198,7 @@ pod/wordpress-6bf6df9c5d-w4fpx   1/1     Running   0          2m6s
 pod/wordpress-mariadb-0          1/1     Running   0          2m6s
 
 NAME                           HOSTS                                          ADDRESS       PORTS   AGE
-ingress.extensions/wordpress   wordpress-<namespace>.<appdomain>              10.100.1.10   80      2m6s
+ingress.extensions/wordpress   wordpress-<namespace>.{{% param labAppUrl %}}              10.100.1.10   80      2m6s
 
 NAME                                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS            AGE
 persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86-b7ed-a3a183f700fd   1Gi        RWO            cloudscale-volume-ssd   2m6s
@@ -220,7 +220,7 @@ containerSecurityContext:
   enabled: false
 ingress:
   enabled: true
-  hostname: wordpress-<namespace>.<appdomain>
+  hostname: wordpress-<namespace>.{{% param labAppUrl %}}
 mariadb:
   primary:
     containerSecurityContext:
@@ -248,7 +248,7 @@ updateStrategy:
 USER-SUPPLIED VALUES:
 ingress:
   enabled: true
-  hostname: wordpress-<namespace>.<appdomain>
+  hostname: wordpress-<namespace>.{{% param labAppUrl %}}
 mariadb:
   primary:
     persistence:
