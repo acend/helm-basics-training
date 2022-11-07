@@ -332,6 +332,7 @@ resources:
     cpu: 50m
     memory: 100Mi
 serviceName: 
+producerServiceName:
 
 ```
 
@@ -372,8 +373,10 @@ spec:
           env:
           - name: QUARKUS_LOG_LEVEL
             value: {{ .Values.logLevel }}
+          {{- if .Values.producerServiceName }}
           - name: DATA_PRODUCER_API_MP_REST_URL
-            value: http://{{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}:8080
+            value: http://{{ .Values.producerServiceName }}:8080
+          {{- end}}
           livenessProbe:
             failureThreshold: 5
             httpGet:
@@ -479,13 +482,12 @@ Let's do the same thing and deploy the consuming service accordingly. Overwrite 
 * `host`: `consumer-<username>.{{% param labAppUrl %}}`
 * `image.name`: `puzzle/quarkus-techlab-data-consumer`
 * `serviceName`: `data-consumer`
+* `producerServiceName` : `producer-helm-basic-chart-producer`
 
 {{% details title="Solution" %}}
 
 ```bash
-
 helm install consumer helm-basic-chart/. --set host=consumer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer --set producerServiceName=producer-helm-basic-chart-producer
-
 ```
 
 {{% /details %}}
@@ -673,6 +675,7 @@ consumer:
       cpu: 50m
       memory: 100Mi
   serviceName: consumer
+  producerServiceName: producer-helm-basic-chart-producer
 
 producer:
   host: producer-<username>.{{% param labAppUrl %}}
