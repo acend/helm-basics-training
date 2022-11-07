@@ -161,7 +161,7 @@ Those two key-value pairs `app.kubernetes.io/name` and `app.kubernetes.io/instan
 The host value seems to be incorrect (parts of the url were replaced by placeholders in the following message):
 
 ```
-Error: release myrelease failed: Ingress.extensions "myrelease-error-chart" is invalid: spec.rules[0].host: Invalid value: "helmtechlab-errorchart-<namespace>.<appdomain>": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
+Error: release myrelease failed: Ingress.extensions "myrelease-error-chart" is invalid: spec.rules[0].host: Invalid value: "helmtechlab-errorchart-<namespace>.{{% param labAppUrl %}}": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
 ```
 
 {{% details title="Hint / Solution" %}}

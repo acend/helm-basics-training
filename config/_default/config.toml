@@ -74,6 +74,7 @@ github_branch = "main"
 enabledModule = "base"
 distroName = "Kubernetes"
 cliToolName = "kubectl"
+labAppUrl = "labapp.acend.ch"
 
 # Enable Lunr.js offline search
 offlineSearch = true

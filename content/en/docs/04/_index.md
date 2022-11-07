@@ -189,7 +189,7 @@ Execute following command to update our helm release.
 helm upgrade myrelease --namespace <namespace> ./helm-basic-chart
 ```
 
-Finally, you can visit your application with the URL provided from the Route: `https://consumer-<username>.labapp.acend.ch/data`
+Finally, you can visit your application with the URL provided from the Route: `https://consumer-<username>.{{% param labAppUrl %}}/data`
 
 {{% alert  color="primary" %}}Replace **\<username>** with your username or get the URL from your route.{{% /alert %}}
 
@@ -215,7 +215,7 @@ Open the `values-production.yaml` and change following values.
 
 * Debug log level is too high in a productive environment, change it to `INFO`
 * The resource requirements are usually higher in a productive environment than in a development environment. Increase the Memory Limits to `750Mi`
-* To avoid DNS collisions we need to chang the host to, change it to `producer-<username>-prod.labapp.acend.ch` and `consumer-<username>-prod.labapp.acend.ch`
+* To avoid DNS collisions we need to chang the host to, change it to `producer-<username>-prod.{{% param labAppUrl %}}` and `consumer-<username>-prod.{{% param labAppUrl %}}`
 
 
 ## Solution Task {{% param sectionnumber %}}.5
@@ -319,7 +319,7 @@ Your `values.yaml` should look like this (might differ if you deleted the consum
 ```yaml
 # values.yaml
 
-host: consumer-user4.labapp.acend.ch
+host: consumer-<username>.{{% param labAppUrl %}}
 image:
   name: quay.io/puzzle/quarkus-techlab-data-consumer
   tag: latest
@@ -459,7 +459,7 @@ spec:
 
 Install the release with the configuration for the producer. As we learned in previous chapters, we can overwrite values from the `values.yaml` with the help of the `--set variable=value` parameter of the helm-cli. Overwrite the values for the producer like the following:
 
-* `host`: `producer-user4.labapp.acend.ch`
+* `host`: `producer-<username>.{{% param labAppUrl %}}`
 * `image.name`: `quay.io/puzzle/quarkus-techlab-data-producer`
 * `serviceName`: `producer`
 
@@ -469,7 +469,7 @@ Call the release data-producer and install it!
 
 ```bash
 
-helm install producer helm-basic-chart/. --set host=producer-user4.labapp.acend.ch --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=producer
+helm install producer helm-basic-chart/. --set host=producer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=producer
 
 ```
 
@@ -479,7 +479,7 @@ After you installed the producer service you can verify the deployment if you'd 
 
 Let's do the same thing and deploy the consuming service accordingly. Overwrite the following values for the data-consumer microservice:
 
-* `host`: `consumer-user4.labapp.acend.ch`
+* `host`: `consumer-<username>.{{% param labAppUrl %}}`
 * `image.name`: `puzzle/quarkus-techlab-data-consumer`
 * `serviceName`: `data-consumer`
 * `producerServiceName` : `producer-helm-basic-chart-producer`
@@ -487,9 +487,7 @@ Let's do the same thing and deploy the consuming service accordingly. Overwrite 
 {{% details title="Solution" %}}
 
 ```bash
-
-helm install consumer helm-basic-chart/. --set host=consumer-user4.labapp.acend.ch --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer --set producerServiceName=producer-helm-basic-chart-producer
-
+helm install consumer helm-basic-chart/. --set host=consumer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer --set producerServiceName=producer-helm-basic-chart-producer
 ```
 
 {{% /details %}}
@@ -664,7 +662,7 @@ producer:
 ```yaml
 
 consumer:
-  host: consumer-<username>.labapp.acend.ch
+  host: consumer-<username>.{{% param labAppUrl %}}
   image:
     name: quay.io/puzzle/quarkus-techlab-data-consumer
     tag: latest
@@ -680,7 +678,7 @@ consumer:
   producerServiceName: producer-helm-basic-chart-producer
 
 producer:
-  host: producer-<username>.labapp.acend.ch
+  host: producer-<username>.{{% param labAppUrl %}}
   image:
     name: quay.io/puzzle/quarkus-techlab-data-producer
     tag: latest
