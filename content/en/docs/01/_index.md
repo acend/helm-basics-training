@@ -114,7 +114,7 @@ You can create your namespace with:
 {{% onlyWhenNot openshift %}}
 
 ```bash
-kubectl create namespace <namespace>
+{{% param cliToolName %}} create namespace <namespace>
 ```
 
 {{% alert title="Note" color="primary" %}}

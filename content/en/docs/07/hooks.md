@@ -114,14 +114,14 @@ Let's install the release and check whether the hook was deployed.
 First open a second terminal and run the following command:
 
 ```bash
-kubectl get pod -w --namespace <namespace>
+{{% param cliToolName %}} get pod -w --namespace <namespace>
 ```
 
 ```bash
 helm upgrade -i myapp ./mychart --namespace <namespace>
 ```
 
-The output of the `kubectl get pod` command should show the deployment of the `post-install-hook` pod.
+The output of the `{{% param cliToolName %}} get pod` command should show the deployment of the `post-install-hook` pod.
 
 
 ## Task {{% param sectionnumber %}}.3: Write your own hook
@@ -249,7 +249,7 @@ When you created your hooks, install or upgrade your helm release with `helm ins
 
 ```s
 
-kubectl --namespace <namespace> exec -it myapp-mariadb-0 -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"  
+{{% param cliToolName %}} --namespace <namespace> exec -it myapp-mariadb-0 -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"  
 
 +----+------------+
 | id | name       |
