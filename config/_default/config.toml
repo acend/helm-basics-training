@@ -75,7 +75,7 @@ enabledModule = "base"
 distroName = "Kubernetes"
 cliToolName = "kubectl"
 labAppUrl = "labapp.acend.ch"
-webConsoleURL = ""
+webConsoleURL = "null"
 
 # Enable Lunr.js offline search
 offlineSearch = true
