@@ -4,9 +4,34 @@ weight: 1
 sectionnumber: 1
 ---
 
-## Task {{% param sectionnumber %}}.1: `{{% param cliToolName %}}` installation
+## Task {{% param sectionnumber %}}.1: Web IDE
 
-You should have a current version of `{{% param cliToolName %}}` installed on your machine.
+The first thing we're going to do is to explore our lab environment and get in touch with the different components.
+
+{{% alert title="Note" color="primary" %}}You can also use your local installation of the cli tools. Make sure you completed [the setup](../../setup/) before you continue with this lab.{{% /alert %}}
+
+{{% alert title="Note" color="primary" %}}The URL and Credentials to the Web IDE will provided by the teacher. Use Chrome for the best experience.{{% /alert %}}
+
+
+Once you're successfully logged into the web IDE open a new Terminal by hitting `CTRL + SHIFT + ¨` or clicking the Menu button --> Terminal --> new Terminal and check the installed {{% param cliToolName %}}version by executing the following command:
+
+```bash
+{{% param cliToolName %}} version
+```
+
+The Web IDE Pod consists of the following tools:
+
+* oc
+* kubectl
+* kustomize
+* helm
+* kubectx
+* kubens
+* tekton cli
+* odo
+* argocd
+
+The files in the home directory under `/home/project` are stored in a persistence volume, so please make sure to store all your persistence data in this directory.
 
 
 ## Task {{% param sectionnumber %}}.2: Login
@@ -65,7 +90,12 @@ The `PATH` can be set in Windows in the advanced system settings. It depends on 
 {{% /onlyWhenNot %}}
 
 {{% onlyWhen openshift %}}
-Please refer to the information your teacher provided you with.
+
+* Open a seperate Browser Tab and login to the OpenShift [Webconsole]({{% param webConsoleURL %}}) using your `<username>` and `<password>`
+* Open the menu behind your username in the top right corner
+* Hit `Copy Login Command`
+* Display the Token and copy the command
+* Execute the command in your Webshell terminal.
 {{% /onlyWhen %}}
 
 
@@ -178,6 +208,8 @@ This will print out the documentation for the `install command`. Play around and
 
 
 ### Task {{% param sectionnumber %}}.1: Autocompletion
+
+{{% alert title="Note" color="primary" %}}This step is only needed, when you're not working with the Web IDE we've provided. The autocompletion is already installed in the Web IDE{{% /alert %}}
 
 If you are using the Helm CLI on Linux or Mac OS X you can enable the [autocompletion feature](https://helm.sh/docs/helm/helm_completion/). With autocompletion it's even easier to learn the commands, subcommands and their flags. Last but not least it improves the productivity while using Helm.
 

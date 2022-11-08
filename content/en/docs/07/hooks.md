@@ -118,7 +118,7 @@ kubectl get pod -w --namespace <namespace>
 ```
 
 ```bash
-helm install myapp ./mychart --namespace <namespace>
+helm upgrade -i myapp ./mychart --namespace <namespace>
 ```
 
 The output of the `kubectl get pod` command should show the deployment of the `post-install-hook` pod.
