@@ -12,7 +12,7 @@ In this section were going to show you how to modify a Helm chart from an existi
 +----------+                    +----------+
 ```
 
-Imagine your being a java development team embracing the DevOps culture and your job is to deploy the two services you designed to your Kubernetes cluster.
+Imagine you're being a java development team embracing the DevOps culture and your job is to deploy the two services you designed to your Kubernetes cluster.
 
 
 ## Task {{% param sectionnumber %}}.1: Get the chart skeleton
