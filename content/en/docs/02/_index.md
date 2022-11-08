@@ -71,6 +71,8 @@ Finally, the following command creates a new release and deploys the application
 helm install --namespace <namespace> myfirstrelease ./mychart
 ```
 
+{{% alert title="Note" color="primary" %}}Use the `helm upgrade -i` command, instead of `helm install` or `helm upgrade` depending on whether the release is already installed or not.{{% /alert %}}
+
 
 With `{{% param cliToolName %}} get pods --namespace <namespace>` you should see a new Pod:
 

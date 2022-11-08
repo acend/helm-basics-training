@@ -86,7 +86,7 @@ Replace the same value in our `producer-ingress.yaml` file.
 Afterwards we can install our Helm Chart with following command.
 
 ```s
-helm install myrelease --namespace <namespace> ./helm-basic-chart
+helm upgrade -i myrelease --namespace <namespace> ./helm-basic-chart
 ```
 
 Verify your deployment! Check if your pods are running and healthy!
@@ -234,7 +234,7 @@ Now we have prepared our values file for the production environment. Next we can
 Execute the Helm install command and pass the new created production values as parameter.
 
 ```bash
-helm install myrelease-prod --values values-production.yaml --namespace <namespace> ./helm-basic-chart
+helm upgrade -i myrelease-prod --values values-production.yaml --namespace <namespace> ./helm-basic-chart
 ```
 
 Use the helm list command to list all releases in your namespace
@@ -469,7 +469,7 @@ Call the release data-producer and install it!
 
 ```bash
 
-helm install producer helm-basic-chart/. --set host=producer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=producer
+helm upgrade -i producer helm-basic-chart/. --set host=producer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=producer
 
 ```
 
@@ -487,7 +487,7 @@ Let's do the same thing and deploy the consuming service accordingly. Overwrite 
 {{% details title="Solution" %}}
 
 ```bash
-helm install consumer helm-basic-chart/. --set host=consumer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer --set producerServiceName=producer-helm-basic-chart-producer
+helm upgrade -i consumer helm-basic-chart/. --set host=consumer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer --set producerServiceName=producer-helm-basic-chart-producer
 ```
 
 {{% /details %}}
@@ -705,7 +705,7 @@ Install a Helm Chart release `myrelease` and verify if the two services are runn
 
 ```bash
 
-helm install myrelease parent/.
+helm upgrade -i myrelease parent/.
 
 ```
 

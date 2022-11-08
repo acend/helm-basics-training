@@ -91,7 +91,7 @@ The `PATH` can be set in Windows in the advanced system settings. It depends on 
 
 {{% onlyWhen openshift %}}
 
-* Open a seperate Browser Tab and login to the OpenShift [Webconsole]({{% param openshiftWebConsoleURL %}}) using your `<username>` and `<password>`
+* Open a seperate Browser Tab and login to the OpenShift [Webconsole]({{% param webConsoleURL %}}) using your `<username>` and `<password>`
 * Open the menu behind your username in the top right corner
 * Hit `Copy Login Command`
 * Display the Token and copy the command
@@ -208,6 +208,8 @@ This will print out the documentation for the `install command`. Play around and
 
 
 ### Task {{% param sectionnumber %}}.1: Autocompletion
+
+{{% alert title="Note" color="primary" %}}This step is only needed, when you're not working with the Web IDE we've provided. The autocompletion is already installed in the Web IDE{{% /alert %}}
 
 If you are using the Helm CLI on Linux or Mac OS X you can enable the [autocompletion feature](https://helm.sh/docs/helm/helm_completion/). With autocompletion it's even easier to learn the commands, subcommands and their flags. Last but not least it improves the productivity while using Helm.
 
