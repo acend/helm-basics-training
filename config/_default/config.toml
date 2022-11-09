@@ -3,8 +3,6 @@ title = "Helm Basics Training"
 
 enableGitInfo = true
 
-theme = ["docsy-acend", "docsy-plus", "docsy"]
-
 languageCode = "en-us"
 
 contentDir = "content/en"
@@ -76,9 +74,14 @@ github_branch = "main"
 enabledModule = "base"
 distroName = "Kubernetes"
 cliToolName = "kubectl"
+labAppUrl = "labapp.acend.ch"
+webConsoleURL = "null"
 
 # Enable Lunr.js offline search
 offlineSearch = true
+
+[params.pdf]
+title="Helm Basics Training"
 
 [params.ui]
 # Enable to show the side bar menu in its compact state.
@@ -108,3 +111,23 @@ url = "https://twitter.com/acendch"
 name = "LinkedIn"
 icon = "fab fa-linkedin-in"
 url = "https://linkedin.com/company/acendch/"
+
+
+[module]
+  # uncomment line below for temporary local development of module
+  # replacements = "github.com/google/docsy -> ../../docsy"
+  [module.hugoVersion]
+    extended = true
+    min = "0.100.0"
+  [[module.imports]]
+    path = "github.com/acend/docsy-acend"
+    disable = false
+  [[module.imports]]
+    path = "github.com/acend/docsy-plus"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy"
+    disable = false
+  [[module.imports]]
+    path = "github.com/google/docsy/dependencies"
+    disable = false 

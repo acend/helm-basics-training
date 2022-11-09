@@ -1,7 +1,7 @@
 ---
-title: "8.4 Helm hooks"
-weight: 84
-sectionnumber: 8.4
+title: "7.4 Helm hooks"
+weight: 74
+sectionnumber: 7.4
 ---
 
 In the previous lab we learned how to deploy our python example application and connect it to a MariaDB. In this chapter we are going to look at a mechanism of Helm called hooks, which let's chart developers intervene / interact at certain points in a release's life cycle.
@@ -114,14 +114,14 @@ Let's install the release and check whether the hook was deployed.
 First open a second terminal and run the following command:
 
 ```bash
-kubectl get pod -w --namespace <namespace>
+{{% param cliToolName %}} get pod -w --namespace <namespace>
 ```
 
 ```bash
-helm install myapp ./mychart --namespace <namespace>
+helm upgrade -i myapp ./mychart --namespace <namespace>
 ```
 
-The output of the `kubectl get pod` command should show the deployment of the `post-install-hook` pod.
+The output of the `{{% param cliToolName %}} get pod` command should show the deployment of the `post-install-hook` pod.
 
 
 ## Task {{% param sectionnumber %}}.3: Write your own hook
@@ -171,17 +171,16 @@ spec:
           - >
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "DROP TABLE IF EXISTS test;"
           env:
+          - name: MYSQL_DATABASE_USER
+            value: {{ .Values.mariadb.auth.username }}
+          - name: MYSQL_DATABASE_PASSWORD
+            value: {{ .Values.mariadb.auth.password }}
+          - name: MYSQL_DATABASE_ROOT_PASSWORD
+            value: {{ .Values.mariadb.auth.rootPassword }}
+          - name: MYSQL_DATABASE
+            value: {{ .Values.mariadb.auth.database }}
           - name: MYSQL_DATABASE_HOST
             value: {{ .Release.Name }}-mariadb
-          - name: MYSQL_DATABASE
-            value: {{ .Values.database.databasename }}
-          - name: MYSQL_DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: mariadb-password
-                name: {{ .Release.Name }}-mariadb
-          - name: MYSQL_DATABASE_USER
-            value: {{ .Values.database.databaseuser }}
 
 ```
 
@@ -222,17 +221,16 @@ spec:
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "CREATE TABLE test (id int AUTO_INCREMENT PRIMARY KEY, name CHAR(64));"  &&
             mysql --host=$(MYSQL_DATABASE_HOST) --user=$(MYSQL_DATABASE_USER) --password=$(MYSQL_DATABASE_PASSWORD) --database=$(MYSQL_DATABASE) -e "INSERT INTO test (name) VALUES ('helm'), ('kubernetes'), ('openshift'), ('docker');"
           env:
+          - name: MYSQL_DATABASE_USER
+            value: {{ .Values.mariadb.auth.username }}
+          - name: MYSQL_DATABASE_PASSWORD
+            value: {{ .Values.mariadb.auth.password }}
+          - name: MYSQL_DATABASE_ROOT_PASSWORD
+            value: {{ .Values.mariadb.auth.rootPassword }}
+          - name: MYSQL_DATABASE
+            value: {{ .Values.mariadb.auth.database }}
           - name: MYSQL_DATABASE_HOST
             value: {{ .Release.Name }}-mariadb
-          - name: MYSQL_DATABASE
-            value: {{ .Values.database.databasename }}
-          - name: MYSQL_DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: mariadb-password
-                name: {{ .Release.Name }}-mariadb
-          - name: MYSQL_DATABASE_USER
-            value: {{ .Values.database.databaseuser }}
 
 ```
 
@@ -251,7 +249,7 @@ When you created your hooks, install or upgrade your helm release with `helm ins
 
 ```s
 
-kubectl --namespace <namespace> exec -it myapp-mariadb-0 -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"  
+{{% param cliToolName %}} --namespace <namespace> exec -it myapp-mariadb-0 -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"  
 
 +----+------------+
 | id | name       |

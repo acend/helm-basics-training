@@ -1,7 +1,7 @@
 ---
-title: "8.5 Optional: Publish your chart"
-weight: 85
-sectionnumber: 8.5
+title: "7.5 Optional: Publish your chart"
+weight: 75
+sectionnumber: 7.5
 ---
 
 In this lab we will learn how to publish our Helm chart and make it accessible to the public by using GitHub pages.
@@ -162,7 +162,7 @@ mycharts/mychart        0.1.0           1.16.0          A Helm chart for Kuberne
 When your newly created repository is successfully registered you can install the published chart with the following command:
 
 ```bash
-helm install myapp-from-repo mycharts/mychart
+helm upgrade -i myapp-from-repo mycharts/mychart
 ```
 
 

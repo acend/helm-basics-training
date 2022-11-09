@@ -42,7 +42,6 @@ Now look at the available configuration for this Helm chart. Usually you can fin
 We are going to override some of the values. For that purpose, create a new `values.yaml` file locally on your workstation (e.g. `~/<workspace>/values.yaml`) with the following content:
 
 ```yaml
----
 persistence:
   size: 1Gi
 service:
@@ -58,7 +57,7 @@ containerSecurityContext:
 {{% /onlyWhen %}}
 ingress:
   enabled: true
-  hostname: wordpress-<namespace>.<appdomain>
+  hostname: wordpress-<namespace>.{{% param labAppUrl %}}
 
 mariadb:
   primary:
@@ -74,7 +73,7 @@ mariadb:
 
 {{% onlyWhenNot mobi %}}
 {{% alert title="Note" color="primary" %}}
-Make sure to replace the `<namespace>` and `<appdomain>` accordingly.
+Make sure to replace the `<namespace>` and `{{% param labAppUrl %}}` accordingly.
 {{% /alert %}}
 {{% /onlyWhenNot %}}
 
@@ -106,7 +105,6 @@ mariadb:
 You have to merge the `mariadb` part with the already defined `mariadb` part from the lab instructions above. Your final `values.yaml` should look like:
 
 ```yaml
----
 image:
   registry: <registry-url>
   repository: puzzle/helm-techlab/wordpress
@@ -121,7 +119,7 @@ updateStrategy:
 
 ingress:
   enabled: true
-  hostname: wordpress-<namespace>.<appdomain>
+  hostname: wordpress-<namespace>.{{% param labAppUrl %}}
 
 mariadb:
   image:
@@ -145,7 +143,7 @@ dependencies:
   - condition: mariadb.enabled
     name: mariadb
     repository: https://charts.bitnami.com/bitnami
-    version: 9.x.x
+    version: 11.x.x
 ```
 
 [Helm's best practices](https://helm.sh/docs/chart_best_practices/) suggest to use version ranges instead of a fixed version whenever possible.
@@ -167,7 +165,7 @@ Subcharts are an alternative way to define dependencies within a chart: A chart 
 We are now going to deploy the application in a specific version (which is not the latest release on purpose). Also note that we define our custom `values.yaml` file with the `-f` parameter:
 
 ```bash
-helm install wordpress bitnami/wordpress -f values.yaml --version 15.0.2 --namespace <namespace>
+helm upgrade -i wordpress bitnami/wordpress -f values.yaml --version 15.0.2 --namespace <namespace>
 ```
 
 Look for the newly created resources with `helm ls` and `{{% param cliToolName %}} get deploy,pod,ingress,pvc`:
@@ -200,7 +198,7 @@ pod/wordpress-6bf6df9c5d-w4fpx   1/1     Running   0          2m6s
 pod/wordpress-mariadb-0          1/1     Running   0          2m6s
 
 NAME                           HOSTS                                          ADDRESS       PORTS   AGE
-ingress.extensions/wordpress   wordpress-<namespace>.<appdomain>              10.100.1.10   80      2m6s
+ingress.extensions/wordpress   wordpress-<namespace>.{{% param labAppUrl %}}              10.100.1.10   80      2m6s
 
 NAME                                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS            AGE
 persistentvolumeclaim/data-wordpress-mariadb-0   Bound    pvc-859fe3b4-b598-4f86-b7ed-a3a183f700fd   1Gi        RWO            cloudscale-volume-ssd   2m6s
@@ -222,7 +220,7 @@ containerSecurityContext:
   enabled: false
 ingress:
   enabled: true
-  hostname: wordpress-<namespace>.<appdomain>
+  hostname: wordpress-<namespace>.{{% param labAppUrl %}}
 mariadb:
   primary:
     containerSecurityContext:
@@ -250,7 +248,7 @@ updateStrategy:
 USER-SUPPLIED VALUES:
 ingress:
   enabled: true
-  hostname: wordpress-<namespace>.<appdomain>
+  hostname: wordpress-<namespace>.{{% param labAppUrl %}}
 mariadb:
   primary:
     persistence:
@@ -298,7 +296,7 @@ export MARIADB_PASSWORD=$({{% param cliToolName %}} get secret wordpress-mariadb
 Then do the upgrade with the following command:
 
 ```bash
-helm upgrade -f values.yaml --set wordpressPassword=$WORDPRESS_PASSWORD --set mariadb.auth.rootPassword=$MARIADB_ROOT_PASSWORD --set mariadb.auth.password=$MARIADB_PASSWORD --version 10.7.2 wordpress bitnami/wordpress --namespace <namespace>
+helm upgrade -f values.yaml --set wordpressPassword=$WORDPRESS_PASSWORD --set mariadb.auth.rootPassword=$MARIADB_ROOT_PASSWORD --set mariadb.auth.password=$MARIADB_PASSWORD --version 15.2.11 wordpress bitnami/wordpress --namespace <namespace>
 ```
 
 And then observe the changes in your WordPress and MariaDB Apps

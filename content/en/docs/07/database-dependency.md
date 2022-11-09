@@ -1,7 +1,7 @@
 ---
-title: "8.3 Backend as a Dependency"
-weight: 83
-sectionnumber: 8.3
+title: "7.3 Backend as a Dependency"
+weight: 73
+sectionnumber: 7.3
 ---
 
 In the previous lab we've manually added a database deployment to our awesome application. Instead of creating your own templates and deployments, we can also integrate other helm charts as dependencies. We have seen this already in lab 3 but are now going to go into more detail in this lab.
@@ -113,7 +113,7 @@ dependencies:
 - condition: mariadb.enabled
   name: mariadb
   repository: https://charts.bitnami.com/bitnami
-  version: 9.x.x
+  version: 10.x.x
 maintainers:
   - name: <name>
     email: <email>
@@ -151,10 +151,26 @@ mariadb:
 {{% /onlyWhen %}}
 ```
 
-After editing the `values.yaml` we can now install the release.
+Update your deployment to match the keys in the `values.yaml` to your environment variables defined in the deployment:
+
+```yaml
+          env:
+          - name: MYSQL_DATABASE_USER
+            value: {{ .Values.mariadb.auth.username }}
+          - name: MYSQL_DATABASE_PASSWORD
+            value: {{ .Values.mariadb.auth.password }}
+          - name: MYSQL_DATABASE_ROOT_PASSWORD
+            value: {{ .Values.mariadb.auth.rootPassword }}
+          - name: MYSQL_DATABASE_NAME
+            value: {{ .Values.mariadb.auth.database }}
+          - name: MYSQL_URI
+            value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE_NAME)
+```
+
+After editing the files we can now install the release.
 
 ```bash
-helm install myapp ./mychart --namespace <namespace>
+helm upgrade -i myapp ./mychart --namespace <namespace>
 ```
 
 Verify the installation and check whether the new database was deployed.
