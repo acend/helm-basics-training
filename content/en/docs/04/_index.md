@@ -66,9 +66,25 @@ If you want to test the chart locally you can execute following command
 
 First let us define the new variables in our `values.yaml` file. Replace `<username>` with your username
 
+
+{{% onlyWhenNot openshift %}}
+
 {{< highlight YAML "hl_lines=2 6" >}}
 {{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/main/helm-basic-chart/values.yaml" %}}
 {{< /highlight >}}
+
+{{% /onlyWhenNot  %}}
+{{% onlyWhen openshift %}}
+
+```yaml
+producer:
+  host: producer-<namespace>.training.openshift.ch
+
+consumer:
+  tag: latest
+  host: consumer-<namespace>.training.openshift.ch
+```
+{{% /onlyWhen  %}}
 
 Next replace the hard coded values for the host value in our `consumer-ingress.yaml` file.
 
