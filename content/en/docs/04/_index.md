@@ -215,7 +215,7 @@ Open the `values-production.yaml` and change following values.
 
 * Debug log level is too high in a production environment, change it to `INFO`
 * The resource requirements are usually higher in a production environment than in a development environment. Increase the Memory Limits to `750Mi`
-* To avoid DNS collisions we need to chang the host to, change it to `producer-<username>-prod.labapp.acend.ch` and `consumer-<username>-prod.labapp.acend.ch`
+* To avoid DNS collisions we need to chang the host to, change it to `producer-<username>-prod.{{% param labAppUrl %}}` and `consumer-<username>-prod.{{% param labAppUrl %}}`
 
 
 ## Solution Task {{% param sectionnumber %}}.5
