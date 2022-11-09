@@ -370,7 +370,7 @@ spec:
 To create a release from our chart, we run the following command within our chart directory:
 
 ```bash
-helm install myapp ./mychart --namespace <namespace>
+helm upgrade -i myapp ./mychart --namespace <namespace>
 ```
 
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:

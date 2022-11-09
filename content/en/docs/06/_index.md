@@ -50,7 +50,7 @@ helm template gotemplatechart -s templates/configmap.yaml
 If everything went ok we can deploy a release of the chart in our namespace:
 
 ```bash
-helm install gotemplaterelease gotemplatechart --namespace <namespace>
+helm upgrade -i gotemplaterelease gotemplatechart --namespace <namespace>
 ```
 
 

@@ -170,7 +170,7 @@ Update your deployment to match the keys in the `values.yaml` to your environmen
 After editing the files we can now install the release.
 
 ```bash
-helm install myapp ./mychart --namespace <namespace>
+helm upgrade -i myapp ./mychart --namespace <namespace>
 ```
 
 Verify the installation and check whether the new database was deployed.
