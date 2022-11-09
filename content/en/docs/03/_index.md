@@ -264,7 +264,7 @@ updateStrategy:
 
 {{% /onlyWhenNot %}}
 
-As soon as all deployments are ready (meaning pods `wordpress` and `mariadb` are running) you can open the application with the URL [https://wordpress-<namespace>.{{% param labAppUrl %}}](https://wordpress-<namespace>.{{% param labAppUrl %}}) from your Ingress resource defined in `values.yaml`.
+As soon as all deployments are ready (meaning pods `wordpress` and `mariadb` are running) you can open the application with the URL `https://wordpress-<namespace>.{{% param labAppUrl %}}` from your Ingress resource defined in `values.yaml`.
 
 
 ## Upgrade
