@@ -162,7 +162,7 @@ mycharts/mychart        0.1.0           1.16.0          A Helm chart for Kuberne
 When your newly created repository is successfully registered you can install the published chart with the following command:
 
 ```bash
-helm install myapp-from-repo mycharts/mychart
+helm upgrade -i myapp-from-repo mycharts/mychart
 ```
 
 

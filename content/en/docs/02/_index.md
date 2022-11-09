@@ -71,6 +71,8 @@ Finally, the following command creates a new release and deploys the application
 helm install --namespace <namespace> myfirstrelease ./mychart
 ```
 
+{{% alert title="Note" color="primary" %}}Use the `helm upgrade -i` command, instead of `helm install` or `helm upgrade` depending on whether the release is already installed or not.{{% /alert %}}
+
 
 With `{{% param cliToolName %}} get pods --namespace <namespace>` you should see a new Pod:
 
@@ -149,7 +151,7 @@ spec:
 Thus, we need to change this value inside our `mychart/values.yaml` file. This is also where we enable the TLS part:
 
 {{% alert title="Note" color="primary" %}}
-Make sure to replace the `<namespace>` and `<appdomain>` accordingly. `<appdomain>` will be provided by the trainer.
+Make sure to replace the `<namespace>` and `{{% param labAppUrl %}}` accordingly. `{{% param labAppUrl %}}` will be provided by the trainer.
 {{% /alert %}}
 
 {{% onlyWhen openshift %}}
@@ -161,14 +163,14 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: mychart-<namespace>.<appdomain>
+    - host: mychart-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: mychart-<namespace>-<appdomain>
+    - secretName: mychart-<namespace>-{{% param labAppUrl %}}
       hosts:
-        - mychart-<namespace>.<appdomain>
+        - mychart-<namespace>.{{% param labAppUrl %}}
 ```
 
 {{% /onlyWhen %}}
@@ -181,14 +183,14 @@ ingress:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: mychart-<namespace>.<appdomain>
+    - host: mychart-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
-    - secretName: mychart-<namespace>-<appdomain>
+    - secretName: mychart-<namespace>-{{% param labAppUrl %}}
       hosts:
-        - mychart-<namespace>.<appdomain>
+        - mychart-<namespace>.{{% param labAppUrl %}}
 ```
 
 {{% /onlyWhenNot %}}
@@ -204,7 +206,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: mychart-<namespace>.<appdomain>
+    - host: mychart-<namespace>.{{% param labAppUrl %}}
       paths:
       - path: /
   tls: []
@@ -238,11 +240,11 @@ STATUS: deployed
 REVISION: 2
 NOTES:
 1. Get the application URL by running these commands:
-  http://mychart-<namespace>.<appdomain>/
+  http://mychart-<namespace>.{{% param labAppUrl %}}/
 ```
 
 {{% onlyWhenNot mobi %}}
-Check whether the ingress was successfully deployed by accessing the URL `https://mychart-<namespace>.<appdomain>/`
+Check whether the ingress was successfully deployed by accessing the URL `https://mychart-<namespace>.{{% param labAppUrl %}}/`
 
 {{% onlyWhen openshift %}}
 {{% alert title="Note" color="primary" %}}
@@ -252,7 +254,7 @@ It might take a moment until the app is accessible.
 
 {{% /onlyWhenNot %}}
 {{% onlyWhen mobi %}}
-Check whether the ingress was successfully deployed by accessing the URL `http://mychart-<namespace>.<appdomain>/`
+Check whether the ingress was successfully deployed by accessing the URL `http://mychart-<namespace>.{{% param labAppUrl %}}/`
 
 {{% /onlyWhen %}}
 

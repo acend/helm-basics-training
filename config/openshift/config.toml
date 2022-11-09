@@ -2,3 +2,5 @@
 enabledModule = "base openshift"
 distroName = "OpenShift"
 cliToolName = "oc"
+labAppUrl = "training.openshift.ch"
+webConsoleURL = "https://console.training.openshift.ch/"

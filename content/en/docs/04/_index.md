@@ -86,19 +86,19 @@ Replace the same value in our `producer-ingress.yaml` file.
 Afterwards we can install our Helm Chart with following command.
 
 ```s
-helm install myrelease --namespace <namespace> ./helm-basic-chart
+helm upgrade -i myrelease --namespace <namespace> ./helm-basic-chart
 ```
 
 Verify your deployment! Check if your pods are running and healthy!
 
 ```bash
-kubectl get pods
+{{% param cliToolName %}} get pods
 ```
 
 This should return something like this:
 
 ```
-kubectl get pods
+{{% param cliToolName %}} get pods
 NAME                             READY   STATUS    RESTARTS   AGE
 data-consumer-7686976d88-2wbh5   1/1     Running   0          72s
 data-producer-786d6bb688-qpg4c   1/1     Running   0          72s
@@ -124,7 +124,7 @@ When the problem will be a redirect or certificate problem, try the flags `-L` a
 
 ```bash
 
-curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.15495350024595755}
 
 ```
@@ -189,14 +189,14 @@ Execute following command to update our helm release.
 helm upgrade myrelease --namespace <namespace> ./helm-basic-chart
 ```
 
-Finally, you can visit your application with the URL provided from the Route: `https://consumer-<username>.labapp.acend.ch/data`
+Finally, you can visit your application with the URL provided from the Route: `https://consumer-<username>.{{% param labAppUrl %}}/data`
 
 {{% alert  color="primary" %}}Replace **\<username>** with your username or get the URL from your route.{{% /alert %}}
 
 Or you could access the `data` endpoint using curl:
 
 ```BASH
-curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 ```
 
 When you open the URL you should see the producers data
@@ -234,7 +234,7 @@ Now we have prepared our values file for the production environment. Next we can
 Execute the Helm install command and pass the new created production values as parameter.
 
 ```bash
-helm install myrelease-prod --values values-production.yaml --namespace <namespace> ./helm-basic-chart
+helm upgrade -i myrelease-prod --values values-production.yaml --namespace <namespace> ./helm-basic-chart
 ```
 
 Use the helm list command to list all releases in your namespace
@@ -255,8 +255,8 @@ myrelease-prod  default         1               2022-05-19 13:26:36.570013792 +0
 ## Task {{% param sectionnumber %}}.7: Cleanup
 
 ```bash
-helm delete myrelease --namespace <namespace>
-helm delete myrelease-prod --namespace <namespace>
+helm uninstall myrelease --namespace <namespace>
+helm uninstall myrelease-prod --namespace <namespace>
 ```
 
 
@@ -319,7 +319,7 @@ Your `values.yaml` should look like this (might differ if you deleted the consum
 ```yaml
 # values.yaml
 
-host: consumer-user4.labapp.acend.ch
+host: consumer-<username>.{{% param labAppUrl %}}
 image:
   name: quay.io/puzzle/quarkus-techlab-data-consumer
   tag: latest
@@ -332,6 +332,7 @@ resources:
     cpu: 50m
     memory: 100Mi
 serviceName: 
+producerServiceName:
 
 ```
 
@@ -372,8 +373,10 @@ spec:
           env:
           - name: QUARKUS_LOG_LEVEL
             value: {{ .Values.logLevel }}
+          {{- if .Values.producerServiceName }}
           - name: DATA_PRODUCER_API_MP_REST_URL
-            value: http://{{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}:8080
+            value: http://{{ .Values.producerServiceName }}:8080
+          {{- end}}
           livenessProbe:
             failureThreshold: 5
             httpGet:
@@ -438,7 +441,7 @@ spec:
         paths:
           - backend:
               service:
-                name: {{ .Values.serviceName }}
+                name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
                 port:
                   number: 8080
             path: /
@@ -446,7 +449,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.host }}
-      secretName: producer-labapp-acend-ch
+      secretName: {{ .Values.serviceName }}-labapp-acend-ch
 ```
 
 {{% /details %}}
@@ -456,7 +459,7 @@ spec:
 
 Install the release with the configuration for the producer. As we learned in previous chapters, we can overwrite values from the `values.yaml` with the help of the `--set variable=value` parameter of the helm-cli. Overwrite the values for the producer like the following:
 
-* `host`: `producer-user4.labapp.acend.ch`
+* `host`: `producer-<username>.{{% param labAppUrl %}}`
 * `image.name`: `quay.io/puzzle/quarkus-techlab-data-producer`
 * `serviceName`: `producer`
 
@@ -466,7 +469,7 @@ Call the release data-producer and install it!
 
 ```bash
 
-helm install producer helm-basic-chart/. --set host=producer-user4.labapp.acend.ch --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=producer
+helm upgrade -i producer helm-basic-chart/. --set host=producer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=producer
 
 ```
 
@@ -476,16 +479,15 @@ After you installed the producer service you can verify the deployment if you'd 
 
 Let's do the same thing and deploy the consuming service accordingly. Overwrite the following values for the data-consumer microservice:
 
-* `host`: `consumer-user4.labapp.acend.ch`
+* `host`: `consumer-<username>.{{% param labAppUrl %}}`
 * `image.name`: `puzzle/quarkus-techlab-data-consumer`
 * `serviceName`: `data-consumer`
+* `producerServiceName` : `producer-helm-basic-chart-producer`
 
 {{% details title="Solution" %}}
 
 ```bash
-
-helm install consumer helm-basic-chart/. --set host=consumer-user4.labapp.acend.ch --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer
-
+helm upgrade -i consumer helm-basic-chart/. --set host=consumer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer --set producerServiceName=producer-helm-basic-chart-producer
 ```
 
 {{% /details %}}
@@ -494,7 +496,7 @@ At the end, verify your two releases again and test if they are still delivering
 
 ```bash
 
-curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.4145158804475594}
 
 ```
@@ -660,7 +662,7 @@ producer:
 ```yaml
 
 consumer:
-  host: consumer-<username>.labapp.acend.ch
+  host: consumer-<username>.{{% param labAppUrl %}}
   image:
     name: quay.io/puzzle/quarkus-techlab-data-consumer
     tag: latest
@@ -673,9 +675,10 @@ consumer:
       cpu: 50m
       memory: 100Mi
   serviceName: consumer
+  producerServiceName: producer-helm-basic-chart-producer
 
 producer:
-  host: producer-<username>.labapp.acend.ch
+  host: producer-<username>.{{% param labAppUrl %}}
   image:
     name: quay.io/puzzle/quarkus-techlab-data-producer
     tag: latest
@@ -702,13 +705,13 @@ Install a Helm Chart release `myrelease` and verify if the two services are runn
 
 ```bash
 
-helm install myrelease parent/.
+helm upgrade -i myrelease parent/.
 
 ```
 
 ```bash
 
-curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.4145158804475594}
 
 ```

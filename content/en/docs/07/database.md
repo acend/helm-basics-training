@@ -116,7 +116,6 @@ spec:
 You have to use `<registry-url>/puzzle/k8s/kurs/mariadb:10.5` as the container image.
 
 ```yaml
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -555,7 +554,7 @@ Check whether the attachment of the new backend worked by either looking at the 
 
 First we need to exectute following command to determine the pod name
 ```bash
-kubectl get pods -n <namespace>
+{{% param cliToolName %}} get pods -n <namespace>
 ```
 
 {{< highlight bash "hl_lines=3" >}}
@@ -568,7 +567,7 @@ webshell-67f4cf8c59-st4rg               2/2     Running     0          2d22h
 
 Next execute following command to show the logs
 ```bash
-kubectl logs myapp-mychart-7cc85f99db-n4lsc
+{{% param cliToolName %}} logs myapp-mychart-7cc85f99db-n4lsc
 ```
 
 
@@ -604,7 +603,29 @@ The test should meet following requirements:
 * Command: `mysql --host=$MYSQL_DATABASE_HOST --user=$MYSQL_DATABASE_USER --password=$MYSQL_DATABASE_PASSWORD`
 * Annotation: `helm.sh/hook: test`
 
-You can copy the test file `templates/tests/test-connection.yaml` to `templates/tests/test-connection-database.yaml` from the previous section and start to modify it.
+Copy the test file `templates/tests/test-connection.yaml` to `templates/tests/test-connection-database.yaml` from the previous section and start to modify it.
+
+{{% onlyWhen openshift %}}
+But first we need to adjust the existing `test-connection.yaml` Test. Add the additional argument `--spider` to make the test work within an OpenShift environment.
+
+{{< highlight YAML "hl_lines=14" >}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "mychart.fullname" . }}-test-connection"
+  labels:
+    {{- include "mychart.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['--spider', '{{ include "mychart.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
+{{< /highlight >}}
+{{% /onlyWhen %}}
 
 
 ### Solution Task {{% param sectionnumber %}}.4
@@ -661,16 +682,18 @@ Then you should see following output
 
 ```bash
 NAME: myapp
-LAST DEPLOYED: Sun Oct 10 15:46:33 2021
-NAMESPACE: student3
+LAST DEPLOYED: Tue Nov  8 20:22:59 2022
+NAMESPACE: user1
 STATUS: deployed
-REVISION: 4
-TEST SUITE:     myapp-mychart--test-connection
-Last Started:   Sun Oct 10 15:46:44 2021
-Last Completed: Sun Oct 10 15:46:46 2021
+REVISION: 5
+TEST SUITE:     myapp-mychart-test-connection
+Last Started:   Tue Nov  8 20:23:04 2022
+Last Completed: Tue Nov  8 20:23:09 2022
 Phase:          Succeeded
 TEST SUITE:     myapp-mychart-test-connection
-Last Started:   Sun Oct 10 15:46:46 2021
+Last Started:   Tue Nov  8 20:23:09 2022
+Last Completed: Tue Nov  8 20:23:15 2022
+Phase:          Succeeded
 ```
 
 
