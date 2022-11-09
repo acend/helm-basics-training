@@ -554,7 +554,7 @@ Check whether the attachment of the new backend worked by either looking at the 
 
 First we need to exectute following command to determine the pod name
 ```bash
-kubectl get pods -n <namespace>
+{{% param cliToolName %}} get pods -n <namespace>
 ```
 
 {{< highlight bash "hl_lines=3" >}}
@@ -567,7 +567,7 @@ webshell-67f4cf8c59-st4rg               2/2     Running     0          2d22h
 
 Next execute following command to show the logs
 ```bash
-kubectl logs myapp-mychart-7cc85f99db-n4lsc
+{{% param cliToolName %}} logs myapp-mychart-7cc85f99db-n4lsc
 ```
 
 
