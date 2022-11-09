@@ -180,7 +180,7 @@ spec:
           - name: MYSQL_DATABASE
             value: {{ .Values.mariadb.auth.database }}
           - name: MYSQL_DATABASE_HOST
-            value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE)
+            value: {{ .Release.Name }}-mariadb
 
 ```
 
@@ -230,7 +230,7 @@ spec:
           - name: MYSQL_DATABASE
             value: {{ .Values.mariadb.auth.database }}
           - name: MYSQL_DATABASE_HOST
-            value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE)
+            value: {{ .Release.Name }}-mariadb
 
 ```
 
