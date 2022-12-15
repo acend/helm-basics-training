@@ -80,9 +80,6 @@ webConsoleURL = "null"
 # Enable Lunr.js offline search
 offlineSearch = true
 
-[params.pdf]
-title="Helm Basics Training"
-
 [params.ui]
 # Enable to show the side bar menu in its compact state.
 sidebar_menu_compact = false
