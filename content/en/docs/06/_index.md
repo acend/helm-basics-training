@@ -88,7 +88,7 @@ data:
 The directives `{{ .Chart.Name }}` and `{{ .Chart.Version }}` inject the name and version of the actual chart. But where are those values coming from?
 
 Within those directives data is accessible through a data structure. The leading `.` represents the root of the object structure and is the entrypoint to access data in templates.
-Built-in objects such as a chart, release, file, template, values and more are therefore accessible in a similar fashion. Check the official [Helm documentation about built-in objects](https://v2.helm.sh/docs/chart_template_guide/#built-in-objects) for further and more in-depth information.
+Built-in objects such as a chart, release, file, template, values and more are therefore accessible in a similar fashion. Check the official [Helm documentation about built-in objects](https://helm.sh/docs/chart_template_guide/builtin_objects/) for further and more in-depth information.
 
 The `.Chart` data structure obviously comes from the `Chart.yaml` file and represents the values of this file.
 
@@ -164,7 +164,7 @@ data:
 ```
 
 {{% alert title="Note" color="primary" %}}
-The official [Helm best practices](https://v2.helm.sh/docs/chart_best_practices/#values) suggest using flat values over nested ones:
+The official [Helm best practices](https://helm.sh/docs/chart_best_practices/values/) suggest using flat values over nested ones:
 >In most cases, flat should be favored over nested. The reason for this is that it is simpler for template developers and users.
 {{% /alert %}}
 
