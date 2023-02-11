@@ -281,7 +281,7 @@ data:
 
 This condition is mostly unreadable due to the fact that we need to make sure the spaces for the next key and value set are correct.
 
-Check out [Helm's documentation about controlling whitespace](https://v2.helm.sh/docs/chart_template_guide/#controlling-whitespace) for more details on how to control whitespaces and adapt your ConfigMap.
+Check out [Helm's documentation about controlling whitespace](https://helm.sh/docs/chart_template_guide/control_structures/#controlling-whitespace) for more details on how to control whitespaces and adapt your ConfigMap.
 
 A more readable version could look like this:
 
@@ -346,7 +346,7 @@ data:
     {{- end }}
 ```
 
-Check out [Helm's documentation about developing templates](https://v2.helm.sh/docs/chart_template_guide/#the-chart-template-developer-s-guide) for more details on templating with Helm.
+Check out [Helm's documentation about developing templates](https://helm.sh/docs/chart_template_guide/#the-chart-template-developers-guide) for more details on templating with Helm.
 
 
 ## Task {{% param sectionnumber %}}.8: MariaDB integration (optional)

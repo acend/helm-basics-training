@@ -12,7 +12,7 @@ In this section were going to show you how to modify a Helm chart from an existi
 +----------+                    +----------+
 ```
 
-Imagine your being a java development team embracing the DevOps culture and your job is to deploy the two services you designed to your Kubernetes cluster.
+Imagine you're being a java development team embracing the DevOps culture and your job is to deploy the two services you designed to your Kubernetes cluster.
 
 
 ## Task {{% param sectionnumber %}}.1: Get the chart skeleton
@@ -66,9 +66,25 @@ If you want to test the chart locally you can execute following command
 
 First let us define the new variables in our `values.yaml` file. Replace `<username>` with your username
 
+
+{{% onlyWhenNot openshift %}}
+
 {{< highlight YAML "hl_lines=2 6" >}}
 {{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/main/helm-basic-chart/values.yaml" %}}
 {{< /highlight >}}
+
+{{% /onlyWhenNot  %}}
+{{% onlyWhen openshift %}}
+
+```yaml
+producer:
+  host: producer-<namespace>.training.openshift.ch
+
+consumer:
+  tag: latest
+  host: consumer-<namespace>.training.openshift.ch
+```
+{{% /onlyWhen  %}}
 
 Next replace the hard coded values for the host value in our `consumer-ingress.yaml` file.
 
@@ -92,13 +108,13 @@ helm upgrade -i myrelease --namespace <namespace> ./helm-basic-chart
 Verify your deployment! Check if your pods are running and healthy!
 
 ```bash
-kubectl get pods
+{{% param cliToolName %}} get pods
 ```
 
 This should return something like this:
 
 ```
-kubectl get pods
+{{% param cliToolName %}} get pods
 NAME                             READY   STATUS    RESTARTS   AGE
 data-consumer-7686976d88-2wbh5   1/1     Running   0          72s
 data-producer-786d6bb688-qpg4c   1/1     Running   0          72s
@@ -124,7 +140,7 @@ When the problem will be a redirect or certificate problem, try the flags `-L` a
 
 ```bash
 
-curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.15495350024595755}
 
 ```
@@ -196,7 +212,7 @@ Finally, you can visit your application with the URL provided from the Route: `h
 Or you could access the `data` endpoint using curl:
 
 ```BASH
-curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 ```
 
 When you open the URL you should see the producers data
@@ -210,11 +226,11 @@ If you only see `Your new Cloud-Native application is ready!`, then you forgot t
 
 ## Task {{% param sectionnumber %}}.5: Prepare another release
 
-At this point we have a configurable Helm chart and a running release. Next we gonna use the cart for another release. We consider to release it into a productive environment. therefore we have to adjust some values. First copy the existing `values.yaml` to `values-production.yaml`.
+At this point we have a configurable Helm chart and a running release. Next we gonna use the cart for another release. We consider to release it into a production environment. therefore we have to adjust some values. First copy the existing `values.yaml` to `values-production.yaml`.
 Open the `values-production.yaml` and change following values.
 
-* Debug log level is too high in a productive environment, change it to `INFO`
-* The resource requirements are usually higher in a productive environment than in a development environment. Increase the Memory Limits to `750Mi`
+* Debug log level is too high in a production environment, change it to `INFO`
+* The resource requirements are usually higher in a production environment than in a development environment. Increase the Memory Limits to `750Mi`
 * To avoid DNS collisions we need to chang the host to, change it to `producer-<username>-prod.{{% param labAppUrl %}}` and `consumer-<username>-prod.{{% param labAppUrl %}}`
 
 
@@ -496,7 +512,7 @@ At the end, verify your two releases again and test if they are still delivering
 
 ```bash
 
-curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.4145158804475594}
 
 ```
@@ -711,7 +727,7 @@ helm upgrade -i myrelease parent/.
 
 ```bash
 
-curl -kL $(kubectl get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.4145158804475594}
 
 ```
