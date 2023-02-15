@@ -4,22 +4,25 @@ weight: 7
 sectionnumber: 7
 ---
 
-Remember [lab 2 "A simple chart"](../02/) where you created your first chart? Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
+Let's create a bit more complex Chart.
+First create a new workspace with `mkdir <workspace>/lab7 && cd <workspace>/lab7` and initialize the directory with a new Helm Chart with following command `helm create mychart`
+Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
 
 ```
-./
-├── charts
+.
 ├── Chart.yaml
+├── charts
 ├── templates
-│   ├── deployment.yaml
-│   ├── _helpers.tpl
-│   ├── hpa.yaml
-│   ├── ingress.yaml
-│   ├── NOTES.txt
-│   ├── serviceaccount.yaml
-│   ├── service.yaml
-│   └── tests
-│       └── test-connection.yaml
+│   ├── NOTES.txt
+│   ├── _helpers.tpl
+│   ├── deployment.yaml
+│   ├── ingress.yaml
+│   ├── mariadb-deployment.yaml
+│   ├── mariadb-secret.yaml
+│   ├── mariadb-service.yaml
+│   ├── service.yaml
+│   └── tests
+│       └── test-connection.yaml
 └── values.yaml
 ```
 

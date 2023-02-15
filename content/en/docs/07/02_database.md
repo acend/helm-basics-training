@@ -4,7 +4,7 @@ weight: 72
 sectionnumber: 7.2
 ---
 
-In this lab we are going to create the templates that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start creating those templates we want to have a look at a couple of best practices.
+In this lab we are going to create the templates that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start editing those templates we want to have a look at a couple of best practices.
 
 
 ## Resource names
@@ -38,17 +38,23 @@ And a couple of additional ones to label our resources with supplemental informa
 * `app.kubernetes.io/managed-by: Helm`
 
 Similar to the resource name we can also use helpers to generate the necessary labels.
+There are two helper functions you can use to generate these labels
+
+* `{{- include "helm-complex-chart.selectorLabels" . }}` to generate the so-called selector labels. Primary you can use this function in Service templates under `.spec.selector` 
+* `{{- include "helm-complex-chart.labels" . }}` to generate the Helm common labels. Mainly used for the `.metadata.labels` in any resource template. 
 
 
-## Task {{% param sectionnumber %}}.1: Create template files
+## Task {{% param sectionnumber %}}.1: Edit MariaDB template files
 
-We want to add a MariaDB database and use it as a backend for our `example-web-python` application. Using the following Kubernetes resource file, create a new template file for the MariaDB database:
+We want to add a MariaDB database and use it as a backend for our `example-web-python` application. Using the following Kubernetes resource file, let's take a look at the template files for the MariaDB database:
 
-{{% alert title="Note" color="primary" %}}
-You can use the existing templates (`deployment.yaml`, `service.yaml`) as a starting point to create the new templates.
-{{% /alert %}}
+There are three template files which are neccessary for the MariaDB deployment.
+* `deployment-mariadb.yaml`
+* `service-mariadb.yaml`
+* `secret-mariadb.yaml`
 
-{{% onlyWhenNot mobi %}}
+
+Let's examine the MariaDB Deployment template first.
 
 ```yaml
 apiVersion: apps/v1
@@ -237,17 +243,12 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-mariadb
   labels:
-    app.kubernetes.io/name: mariadb
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    helm.sh/chart: {{ include "mychart.chart" . }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "helm-complex-chart.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: mariadb
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "helm-complex-chart.selectorLabels" . | nindent 6 }}
   strategy:
     type: Recreate
   template:
@@ -260,13 +261,6 @@ spec:
         app.kubernetes.io/name: mariadb
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      {{- with .Values.database.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.database.podSecurityContext | nindent 8 }}
       containers:
       - image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
         name: mariadb
@@ -302,18 +296,6 @@ spec:
       volumes:
       - name: mariadb-persistent-storage
         emptyDir: {}
-      {{- with .Values.database.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.database.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.database.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
 ```
 
 The secret `templates/secret-mariadb.yaml` file should look like this:
@@ -324,11 +306,7 @@ kind: Secret
 metadata:
   name: {{ .Release.Name }}-mariadb
   labels:
-    app.kubernetes.io/name: mariadb
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    helm.sh/chart: {{ include "mychart.chart" . }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "helm-complex-chart.labels" . | nindent 4 }}
 data:
   mariadb-password: {{ .Values.database.databasepassword | b64enc }}
   mariadb-root-password: {{ .Values.database.databaserootpassword | b64enc }}
@@ -366,6 +344,7 @@ Then we need to add the following to our `values.yaml`:
 
 ```yaml
 database:
+  enabled: true
   databaseuser: acend
   databasename: acenddb
   databasepassword: mysuperpassword123
@@ -374,13 +353,6 @@ database:
     repository: registry.puzzle.ch/docker.io/mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
-  imagePullSecrets: []
-  podAnnotations: {}
-  podSecurityContext: {}
-  resources: {}
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
 ```
 
 {{% /onlyWhenNot %}}
@@ -389,6 +361,7 @@ database:
 
 ```yaml
 database:
+  enabled: true
   databaseuser: acend
   databasename: acenddb
   databasepassword: mysuperpassword123
@@ -397,13 +370,6 @@ database:
     repository: <registry-url>/puzzle/k8s/kurs/mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
-  imagePullSecrets: []
-  podAnnotations: {}
-  podSecurityContext: {}
-  resources: {}
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
 ```
 
 {{% /onlyWhen %}}
@@ -425,16 +391,16 @@ In order for the python application to be able to connect to the newly deployed 
 
 Add the following environment variables:
 
-* `MYSQL_DATABASE_NAME` value from the secret you created in task 1
-* `MYSQL_DATABASE_PASSWORD` value from the secret you created in task 1
-* `MYSQL_DATABASE_ROOT_PASSWORD` value from the secret you created in task 1
-* `MYSQL_DATABASE_USER` value from the secret you created in task 1
+* `MYSQL_DATABASE_NAME` reference the database username value from the secret you created in task 1
+* `MYSQL_DATABASE_PASSWORD` reference the database password value from the secret you created in task 1
+* `MYSQL_DATABASE_ROOT_PASSWORD` reference the the database root password value from the secret you created in task 1
+* `MYSQL_DATABASE_USER` reference the database user value from the secret you created in task 1
 * `MYSQL_URI` with the value `mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@<servicename of mariadb>/$(MYSQL_DATABASE_NAME)`
 
 
 ### Solution Task {{% param sectionnumber %}}.2
 
-Change your `templates/deployment.yaml` and include the new environment variables:
+Change your Application Deployment Template in `templates/deployment.yaml` and include the new environment variables:
 
 {{< highlight YAML "hl_lines=36-52" >}}
 apiVersion: apps/v1
@@ -521,6 +487,7 @@ There should not be any changes in the `values.yaml`:
 
 ```yaml
 database:
+  enabled: true
   databaseuser: acend
   databasename: acenddb
   databasepassword: mysuperpassword123
@@ -529,13 +496,6 @@ database:
     repository: mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
-  imagePullSecrets: []
-  podAnnotations: {}
-  podSecurityContext: {}
-  resources: {}
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
 ```
 
 To upgrade your existing release run:
