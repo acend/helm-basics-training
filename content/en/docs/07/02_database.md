@@ -1,15 +1,15 @@
 ---
-title: "7.2 A new backend"
+title: "7.2 Template the database backend"
 weight: 72
 sectionnumber: 7.2
 ---
 
-In this lab we are going to create the templates that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start editing those templates we want to have a look at a couple of best practices.
+In this lab we are going to templates the resources that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start creating those templates we want to have a look at a couple of best practices.
 
 
 ## Resource names
 
-When looking at the templates of our `mychart` chart, the name of the resource is always defined by a helper function:
+When looking at the app templates of our `mychart` chart, the name of the resource is always defined by a helper function:
 
 ```yaml
 name: {{ include "mychart.fullname" . }}
@@ -43,8 +43,39 @@ There are two helper functions you can use to generate these labels
 * `{{- include "helm-complex-chart.selectorLabels" . }}` to generate the so-called selector labels. Primary you can use this function in Service templates under `.spec.selector` 
 * `{{- include "helm-complex-chart.labels" . }}` to generate the Helm common labels. Mainly used for the `.metadata.labels` in any resource template. 
 
+## Task {{% param sectionnumber %}}.1: Add a new helper function
 
-## Task {{% param sectionnumber %}}.1: Edit MariaDB template files
+As mentioned above, the `_helpers.tpl` file provides some neat functions to generate the Labels and Selectors for Kubernetes resources.
+But if we take a closer look, we see that we can not simply use the same labels and selectors. Because we have two different deployments, each with its own service, we need to ensure that the selecttor and labels ardistinct for both deployments and services.
+
+Let's open the `_helpers.tpl` file and scroll down to the helper function for the labels.
+
+```yaml
+
+{{/*
+Common labels
+*/}}
+{{- define "helm-complex-chart.labels" -}}
+helm.sh/chart: {{ include "helm-complex-chart.chart" . }}
+{{ include "helm-complex-chart.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "helm-complex-chart.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "helm-complex-chart.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+```
+
+
+## Task {{% param sectionnumber %}}.2: Edit the MariaDB template files
 
 We want to add a MariaDB database and use it as a backend for our `example-web-python` application. Using the following Kubernetes resource file, let's take a look at the template files for the MariaDB database:
 
@@ -54,7 +85,7 @@ There are three template files which are neccessary for the MariaDB deployment.
 * `secret-mariadb.yaml`
 
 
-Let's examine the MariaDB Deployment template first.
+Let's examine the MariaDB Deployment template first. As we can see, the deployment of the MariaDB is very similar to the App Deployment. 
 
 ```yaml
 apiVersion: apps/v1
@@ -116,71 +147,8 @@ spec:
         emptyDir: {}
 ```
 
-{{% /onlyWhenNot %}}
+Furthermore you have already a Secret which contains the passwords for the Database
 
-{{% onlyWhen mobi %}}
-You have to use `<registry-url>/puzzle/k8s/kurs/mariadb:10.5` as the container image.
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myapp-mariadb
-  labels:
-    app.kubernetes.io/name: mariadb
-    app.kubernetes.io/instance: myapp
-    # additional Labels ...
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: mariadb
-      app.kubernetes.io/instance: myapp
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: mariadb
-        app.kubernetes.io/instance: myapp
-    spec:
-      containers:
-      - image: <registry-url>/puzzle/k8s/kurs/mariadb:10.5
-        name: mariadb
-        args:
-          - "--ignore-db-dir=lost+found"
-        env:
-        - name: MYSQL_USER
-          value: "acend"
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: mariadb-password
-              name: myapp-mariadb
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: mariadb-root-password
-              name: myapp-mariadb
-        - name: MYSQL_DATABASE
-          value: "acenddb"
-        livenessProbe:
-          tcpSocket:
-            port: 3306
-        ports:
-        - containerPort: 3306
-          name: mariadb
-          protocol: TCP
-        volumeMounts:
-        - name: mariadb-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mariadb-persistent-storage
-        emptyDir: {}
-```
-
-{{% /onlyWhen %}}
-
-You also have to create a template for the secret:
 
 ```yaml
 apiVersion: v1
@@ -198,7 +166,7 @@ data:
 
 When creating the template files, make sure that a user can specify the `mariadb-password` and `mariadb-root-password` from the secret using a variable.
 
-To connect to the database, we also need a service:
+To connect to the database, we also have a service:
 
 ```yaml
 apiVersion: v1
@@ -220,8 +188,6 @@ spec:
     app.kubernetes.io/instance: myapp
   clusterIP: None
 ```
-
-Have a look at the already existing file `service.yaml` and use this as a starting point for your `mariadb` service.
 
 When your changes are ready, upgrade the already deployed release with the new version.
 

@@ -5,8 +5,9 @@ sectionnumber: 7
 ---
 
 Let's create a bit more complex Chart.
-First create a new workspace with `mkdir <workspace>/lab7 && cd <workspace>/lab7` and initialize the directory with a new Helm Chart with following command `helm create mychart`
-Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
+We already prepared a Helm chart skeleton for this, you can clone the Chart with following command:
+`git clone <url> lab7 && cd lab7`
+Let's have a closer look at its directory structure and components. The Chart consists of the following files and folders:
 
 ```
 .
@@ -15,12 +16,12 @@ Let's have a closer look at its directory structure and components. A typical ch
 ├── templates
 │   ├── NOTES.txt
 │   ├── _helpers.tpl
-│   ├── deployment.yaml
-│   ├── ingress.yaml
+│   ├── app-deployment.yaml
+│   ├── app-ingress.yaml
+│   ├── app-service.yaml
 │   ├── mariadb-deployment.yaml
 │   ├── mariadb-secret.yaml
 │   ├── mariadb-service.yaml
-│   ├── service.yaml
 │   └── tests
 │       └── test-connection.yaml
 └── values.yaml
@@ -29,10 +30,14 @@ Let's have a closer look at its directory structure and components. A typical ch
 Looking at the `mychart/templates/` directory, we notice that there already are a few files:
 
 * `NOTES.txt`: The "help text" for your chart which will be displayed to your users when they run `helm install`
-* `deployment.yaml`: A basic manifest for creating a Kubernetes deployment
-* `service.yaml`: A basic manifest for creating a service endpoint for your deployment
+* `app-deployment.yaml`: A basic manifest for creating a Kubernetes deployment
+* `app-service.yaml`: A basic manifest for creating a service endpoint for your deployment
+* `app-ingress.yaml`: A basic manifest for creating a ingress to expose your app deployment
 * `_helpers.tpl`: A place to put template helpers that you can re-use throughout the chart
 * `tests/`: A directory to put test files for testing the deployed Helm chart
+
+Furthermore the are some resources (prefixed with `mariadb-`) for a database backend which we're going to use in the next lab section.
+For now you can ignore them.
 
 
 {{% alert title="Note" color="primary" %}}
@@ -126,6 +131,9 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+database:
+  enabled: false
 ```
 
 When instantiating a release from a chart, we can overwrite these values according to our own environment-specific conditions.
@@ -139,7 +147,7 @@ For details on the values file, check out the [Helm documentation about values f
 
 ## Templates
 
-All our Kubernetes resource files are in the `templates` folder. Let's have a closer look at `templates/deployment.yaml`:
+All our Kubernetes resource files are in the `templates` folder. Let's have a closer look at `templates/app-deployment.yaml`:
 
 ```yaml
 apiVersion: apps/v1
@@ -296,7 +304,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 ```
 
-you can then access this `mychart.labels` in your `deployment.yaml` like follows:
+you can then access this `mychart.labels` in your `app-deployment.yaml` like follows:
 
 ```yaml
 apiVersion: apps/v1

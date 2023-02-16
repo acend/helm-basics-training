@@ -1,5 +1,5 @@
 ---
-title: "7.5 Optional: Publish your chart"
+title: "7.5 Deploy the Chart in another environment"
 weight: 75
 sectionnumber: 7.5
 ---
