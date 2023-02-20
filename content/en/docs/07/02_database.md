@@ -74,6 +74,36 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 ```
 
+Now we're going to add the same functions to generate the labels for the MariaDB resources.
+Add following content to the helpers file, so that we have two new helper functions.
+
+* `helm-complex-chart.labelsDatabase` to generate the common labels for MariaDB
+* `helm-complex-chart.selectorLabelsDatabase` to generate the service selector labels for MariaDB
+
+
+```yaml
+
+{{/*
+Common labels for MaraiDB
+*/}}
+{{- define "helm-complex-chart.labelsDatabase" -}}
+helm.sh/chart: {{ include "helm-complex-chart.chart" . }}
+{{ include "helm-complex-chart.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels for MariaDB
+*/}}
+{{- define "helm-complex-chart.selectorLabelsDatabase" -}}
+app.kubernetes.io/name: {{ include "helm-complex-chart.name" . }}-mariadb
+app.kubernetes.io/instance: {{ .Release.Name }}-mariadb
+{{- end }}
+
+```
 
 ## Task {{% param sectionnumber %}}.2: Edit the MariaDB template files
 
@@ -209,23 +239,18 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-mariadb
   labels:
-    {{- include "helm-complex-chart.labels" . | nindent 4 }}
+    {{- include "helm-complex-chart.labelsDatabase" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "helm-complex-chart.selectorLabels" . | nindent 6 }}
+      {{- include "helm-complex-chart.selectorLabelsDatabase" . | nindent 6 }}
   strategy:
     type: Recreate
   template:
     metadata:
-      {{- with .Values.database.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
-        app.kubernetes.io/name: mariadb
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "helm-complex-chart.labelsDatabase" . | nindent 8 }}
     spec:
       containers:
       - image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
@@ -257,8 +282,6 @@ spec:
         volumeMounts:
         - name: mariadb-persistent-storage
           mountPath: /var/lib/mysql
-        resources:
-          {{- toYaml .Values.database.resources | nindent 12 }}
       volumes:
       - name: mariadb-persistent-storage
         emptyDir: {}
@@ -272,7 +295,7 @@ kind: Secret
 metadata:
   name: {{ .Release.Name }}-mariadb
   labels:
-    {{- include "helm-complex-chart.labels" . | nindent 4 }}
+    {{- include "helm-complex-chart.labelsDatabase" . | nindent 4 }}
 data:
   mariadb-password: {{ .Values.database.databasepassword | b64enc }}
   mariadb-root-password: {{ .Values.database.databaserootpassword | b64enc }}
@@ -288,11 +311,7 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-mariadb
   labels:
-    app.kubernetes.io/name: mariadb
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    helm.sh/chart: {{ include "mychart.chart" . }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "helm-complex-chart.labelsDatabase" . | nindent 4 }}
 spec:
   ports:
     - port: 3306
@@ -300,13 +319,11 @@ spec:
       protocol: TCP
       name: mariadb
   selector:
-    app.kubernetes.io/name: mariadb
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "helm-complex-chart.selectorLabelsDatabase" . | nindent 4 }}
   clusterIP: None
 ```
 
 Then we need to add the following to our `values.yaml`:
-{{% onlyWhenNot mobi %}}
 
 ```yaml
 database:
@@ -321,24 +338,6 @@ database:
     tag: "10.5"
 ```
 
-{{% /onlyWhenNot %}}
-
-{{% onlyWhen mobi %}}
-
-```yaml
-database:
-  enabled: true
-  databaseuser: acend
-  databasename: acenddb
-  databasepassword: mysuperpassword123
-  databaserootpassword: mysuperrootpassword123
-  image:
-    repository: <registry-url>/puzzle/k8s/kurs/mariadb
-    pullPolicy: IfNotPresent
-    tag: "10.5"
-```
-
-{{% /onlyWhen %}}
 
 Finally, to upgrade the existing release run:
 
@@ -350,125 +349,6 @@ helm upgrade myapp ./mychart --namespace <namespace>
 Remember the `--dry-run` option from lab 2. This allows you to render the templates without applying them to the cluster.
 {{% /alert %}}
 
-
-## Task {{% param sectionnumber %}}.2: Connect to the database
-
-In order for the python application to be able to connect to the newly deployed database, we need to add some environment variables to our deployment. The goal of this task is to allow a user to set them via values.
-
-Add the following environment variables:
-
-* `MYSQL_DATABASE_NAME` reference the database username value from the secret you created in task 1
-* `MYSQL_DATABASE_PASSWORD` reference the database password value from the secret you created in task 1
-* `MYSQL_DATABASE_ROOT_PASSWORD` reference the the database root password value from the secret you created in task 1
-* `MYSQL_DATABASE_USER` reference the database user value from the secret you created in task 1
-* `MYSQL_URI` with the value `mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@<servicename of mariadb>/$(MYSQL_DATABASE_NAME)`
-
-
-### Solution Task {{% param sectionnumber %}}.2
-
-Change your Application Deployment Template in `templates/deployment.yaml` and include the new environment variables:
-
-{{< highlight YAML "hl_lines=36-52" >}}
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "mychart.fullname" . }}
-  labels:
-    {{- include "mychart.labels" . | nindent 4 }}
-spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
-  selector:
-    matchLabels:
-      {{- include "mychart.selectorLabels" . | nindent 6 }}
-  template:
-    metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "mychart.selectorLabels" . | nindent 8 }}
-    spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
-          - name: MYSQL_DATABASE_USER
-            value: {{ .Values.database.databaseuser }}
-          - name: MYSQL_DATABASE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: mariadb-password
-                name: {{ .Release.Name }}-mariadb
-          - name: MYSQL_DATABASE_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: mariadb-root-password
-                name: {{ .Release.Name }}-mariadb
-          - name: MYSQL_DATABASE_NAME
-            value: {{ .Values.database.databasename }}
-          - name: MYSQL_URI
-            value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE_NAME)
-          ports:
-            - name: http
-              containerPort: 5000
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-{{< /highlight >}}
-
-There should not be any changes in the `values.yaml`:
-
-```yaml
-database:
-  enabled: true
-  databaseuser: acend
-  databasename: acenddb
-  databasepassword: mysuperpassword123
-  databaserootpassword: mysuperrootpassword123
-  image:
-    repository: mariadb
-    pullPolicy: IfNotPresent
-    tag: "10.5"
-```
-
-To upgrade your existing release run:
-
-```bash
-helm upgrade myapp ./mychart --namespace <namespace>
-```
 
 
 ## Task {{% param sectionnumber %}}.3: Check
