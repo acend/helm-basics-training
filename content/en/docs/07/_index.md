@@ -5,6 +5,13 @@ sectionnumber: 7
 ---
 
 Let's create a bit more complex Chart.
+
+In this Lab we are covering folling topics:
+
+* 7.1 Deploy the Chart as it is
+* 7.2 
+
+
 We already prepared a Helm chart skeleton for this, you can clone the Chart with following command:
 `git clone <url> lab7 && cd lab7`
 Let's have a closer look at its directory structure and components. The Chart consists of the following files and folders:
