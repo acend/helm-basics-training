@@ -5,9 +5,11 @@ sectionnumber: 7.7
 ---
 
 As you already learned during the presentation, Helm is a great choice if you want to deploy your app in different configurations or over different environments. In this Lab section we are going to show you how you can instantiate the Chart in two different configurations, first a release for the Develop environment and then another release for a Production environment.
-Best practice is to deploy them into different namespaces. But thus we have only one, we deploy them into the same namespace but with different release names. 
+Best practice is to deploy them into different namespaces. But thus we have only one, we deploy them into the same namespace but with different release names.
+
 
 ## Task {{% param sectionnumber %}}.1: Deploy the Chart as develop release
+
 
 Before we deploy the Chart, make following changes in your `values.yaml` file. Append `-dev` to the host names. This makes us later easier to dinstinct between the two releases.
 
@@ -78,7 +80,6 @@ But instead of changing these values in our `values.yaml` file, we create a new 
 ```bash
 helm upgrade -i myapp-prod  ./mychart --namespace <namespace>
 ```
-
 
 
 ## Task {{% param sectionnumber %}}.7 Installing chart from repository

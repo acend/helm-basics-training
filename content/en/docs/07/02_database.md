@@ -9,6 +9,7 @@ In this lab we are going to templates the resources that are necessary to deploy
 
 ## Resource names
 
+
 When looking at the app templates of our `mychart` chart, the name of the resource is always defined by a helper function:
 
 ```yaml
@@ -23,6 +24,7 @@ Have a look at the helper function in `mychart/templates/_helpers.tpl` for more 
 
 
 ## Labels
+
 
 There are a couple of [recommended Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/){{% onlyWhen openshift %}} (that also apply to OpenShift){{% /onlyWhen %}}, which help to make interoperability between different tools and concepts easier and define a kind of standard.
 
@@ -40,10 +42,12 @@ And a couple of additional ones to label our resources with supplemental informa
 Similar to the resource name we can also use helpers to generate the necessary labels.
 There are two helper functions you can use to generate these labels
 
-* `{{- include "helm-complex-chart.selectorLabels" . }}` to generate the so-called selector labels. Primary you can use this function in Service templates under `.spec.selector` 
-* `{{- include "helm-complex-chart.labels" . }}` to generate the Helm common labels. Mainly used for the `.metadata.labels` in any resource template. 
+* `{{- include "helm-complex-chart.selectorLabels" . }}` to generate the so-called selector labels. Primary you can use this function in Service templates under `.spec.selector`
+* `{{- include "helm-complex-chart.labels" . }}` to generate the Helm common labels. Mainly used for the `.metadata.labels` in any resource template.
+
 
 ## Task {{% param sectionnumber %}}.1: Add a new helper function
+
 
 As mentioned above, the `_helpers.tpl` file provides some neat functions to generate the Labels and Selectors for Kubernetes resources.
 But if we take a closer look, we see that we can not simply use the same labels and selectors. Because we have two different deployments, each with its own service, we need to ensure that the selecttor and labels ardistinct for both deployments and services.
@@ -105,11 +109,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}-mariadb
 
 ```
 
+
 ## Task {{% param sectionnumber %}}.2: Edit the MariaDB template files
+
 
 We want to add a MariaDB database and use it as a backend for our `example-web-python` application. Using the following Kubernetes resource file, let's take a look at the template files for the MariaDB database:
 
 There are three template files which are neccessary for the MariaDB deployment.
+
 * `deployment-mariadb.yaml`
 * `service-mariadb.yaml`
 * `secret-mariadb.yaml`
@@ -136,6 +143,7 @@ Remember the `--dry-run` option from lab 2. This allows you to render the templa
 
 ### Deployment
 
+
 Let's examine the MariaDB Deployment template first. As we can see, the deployment of the MariaDB is very similar to the App Deployment.
 Make following changes to create a reusable template
 
@@ -143,11 +151,11 @@ Make following changes to create a reusable template
 * Replace `metadata.labels` with the template function `helm-complex-chart.labelsDatabase` we created before
 * Replace `spec.selector.matchLabels` with the template function we created before
 * Replace `spec.template.metadata.labels` with the template function `helm-complex-chart.labelsDatabase` we created before
-* Replace `spec.template.spec.containers[0].image` with   
-* Replace `spec.template.spec.containers[0].imagePullPolicy` with 
+* Replace `spec.template.spec.containers[0].image` with  
+* Replace `spec.template.spec.containers[0].imagePullPolicy` with
 * Replace under `spec.template.spec.containers[0].env` the values from following keys
-  *   `MYSQL_USER` value with `.Values.database.databaseuser`
-  *   `MYSQL_DATABASE` value with `.Values.database.databaseuser`
+  * `MYSQL_USER` value with `.Values.database.databaseuser`
+  * `MYSQL_DATABASE` value with `.Values.database.databaseuser`
 
 {{< highlight YAML "hl_lines= 7-11 16-17 23-24 27-29 34 46" >}}
 {{- if .Values.database.enabled }}
@@ -214,13 +222,14 @@ spec:
 
 ### Secret
 
+
 Furthermore you have already a Secret `mariadb-secret.yaml` which contains the passwords for the Database
 Make following changes to create a reusable template
 
 * Replace `metadata.labels` with the template function `helm-complex-chart.labelsDatabase` we created before
 * Replace under `data` the values from following keys
-  *   `mariadb-root-password` with **base64 encoded** `.Values.database.databaseuser` value 
-  *   `mariadb-password` with **base64 encoded** `.Values.database.databaseuser` value
+  * `mariadb-root-password` with **base64 encoded** `.Values.database.databaseuser` value
+  * `mariadb-password` with **base64 encoded** `.Values.database.databaseuser` value
 
 
 {{< highlight YAML "hl_lines= 7-11 13-14" >}}
@@ -243,7 +252,9 @@ data:
 
 When creating the template files, make sure that a user can specify the `mariadb-password` and `mariadb-root-password` from the secret using a variable.
 
+
 ### Service
+
 
 To connect to the database, we also have a service
 Make following changes to create a reusable template
@@ -278,6 +289,7 @@ When your changes are ready, upgrade the already deployed release with the new v
 
 ## {{% param sectionnumber %}}.2: Solution
 
+
 The template file for the MariaDB database `templates/deployment-mariadb.yaml` could look like this.
 
 The following points need to be taken into consideration when creating the template:
@@ -287,7 +299,9 @@ The following points need to be taken into consideration when creating the templ
 * The same applies to the label `app.kubernetes.io/name`. We can't therefore use the included `mychart.labels`. We could also alter the helper function or in our case simply just add the labels directly.
 * In the deployment templates we reference our secrets by again using the full name `<releasename>-mariadb`.
 
+
 ### Deployment
+
 
 ```yaml
 {{- if .Values.database.enabled }}
@@ -345,7 +359,9 @@ spec:
 {{- end }}
 ```
 
+
 ### Secret
+
 
 The secret `templates/mariadb-secret.yaml` file should look like this:
 
@@ -365,7 +381,9 @@ data:
 
 Note the `| b64enc`, which is a built-in function to encode strings with base64.
 
+
 ### Service
+
 
 The service at `templates/mariadb-service.yaml` for our MySQL database should look similar to this:
 

@@ -9,7 +9,7 @@ Let's create a bit more complex Chart.
 In this Lab we are covering folling topics:
 
 * 7.1 Deploy the Chart as it is
-* 7.2 
+* 7.2
 
 
 We already prepared a Helm chart skeleton for this, you can clone the Chart with following command:

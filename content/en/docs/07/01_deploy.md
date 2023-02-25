@@ -32,7 +32,6 @@ ingress:
 ### Solution
 
 
-
 {{% onlyWhenNot mobi %}}
 {{% alert title="Note" color="primary" %}}
 Don't forget to replace `{{% param labAppUrl %}}` with the value provided by the trainer.
@@ -71,7 +70,6 @@ Change your Application Deployment Template in `templates/app-deployment.yaml` a
 
 
 ### Solution Task {{% param sectionnumber %}}.2
-
 
 
 {{< highlight YAML "hl_lines=36-54" >}}
@@ -159,13 +157,14 @@ helm upgrade myapp ./helm-complex-chart --namespace <namespace>
 ```
 
 
-
 ## Task {{% param sectionnumber %}}.3: Check
+
 
 Check whether the attachment of the new backend worked by either looking at the Pod's logs: In there the application tells you which backend it uses, this should of course be the database. Or simply access the application in your browser, create an entry, re-deploy the application Pod (e.g. by scaling it down and up again) and check if your entry is still there.
 
 
 ### Solution Task {{% param sectionnumber %}}.3
+
 
 First we need to exectute following command to determine the pod name
 ```bash
@@ -204,14 +203,11 @@ Using DB:  mysql://acend:mysuperpassword123@myapp-helm-complex-chart-mariadb/ace
 ```
 
 
-
-
 ## Task {{% param sectionnumber %}}.8: Clean up
+
 
 Uninstall the app
 
 ```bash
 helm uninstall myapp --namespace <namespace>
 ```
-
-
