@@ -1,7 +1,7 @@
 ---
-title: "7.5 Deploy the Chart in another environment"
-weight: 75
-sectionnumber: 7.5
+title: "7.6 Deploy the Chart in another environment"
+weight: 76
+sectionnumber: 7.6
 ---
 
 In this lab we will learn how to publish our Helm chart and make it accessible to the public by using GitHub pages.

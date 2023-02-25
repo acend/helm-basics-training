@@ -114,18 +114,51 @@ There are three template files which are neccessary for the MariaDB deployment.
 * `service-mariadb.yaml`
 * `secret-mariadb.yaml`
 
-
-Let's examine the MariaDB Deployment template first. As we can see, the deployment of the MariaDB is very similar to the App Deployment. 
+But first add the new values for the ...
 
 ```yaml
+database:
+  enabled: true
+  databaseuser: acend
+  databasename: acenddb
+  databasepassword: mysuperpassword123
+  databaserootpassword: mysuperrootpassword123
+  image:
+    repository: registry.puzzle.ch/docker.io/mariadb
+    pullPolicy: IfNotPresent
+    tag: "10.5"
+```
+
+{{% alert title="Note" color="primary" %}}
+Remember the `--dry-run` option from lab 2. This allows you to render the templates without applying them to the cluster.
+{{% /alert %}}
+
+
+### Deployment
+
+Let's examine the MariaDB Deployment template first. As we can see, the deployment of the MariaDB is very similar to the App Deployment.
+Make following changes to create a reusable template
+
+
+* Replace `metadata.labels` with the template function `helm-complex-chart.labelsDatabase` we created before
+* Replace `spec.selector.matchLabels` with the template function we created before
+* Replace `spec.template.metadata.labels` with the template function `helm-complex-chart.labelsDatabase` we created before
+* Replace `spec.template.spec.containers[0].image` with   
+* Replace `spec.template.spec.containers[0].imagePullPolicy` with 
+* Replace under `spec.template.spec.containers[0].env` the values from following keys
+  *   `MYSQL_USER` value with `.Values.database.databaseuser`
+  *   `MYSQL_DATABASE` value with `.Values.database.databaseuser`
+
+{{< highlight YAML "hl_lines= 7-11 16-17 23-24 27-29 34 46" >}}
+{{- if .Values.database.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp-mariadb
+  name: {{ .Release.Name }}-mariadb
   labels:
     app.kubernetes.io/name: mariadb
     app.kubernetes.io/instance: myapp
-    helm.sh/chart: mychart-0.1.0
+    helm.sh/chart: helm-complex-chart-0.1.0
     app.kubernetes.io/version: "1.16.0"
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -155,12 +188,12 @@ spec:
           valueFrom:
             secretKeyRef:
               key: mariadb-password
-              name: myapp-mariadb
+              name: {{ .Release.Name }}-mariadb
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               key: mariadb-root-password
-              name: myapp-mariadb
+              name: {{ .Release.Name }}-mariadb
         - name: MYSQL_DATABASE
           value: "acenddb"
         livenessProbe:
@@ -175,30 +208,51 @@ spec:
       volumes:
       - name: mariadb-persistent-storage
         emptyDir: {}
-```
+{{- end }}
+{{< /highlight >}}
 
-Furthermore you have already a Secret which contains the passwords for the Database
+
+### Secret
+
+Furthermore you have already a Secret `mariadb-secret.yaml` which contains the passwords for the Database
+Make following changes to create a reusable template
+
+* Replace `metadata.labels` with the template function `helm-complex-chart.labelsDatabase` we created before
+* Replace under `data` the values from following keys
+  *   `mariadb-root-password` with **base64 encoded** `.Values.database.databaseuser` value 
+  *   `mariadb-password` with **base64 encoded** `.Values.database.databaseuser` value
 
 
-```yaml
+{{< highlight YAML "hl_lines= 7-11 13-14" >}}
+{{- if .Values.database.enabled }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: myapp-mariadb
+  name: {{ .Release.Name }}-mariadb
   labels:
     app.kubernetes.io/name: mariadb
     app.kubernetes.io/instance: myapp
-    # additional Labels ...
+    helm.sh/chart: helm-complex-chart-0.1.0
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
 data:
   mariadb-root-password: "bXlzdXBlcnJvb3RwYXNzd29yZDEyMw=="
   mariadb-password: "bXlzdXBlcnBhc3N3b3JkMTIz"
-```
+{{- end }}
+{{< /highlight >}}
 
 When creating the template files, make sure that a user can specify the `mariadb-password` and `mariadb-root-password` from the secret using a variable.
 
-To connect to the database, we also have a service:
+### Service
 
-```yaml
+To connect to the database, we also have a service
+Make following changes to create a reusable template
+
+* Replace `metadata.name` with
+* Replace `metadata.labels` with the template function we created before
+* Replace `metadata.spec.selector` with the template function we created before
+
+{{< highlight YAML "hl_lines=4 6-8 16-17" >}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -217,12 +271,12 @@ spec:
     app.kubernetes.io/name: mariadb
     app.kubernetes.io/instance: myapp
   clusterIP: None
-```
+{{< /highlight >}}
 
 When your changes are ready, upgrade the already deployed release with the new version.
 
 
-### Solution
+## {{% param sectionnumber %}}.2: Solution
 
 The template file for the MariaDB database `templates/deployment-mariadb.yaml` could look like this.
 
@@ -233,7 +287,10 @@ The following points need to be taken into consideration when creating the templ
 * The same applies to the label `app.kubernetes.io/name`. We can't therefore use the included `mychart.labels`. We could also alter the helper function or in our case simply just add the labels directly.
 * In the deployment templates we reference our secrets by again using the full name `<releasename>-mariadb`.
 
+### Deployment
+
 ```yaml
+{{- if .Values.database.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -285,11 +342,15 @@ spec:
       volumes:
       - name: mariadb-persistent-storage
         emptyDir: {}
+{{- end }}
 ```
 
-The secret `templates/secret-mariadb.yaml` file should look like this:
+### Secret
+
+The secret `templates/mariadb-secret.yaml` file should look like this:
 
 ```yaml
+{{- if .Values.database.enabled }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -299,13 +360,17 @@ metadata:
 data:
   mariadb-password: {{ .Values.database.databasepassword | b64enc }}
   mariadb-root-password: {{ .Values.database.databaserootpassword | b64enc }}
+{{- end }}
 ```
 
 Note the `| b64enc`, which is a built-in function to encode strings with base64.
 
-The service at `templates/service-mariadb.yaml` for our MySQL database should look similar to this:
+### Service
+
+The service at `templates/mariadb-service.yaml` for our MySQL database should look similar to this:
 
 ```yaml
+{{- if .Values.database.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -321,6 +386,7 @@ spec:
   selector:
     {{- include "helm-complex-chart.selectorLabelsDatabase" . | nindent 4 }}
   clusterIP: None
+{{- end }}
 ```
 
 Then we need to add the following to our `values.yaml`:
@@ -343,163 +409,6 @@ Finally, to upgrade the existing release run:
 
 ```bash
 helm upgrade myapp ./mychart --namespace <namespace>
-```
-
-{{% alert title="Note" color="primary" %}}
-Remember the `--dry-run` option from lab 2. This allows you to render the templates without applying them to the cluster.
-{{% /alert %}}
-
-
-
-## Task {{% param sectionnumber %}}.3: Check
-
-Check whether the attachment of the new backend worked by either looking at the Pod's logs: In there the application tells you which backend it uses, this should of course be the database. Or simply access the application in your browser, create an entry, re-deploy the application Pod (e.g. by scaling it down and up again) and check if your entry is still there.
-
-
-### Solution Task {{% param sectionnumber %}}.3
-
-First we need to exectute following command to determine the pod name
-```bash
-{{% param cliToolName %}} get pods -n <namespace>
-```
-
-{{< highlight bash "hl_lines=3" >}}
-NAME                                    READY   STATUS      RESTARTS   AGE
-myapp-mychart-test-connection          0/1     Completed   0          22m
-myapp-mychart-7cc85f99db-n4lsc          1/1     Running     0          12m
-myapp-mychart-mariadb-74ddcc878-268ts   1/1     Running     0          12m
-webshell-67f4cf8c59-st4rg               2/2     Running     0          2d22h
-{{< /highlight >}}
-
-Next execute following command to show the logs
-```bash
-{{% param cliToolName %}} logs myapp-mychart-7cc85f99db-n4lsc
-```
-
-
-As you can see in the log output, our application is now connected to the fresh deployed database
-> Never log sensitive informations like database connection strings which contain the password in plain text!
-
-```bash
-Using DB:  mysql://acend:mysuperpassword123@myapp-mychart-mariadb/acenddb
- * Serving Flask app 'run' (lazy loading)
- * Environment: production
-   WARNING: This is a development server. Do not use it in a production deployment.
-   Use a production WSGI server instead.
- * Debug mode: off
-2021-10-08 11:17:17,783 WARNING:  * Running on all addresses.
-   WARNING: This is a development server. Do not use it in a production deployment.
-2021-10-08 11:17:17,784 INFO :  * Running on http://10.42.5.2:5000/ (Press CTRL+C to quit)
-2021-10-08 11:17:20,688 INFO : 185.79.235.174 - - [08/Oct/2021 11:17:20] "GET / HTTP/1.1" 200 -
-2021-10-08 11:17:21,758 INFO : 185.79.235.174 - - [08/Oct/2021 11:17:21] "GET / HTTP/1.1" 200 -
-```
-
-
-## Task {{% param sectionnumber %}}.4: Add a test to your chart
-
-As we learned in the previous section, Helm gives us the availability to run automated test during the Helm deployment.
-Now it's time to write our first test.
-The test should meet following requirements:
-
-* Image: mariadb
-* Env Variables:
-  * `MYSQL_DATABASE_HOST` from secret
-  * `MYSQL_DATABASE_USER` from secret
-  * `MYSQL_DATABASE_PASSWORD` from secret
-* Command: `mysql --host=$MYSQL_DATABASE_HOST --user=$MYSQL_DATABASE_USER --password=$MYSQL_DATABASE_PASSWORD`
-* Annotation: `helm.sh/hook: test`
-
-Copy the test file `templates/tests/test-connection.yaml` to `templates/tests/test-connection-database.yaml` from the previous section and start to modify it.
-
-{{% onlyWhen openshift %}}
-But first we need to adjust the existing `test-connection.yaml` Test. Add the additional argument `--spider` to make the test work within an OpenShift environment.
-
-{{< highlight YAML "hl_lines=14" >}}
-apiVersion: v1
-kind: Pod
-metadata:
-  name: "{{ include "mychart.fullname" . }}-test-connection"
-  labels:
-    {{- include "mychart.labels" . | nindent 4 }}
-  annotations:
-    "helm.sh/hook": test
-spec:
-  containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['--spider', '{{ include "mychart.fullname" . }}:{{ .Values.service.port }}']
-  restartPolicy: Never
-{{< /highlight >}}
-{{% /onlyWhen %}}
-
-
-### Solution Task {{% param sectionnumber %}}.4
-
-```yaml
-{{- $fullName := include "mychart.fullname" . -}}
-{{- $all := . -}}
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: "{{ $fullName }}-test-connection"
-  labels:
-    app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb-test
-    app.kubernetes.io/instance: {{ .Release.Name }}-test
-    helm.sh/chart: {{ include "mychart.chart" . }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-  annotations:
-    "helm.sh/hook": test
-spec:
-  containers:
-    - image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
-      name: mariadb
-      imagePullPolicy: {{ .Values.database.image.pullPolicy }}
-      command: ['mysql']
-      args: ['--host=$(MYSQL_DATABASE_HOST)', '--user=$(MYSQL_DATABASE_USER)', '--password=$(MYSQL_DATABASE_PASSWORD)']
-      env:
-      - name: MYSQL_DATABASE_HOST
-        value: {{ .Release.Name }}-mariadb
-      - name: MYSQL_DATABASE_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            key: mariadb-password
-            name: {{ .Release.Name }}-mariadb
-      - name: MYSQL_DATABASE_USER
-        value: {{ .Values.database.databaseuser }}
-  restartPolicy: Never
-```
-
-To upgrade your existing release run:
-
-```bash
-helm upgrade myapp ./mychart --namespace <namespace>
-```
-
-To run the test manually:
-
-```bash
-helm test myapp --namespace <namespace>
-```
-
-Then you should see following output
-
-```bash
-NAME: myapp
-LAST DEPLOYED: Tue Nov  8 20:22:59 2022
-NAMESPACE: user1
-STATUS: deployed
-REVISION: 5
-TEST SUITE:     myapp-mychart-test-connection
-Last Started:   Tue Nov  8 20:23:04 2022
-Last Completed: Tue Nov  8 20:23:09 2022
-Phase:          Succeeded
-TEST SUITE:     myapp-mychart-test-connection
-Last Started:   Tue Nov  8 20:23:09 2022
-Last Completed: Tue Nov  8 20:23:15 2022
-Phase:          Succeeded
 ```
 
 
