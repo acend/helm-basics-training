@@ -81,10 +81,10 @@ spec:
   restartPolicy: Never
 ```
 
-To upgrade your existing release run:
+To install your release run:
 
 ```bash
-helm upgrade myapp ./mychart --namespace <namespace>
+helm upgrade -i myapp . --namespace <namespace>
 ```
 
 To run the test manually:

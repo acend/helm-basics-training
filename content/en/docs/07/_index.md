@@ -34,7 +34,7 @@ Let's have a closer look at its directory structure and components. The Chart co
 └── values.yaml
 ```
 
-Looking at the `mychart/templates/` directory, we notice that there already are a few files:
+Looking at the `templates/` directory, we notice that there already are a few files:
 
 * `NOTES.txt`: The "help text" for your chart which will be displayed to your users when they run `helm install`
 * `app-deployment.yaml`: A basic manifest for creating a Kubernetes deployment
@@ -54,10 +54,10 @@ For details on chart templating, check out the [Helm's getting started guide](ht
 
 ## values.yaml
 
-In the `values.yaml` file we define our values used in our templates:
+In the `values.yaml` file we defined our values used in our templates:
 
 ```yaml
-# Default values for mychart.
+# Default values for helm-complex-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -160,16 +160,16 @@ All our Kubernetes resource files are in the `templates` folder. Let's have a cl
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "mychart.fullname" . }}
+  name: {{ include "helm-complex-chart.fullname" . }}
   labels:
-    {{- include "mychart.labels" . | nindent 4 }}
+    {{- include "helm-complex-chart.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "mychart.selectorLabels" . | nindent 6 }}
+      {{- include "helm-complex-chart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -177,13 +177,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "mychart.selectorLabels" . | nindent 8 }}
+        {{- include "helm-complex-chart.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
+      serviceAccountName: {{ include "helm-complex-chart.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -235,7 +235,7 @@ Inside the template folder you can also find a `_helpers.tpl` file.
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "mychart.name" -}}
+{{- define "helm-complex-chart.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -244,7 +244,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "mychart.fullname" -}}
+{{- define "helm-complex-chart.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -260,16 +260,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "mychart.chart" -}}
+{{- define "helm-complex-chart.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "mychart.labels" -}}
-helm.sh/chart: {{ include "mychart.chart" . }}
-{{ include "mychart.selectorLabels" . }}
+{{- define "helm-complex-chart.labels" -}}
+helm.sh/chart: {{ include "helm-complex-chart.chart" . }}
+{{ include "helm-complex-chart.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -279,17 +279,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "mychart.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "mychart.name" . }}
+{{- define "helm-complex-chart.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "helm-complex-chart.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "mychart.serviceAccountName" -}}
+{{- define "helm-complex-chart.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "mychart.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "helm-complex-chart.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
@@ -301,9 +301,9 @@ As you can see, you can also define [named templates](https://helm.sh/docs/chart
 Have a look at:
 
 ```yaml
-{{- define "mychart.labels" -}}
-helm.sh/chart: {{ include "mychart.chart" . }}
-{{ include "mychart.selectorLabels" . }}
+{{- define "helm-complex-chart.labels" -}}
+helm.sh/chart: {{ include "helm-complex-chart.chart" . }}
+{{ include "helm-complex-chart.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -311,15 +311,15 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 ```
 
-you can then access this `mychart.labels` in your `app-deployment.yaml` like follows:
+you can then access this `helm-complex-chart.labels` in your `app-deployment.yaml` like follows:
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "mychart.fullname" . }}
+  name: {{ include "helm-complex-chart.fullname" . }}
   labels:
-    {{- include "mychart.labels" . | nindent 4 }}
+    {{- include "helm-complex-chart.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -337,9 +337,9 @@ Inside the `/test` directory you can find already a simple test job. This test j
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "mychart.fullname" . }}-test-connection"
+  name: "{{ include "helm-complex-chart.fullname" . }}-test-connection"
   labels:
-    {{- include "mychart.labels" . | nindent 4 }}
+    {{- include "helm-complex-chart.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -347,7 +347,7 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "mychart.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "helm-complex-chart.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never
 ```
 
@@ -373,7 +373,7 @@ Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/to
 
 ```yaml
 apiVersion: v2
-name: mychart
+name: helm-complex-chart
 description: My awesome app
 type: application
 version: 0.1.0
@@ -383,4 +383,4 @@ maintainers:
     email: YOUR E-MAIL ADDRESS
 ```
 
-Continue with the lab "[Your awesome application](./deploy/)".
+Continue with the lab "[Deploy your awesome application](./deploy/)".

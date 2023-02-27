@@ -118,7 +118,7 @@ First open a second terminal and run the following command:
 ```
 
 ```bash
-helm upgrade -i myapp ./mychart --namespace <namespace>
+helm upgrade -i myapp . --namespace <namespace>
 ```
 
 The output of the `{{% param cliToolName %}} get pod` command should show the deployment of the `post-install-hook` pod.
@@ -239,7 +239,7 @@ spec:
 Deploy the new hooks with the following command:
 
 ```bash
-helm upgrade myapp ./mychart --namespace <namespace>
+helm upgrade myapp . --namespace <namespace>
 ```
 
 

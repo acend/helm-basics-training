@@ -13,7 +13,7 @@ In this lab we are going to templates the resources that are necessary to deploy
 When looking at the app templates of our `mychart` chart, the name of the resource is always defined by a helper function:
 
 ```yaml
-name: {{ include "mychart.fullname" . }}
+name: {{ include "helm-complex-chart.fullname" . }}
 ```
 
 Resources within the same Namespace and of the same resource type must have unique names. Since a Helm chart can be instantiated multiple times in different releases, it's best to include the release name as part of the resource name:
@@ -294,9 +294,9 @@ The template file for the MariaDB database `templates/deployment-mariadb.yaml` c
 
 The following points need to be taken into consideration when creating the template:
 
-* The helper `mychart.fullname` will return `release-mychart`. Since our first deployment for the `example-web-python` application already uses this name, we have to choose a name for the mariadb instead.
+* The helper `helm-complex-chart.fullname` will return `release-helm-complex-chart`. Since our first deployment for the `example-web-python` application already uses this name, we have to choose a name for the mariadb instead.
   * Let's take `<releasename>-mariadb` instead. As an alternative we could also alter the fullname helper to accept an additional name, which would be different for each deployment.
-* The same applies to the label `app.kubernetes.io/name`. We can't therefore use the included `mychart.labels`. We could also alter the helper function or in our case simply just add the labels directly.
+* The same applies to the label `app.kubernetes.io/name`. We can't therefore use the included `helm-complex-chart.labels`. We could also alter the helper function or in our case simply just add the labels directly.
 * In the deployment templates we reference our secrets by again using the full name `<releasename>-mariadb`.
 
 

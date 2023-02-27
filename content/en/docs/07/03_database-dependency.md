@@ -122,7 +122,7 @@ maintainers:
 Since we already added the bitnami repository in lab 3 (`helm repo add bitnami https://charts.bitnami.com/bitnami`), after we added the dependency to the Chart.yaml, we can simply run
 
 ```bash
-helm dependency build ./mychart/
+helm dependency build .
 ```
 
 This will download the dependent chart to the `charts/` and update the `Chart.lock` file to the latest matching version according to the version defined in the `Chart.yaml`. The Chart.lock contains the exact version of the moment the dependencies were updates, and it's use to recreate that exact version combinations. In order to update the dependency versions of the Chart.lock file you can simply run `helm dependency update`.
@@ -170,7 +170,7 @@ Update your deployment to match the keys in the `values.yaml` to your environmen
 After editing the files we can now install the release.
 
 ```bash
-helm upgrade -i myapp ./mychart --namespace <namespace>
+helm upgrade -i myapp . --namespace <namespace>
 ```
 
 Verify the installation and check whether the new database was deployed.

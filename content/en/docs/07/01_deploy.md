@@ -45,7 +45,7 @@ It might take some time until your ingress hostname is accessible, as the DNS na
 To create a release from our chart, we run the following command within our chart directory:
 
 ```bash
-helm upgrade -i myapp ./helm-complex-chart --namespace <namespace>
+helm install myapp ./helm-complex-chart --namespace <namespace>
 ```
 
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
@@ -150,6 +150,7 @@ database:
   enabled: true
 ```
 
+Enabeling this property will render the environment variable block in the deployment template, as well alls the `mariadb-*.yaml` templates.
 To upgrade your existing release run:
 
 ```bash
