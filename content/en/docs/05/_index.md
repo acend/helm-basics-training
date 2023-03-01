@@ -347,14 +347,3 @@ data:
 ```
 
 Check out [Helm's documentation about developing templates](https://helm.sh/docs/chart_template_guide/#the-chart-template-developers-guide) for more details on templating with Helm.
-
-
-## Task {{% param sectionnumber %}}.8: MariaDB integration (optional)
-
-Change the Helm chart from lab 3 so that the mariadb integration can be configured with a conditional parameter, e.g. `persistence.enabled`.
-Consider changing the following resources:
-
-* Service
-* Deployment
-* PersistentVolumeClaim
-* Configuration in the application
