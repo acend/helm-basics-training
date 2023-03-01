@@ -1,227 +1,360 @@
 ---
-title: "5. Debugging Helm"
+title: "5. Go templating"
 weight: 5
 sectionnumber: 5
 ---
 
-Debugging templates can be tricky because the rendered templates are sent to the {{% param distroName %}} API server which may reject the YAML files for reasons other than formatting.
-
-There are a few commands that can help you debug:
-
-* `helm lint` is your go-to tool for verifying that your chart follows best practices.
-* `helm install --dry-run --debug --generate-name <chart> --namespace <namespace>` or `helm template --debug <chart>`: We’ve seen this trick already. It’s a great way to render your templates without applying them to the cluster.
-* `helm template -s templates/<template-file> . --debug | cat -n -` render a single file to the standard output
-* `helm get manifest <release> --namespace <namespace>`: This is a good way to see what templates are installed on the server.
-* `helm get values <release> --namespace <namespace>`: This helps you to understand which values are used for a release.
-
-When your YAML is failing to parse but you want to see what is generated, one easy way to retrieve the YAML is to comment out the problem section in the template and then re-run `helm install --dry-run --debug --generate-name <chart>`.
-
-```
-apiVersion: v2
-# some: problem section
-# {{ .Values.foo | quote }}
-```
-
-The above will be rendered and returned with the comments intact:
-
-```
-apiVersion: v2
-# some: problem section
-#  "bar"
-```
-
-This provides a quick way of viewing the generated content without YAML parse errors blocking.
+In this lab we are going to learn how to use Go templating in Helm templates.
 
 
-## Task {{% param sectionnumber %}}.1: Get the chart
+## Task {{% param sectionnumber %}}.1: Create a new Helm chart
 
-Get the `error-chart` chart by either [downloading the repository's ZIP file](https://github.com/acend/error-chart/archive/main.zip) or by cloning it from GitHub:
-
-```bash
-git clone https://github.com/acend/error-chart.git
-```
-
-
-## Task {{% param sectionnumber %}}.2: Fix the chart
-
-The `error-chart` chart contains some deliberate errors. Try to find all of these errors and fix them, then install the chart using `myrelease` as release name. You can use one or several ways shown above to do so.
-The goal of this task is a successfully running `myrelease-error-chart` pod in your own namespace.
-
-If you try to install the chart with following command, you will get an error:
-```bash
-helm install my-error-chart . --dry-run
-```
-
-
-### Hints
-
-
-#### YAML
-
-YAML has some strict formatting rules. Check if all files conform to these rules. There is a bad formatting in the `ingress.yaml` template.
-Use the `helm template -s templates/ingress.yaml . --debug | cat -n -` command to render the ingress template. Be aware that the first two lines (`---` YAML directive marker and the `# Source: error-chart/templates/ingress.yaml` YAML comment are not considered).
-
-
-#### Kubernetes resource definitions
-
-Find out what resource files are not correct resource definitions.
-
-
-#### Values
-
-Check whether all defined values in `values.yaml` look ok to you. Also check if those values used in the templates reference the correct ones.
+Let's create a new Helm chart with the name `gotemplatechart` and remove all default templates from the `templates` folder.
 
 
 ### Solution
 
-
-#### Ingress path
-
-The first error we get when trying to install the chart or when using the `helm lint` command is this:
-
-```
-[ERROR] templates/ingress.yaml: unable to parse YAML
-  error converting YAML to JSON: yaml: line 15: found character that cannot start any token
-```
-
-"found character that cannot start any token" probably doesn't ring a bell so we try to find out what's wrong with line 15 in file `templates/ingress.yaml`. Beware that line 15 corresponds to line 15 of the rendered file!
-If you want to know what is on line 15 in the rendered file, you can execute the following command:
-
 ```bash
-helm template -s templates/ingress.yaml . --debug | cat -n -
-```
-
-{{% details title="Hint / Solution" %}}
- Opening the file and going to the appropriate line containing `paths:`, we notice that a tab instead of whitespace characters was used to indent. Replace it with whitespace characters.
-
-```yaml
-...
-spec:
-{{- if .Values.ingress.tls }}
-  tls:
-  {{- range .Values.ingress.tls }}
-    - hosts:
-      {{- range .hosts }}
-        - {{ . | quote }}
-      {{- end }}
-      secretName: {{ .secretName }}
-  {{- end }}
-{{- end }}
-  rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths: #<----- replace tab with whitespace
-          {{- range .paths }}
-          - path: {{ . }}
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ $fullName }}
-                port: 
-                  number: {{ $svcPort }}
-        {{- end }}
-  {{- end }}
-{{- end }}
-```
-{{% /details %}}
-
-
-#### Deployment empty selector
-
-The second error we get when trying to install the chart reads:
-
-```
-Error: release myrelease failed: Deployment.apps "myrelease-error-chart" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string(nil), MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: empty selector is invalid for deployment
-```
-
-{{% details title="Hint / Solution" %}}
-If you look at the deployment template or its rendered form you'll notice that something's wrong with the selector:
-
-```
-  selector:
-    matchLabels:
-    app.kubernetes.io/name: {{ include "error-chart.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-```
-
-Those two key-value pairs `app.kubernetes.io/name` and `app.kubernetes.io/instance` should be indented by two more whitespaces to look like this:
-
-```
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: {{ include "error-chart.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
-```
-{{% /details %}}
-
-
-#### Ingress host
-
-The host value seems to be incorrect (parts of the url were replaced by placeholders in the following message):
-
-```
-Error: release myrelease failed: Ingress.extensions "myrelease-error-chart" is invalid: spec.rules[0].host: Invalid value: "helmtechlab-errorchart-<namespace>.{{% param labAppUrl %}}": a DNS-1123 subdomain must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g. 'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*')
-```
-
-{{% details title="Hint / Solution" %}}
-If you look closely, you'll notice that the placeholder `<namespace>` is still in the host's value. This does not correspond to hostname conventions. The file `templates/ingress.yaml` reveals that the host's value is defined in the `values.yaml` file. Fix the `host` value.
-{{% /details %}}
-
-
-#### Deployment image tag
-
-
-Even though the chart could successfully be installed the pod has a status of `InvalidImageName`. Looking at the rendered deployment we notice that the image is missing a tag:
-
-```
-    spec:
-      containers:
-      - image: 'nginx:'
-        imagePullPolicy: IfNotPresent
-```
-
-As with the ingress host, the used value seems to be wrong. The ingress template has the following definition of `image:`:
-
-```
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tags }}"
-```
-
-So let's have a look at the `values.yaml` file:
-
-```
-image:
-  repository: nginx
-  tag: stable
-  pullPolicy: IfNotPresent
-```
-
-{{% details title="Hint / Solution" %}}
-There's no variable `tags`, instead it's named `tag`. Fix that in the template so that the `image:` line reads:
-
-```
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-```
-
-You might also have to change the `repository:` value because Docker Hub might not be accessible from the used environment.
-{{% /details %}}
-
-
-#### Compare with solution
-
-You can find the solution in the repository under the `solution` branch.
-If you want to check if your solution is correct, you can simply compare your workspace against the solution branch.
-
-```bash
-git diff origin/solution
+helm create gotemplatechart
+rm -rf gotemplatechart/templates/*
 ```
 
 {{% onlyWhen openshift %}}
-
-
-#### Deployment image
-
-We've already encountered this one in [lab 2](../02/). Because of the used image, which wants to have root and privileged port numbers, it cannot be started on OpenShift.
-
-We need to change the default image to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) and also change the containerPort to `8080`.
+{{% alert title="Warning" color="secondary" %}}
+Don't forget to adapt the image name to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) so OpenShift can run it. See [lab 2](../02/) for details.
+{{% /alert %}}
 {{% /onlyWhen %}}
+
+
+## Task {{% param sectionnumber %}}.2: Add a ConfigMap template
+
+As the template directory is completely empty, it's time to create our first template. For the purpose of this lab we're going to use a simple ConfigMap template. If you don't exactly understand what a ConfigMap is, consider reading the {{% onlyWhenNot openshift %}}[Kubernetes documentation on how to configure a pod to use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/){{% /onlyWhenNot %}}{{% onlyWhen openshift %}}[OpenShift documentation on how to configure a pod to use a ConfigMap](https://docs.openshift.com/container-platform/latest/authentication/configmaps.html#authentication-configmaps-consuming-configmap-in-pods){{% /onlyWhen %}}.
+
+Create the template called `gotemplatechart/templates/configmap.yaml`:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotemplatelab-configmap
+data:
+  simplevalue: "Hello Helm"
+```
+
+We can now render the template with the following command:
+
+```bash
+helm template gotemplatechart -s templates/configmap.yaml
+```
+
+If everything went ok we can deploy a release of the chart in our namespace:
+
+```bash
+helm upgrade -i gotemplaterelease gotemplatechart --namespace <namespace>
+```
+
+
+## Task {{% param sectionnumber %}}.3: The first Go template directive
+
+As our first Go template directives we are going to add so-called built-in objects: the chart name and version `{{ .Chart.Name }}-{{ .Chart.Version }}`.
+
+The template directive is enclosed in double curly braces `{{` and `}}`.
+
+Update the `gotemplatechart/templates/configmap.yaml`:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotemplatelab-configmap
+data:
+  simplevalue: "Hello Helm"
+  chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
+```
+
+Rendering the new template again with `helm template gotemplatechart ...` (see task 2) will therefore result in the following output:
+
+```yaml
+# Source: gotemplatechart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotemplatelab-configmap
+data:
+  simplevalue: "Hello Helm"
+  chartnameversion: gotemplatechart-0.1.0
+```
+
+The directives `{{ .Chart.Name }}` and `{{ .Chart.Version }}` inject the name and version of the actual chart. But where are those values coming from?
+
+Within those directives data is accessible through a data structure. The leading `.` represents the root of the object structure and is the entrypoint to access data in templates.
+Built-in objects such as a chart, release, file, template, values and more are therefore accessible in a similar fashion. Check the official [Helm documentation about built-in objects](https://helm.sh/docs/chart_template_guide/builtin_objects/) for further and more in-depth information.
+
+The `.Chart` data structure obviously comes from the `Chart.yaml` file and represents the values of this file.
+
+
+## Task {{% param sectionnumber %}}.4: Add data from values.yaml
+
+As you could have guessed by now, the `values.yaml` file allows us to configure values and parameters used during the rendering of the templates to replace strings, parameters, functions or even to control whether a part of a template is rendered at all. Let's add a couple more directives to our ConfigMap.
+
+Remove the default content of the `values.yaml` and replace it with the following:
+
+```yaml
+favoriteColor: blue
+```
+
+Now also add your favorite color to be rendered in the ConfigMap as data under the key `myFavoriteColor`. Edit the `gotemplatechart/templates/configmap.yaml` file accordingly.
+
+Use `helm template gotemplatechart ...` again (as in task 2) to see what your rendered Kubernetes resources look like.
+
+{{% alert title="Note" color="primary" %}}
+The output should look like this:
+
+```
+---
+# Source: gotemplatechart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+...
+data:
+  ...
+  myFavoriteColor: blue
+```
+
+{{% /alert %}}
+
+
+### Solution Task {{% param sectionnumber %}}.4
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotemplatelab-configmap
+data:
+  simplevalue: "Hello Helm"
+  chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
+  myFavoriteColor: {{ .Values.favoriteColor }}
+```
+
+
+## Task {{% param sectionnumber %}}.5: Structured data
+
+As mentioned in task 3, data within the built-in objects can be structured and values can be nested.
+
+Update the ConfigMap template so that the following `values.yaml` will result in the same rendered resource as in task 4.
+
+```yaml
+favorite:
+  color: blue
+```
+
+
+### Solution Task {{% param sectionnumber %}}.5
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotemplatelab-configmap
+data:
+  simplevalue: "Hello Helm"
+  chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
+  myFavoriteColor: {{ .Values.favorite.color }}
+```
+
+{{% alert title="Note" color="primary" %}}
+The official [Helm best practices](https://helm.sh/docs/chart_best_practices/values/) suggest using flat values over nested ones:
+>In most cases, flat should be favored over nested. The reason for this is that it is simpler for template developers and users.
+{{% /alert %}}
+
+
+## Template functions and pipelines
+
+As for now we have learned how to place values unmodified within templates. There are cases where we want to do something with the value before we place it in a resource. With functions and pipelines we can achieve exactly that.
+
+When injecting strings like e.g. our favorite color in a template, we want to quote the strings:
+
+```
+{{ .Values.favorite.color }} --> blue
+{{ quote .Values.favorite.color }} --> "blue"
+```
+
+The quote function therefore adds double quotes around the value. Functions follow the syntax `functionName arg1 arg2 ...`.
+
+Helm has over 60 functions available. Some are defined in the [Go template language](https://godoc.org/text/template), others in the [Sprig template library](https://godoc.org/github.com/Masterminds/sprig).
+
+Similar to Linux pipes known from shell commands, e.g. `ps -aux | grep ps`, you can use pipes in Go templates as well:
+
+```
+{{ .Values.favorite.color | upper | quote }} --> "BLUE"
+{{ .Values.favorite.color | b64enc | quote }} --> "Ymx1ZQ==" # blue base64 encoded
+{{ .Values.favorite.color | repeat 2 | quote }} --> "BLUEBLUE"
+{{ .Values.favorite.band | default "Pink Floyd" | quote }} --> "Pink Floyd" # the our values.yaml doesn't consist of the favorite --> band value therefore the default value is rendered
+{{ printf "%s%s" .Release.Name .Chart.Name | quote }} --> "release-namegotemplatechart"
+```
+
+
+## Task {{% param sectionnumber %}}.6: Add functions and pipelines
+
+Make the required changes to your ConfigMap template so that it renders to the following output:
+
+```yaml
+# Source: gotemplatechart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotemplatelab-configmap
+data:
+  simplevalue: "Hello Helm"
+  chartnameversion: "gotemplatechart-0.1.0"
+  myFavoriteColor: "blue"
+```
+
+
+### Solution Task {{% param sectionnumber %}}.6
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotemplatelab-configmap
+data:
+  simplevalue: "Hello Helm"
+  chartnameversion: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
+  myFavoriteColor: {{ .Values.favorite.color | quote }}
+```
+
+
+## Conditionals
+
+If then else control structures are very common in templating languages like Go Templating and basically look like this
+
+```yaml
+{{ if condition as pipeline }}
+  # do this
+{{ else if condition as pipeline }}
+  # do that
+{{ else}}
+  # do else
+{{ end }}
+```
+
+{{% alert title="Note: Conditional Operators" color="primary" %}}
+With `and`, `or`, `not`, `eq` being functions, conditions therefore look like this `{{ if and .Values.favorite.band (eq .Values.favorite.band "The Rolling Stones") }}`
+For this condition to be true, the value `.Values.favorite.band` must be set and is set to "The Rolling Stones"
+
+{{% /alert %}}
+
+
+## Task {{% param sectionnumber %}}.7: Add a condition
+
+Let's add an example condition to our ConfigMap:
+
+* When the favorite drink is water, coke, beer or wine, add a new line to the ConfigMap data part `glass: true`
+* When its coffee or tea: `mug: true`
+
+We start with adding the favorite drink to your `values.yaml`
+
+```yaml
+favorite:
+  color: blue
+  drink: [replace with your favorite drink]
+```
+
+Now edit the ConfigMap template accordingly.
+
+
+### Solution Task {{% param sectionnumber %}}.7
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotemplatelab-configmap
+data:
+  simplevalue: "Hello Helm"
+  chartnameversion: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
+  myFavoriteColor: {{ .Values.favorite.color | quote }}
+  {{ if and .Values.favorite.drink (or (eq .Values.favorite.drink "water") (eq .Values.favorite.drink "coke") (eq .Values.favorite.drink "beer") (eq .Values.favorite.drink "wine")) }}glass: true{{ else if and .Values.favorite.drink (or (eq .Values.favorite.drink "coffee") (eq .Values.favorite.drink "tea")) }}mug: true{{ end }}
+```
+
+This condition is mostly unreadable due to the fact that we need to make sure the spaces for the next key and value set are correct.
+
+Check out [Helm's documentation about controlling whitespace](https://helm.sh/docs/chart_template_guide/control_structures/#controlling-whitespace) for more details on how to control whitespaces and adapt your ConfigMap.
+
+A more readable version could look like this:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotemplatelab-configmap
+data:
+  simplevalue: "Hello Helm"
+  chartnameversion: {{printf "%s-%s" .Chart.Name .Chart.Version | quote}}
+  myFavoriteColor: {{ .Values.favorite.color | quote }}
+  {{- with .Values.favorite }}
+  {{- if and .drink (or (eq .drink "water") (eq .drink "coke") (eq .drink "beer") (eq .drink "wine")) }}
+  glass: true
+  {{- else if and .drink (or (eq .drink "coffee") (eq .drink "tea")) }}
+  mug: true
+  {{- end }}
+  {{- end }}
+```
+
+The `with` Operator allows you to set the current scope (`.`) to a particular object, in our case the favorite object.
+
+
+## Loops in Helm templates
+
+The `range` Operator allows you to implement loops in Helm templates. E.g. to iterate over a list of cities:
+
+```yaml
+favorite:
+  color: blue
+  drink: water
+cities:
+  - Bern
+  - Zurich
+  - Basel
+  - Geneva
+  - ...
+```
+
+We can implement the template as follows:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotemplatelab-configmap
+data:
+  simplevalue: "Hello Helm"
+  chartnameversion: {{printf "%s-%s" .Chart.Name .Chart.Version | quote}}
+  myFavoriteColor: {{ .Values.favorite.color | quote }}
+  {{- with .Values.favorite }}
+  {{- if and .drink (or (eq .drink "water") (eq .drink "coke") (eq .drink "beer") (eq .drink "wine")) }}
+  glass: true
+  {{- else if and .drink (or (eq .drink "coffee") (eq .drink "tea")) }}
+  mug: true
+  {{- end }}
+  {{- end }}
+  cities: |-
+    {{- range .Values.cities }}
+    - {{ . | quote }}
+    {{- end }}
+```
+
+Check out [Helm's documentation about developing templates](https://helm.sh/docs/chart_template_guide/#the-chart-template-developers-guide) for more details on templating with Helm.
+
+
+## Task {{% param sectionnumber %}}.8: MariaDB integration (optional)
+
+Change the Helm chart from lab 3 so that the mariadb integration can be configured with a conditional parameter, e.g. `persistence.enabled`.
+Consider changing the following resources:
+
+* Service
+* Deployment
+* PersistentVolumeClaim
+* Configuration in the application

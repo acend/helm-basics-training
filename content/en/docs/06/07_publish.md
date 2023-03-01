@@ -1,7 +1,7 @@
 ---
-title: "7.7 Optional: Publish your chart"
-weight: 77
-sectionnumber: 7.7
+title: "6.7 Optional: Publish your chart"
+weight: 67
+sectionnumber: 6.7
 ---
 
 As you already learned during the presentation, Helm is a great choice if you want to deploy your app in different configurations or over different environments. In this Lab section we are going to show you how you can instantiate the Chart in two different configurations, first a release for the Develop environment and then another release for a Production environment.

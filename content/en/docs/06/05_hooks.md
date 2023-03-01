@@ -1,7 +1,7 @@
 ---
-title: "7.5 Helm hooks"
-weight: 75
-sectionnumber: 7.5
+title: "6.5 Helm hooks"
+weight: 65
+sectionnumber: 6.5
 ---
 
 In the previous lab we learned how to deploy our python example application and connect it to a MariaDB. In this chapter we are going to look at a mechanism of Helm called hooks, which let's chart developers intervene / interact at certain points in a release's life cycle.

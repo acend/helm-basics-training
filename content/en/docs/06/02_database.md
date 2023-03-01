@@ -1,7 +1,7 @@
 ---
-title: "7.2 Template the database backend"
-weight: 72
-sectionnumber: 7.2
+title: "6.2 Template the database backend"
+weight: 62
+sectionnumber: 6.2
 ---
 
 In this lab we are going to templates the resources that are necessary to deploy a MariaDB database as a backend to our `example-web-python` application. Before we start creating those templates we want to have a look at a couple of best practices.

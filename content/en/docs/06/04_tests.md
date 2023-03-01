@@ -1,7 +1,7 @@
 ---
-title: "7.4 Test"
-weight: 74
-sectionnumber: 7.4
+title: "6.4 Test"
+weight: 64
+sectionnumber: 6.4
 ---
 
 ## Task {{% param sectionnumber %}}.1: Add a test to your chart

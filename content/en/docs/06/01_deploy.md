@@ -1,7 +1,7 @@
 ---
-title: "7.1 Deploy your awesome application"
-weight: 71
-sectionnumber: 7.1
+title: "6.1 Deploy your awesome application"
+weight: 61
+sectionnumber: 6.1
 ---
 
 Using the generated and modified Helm chart, we are going to deploy our own awesome application.

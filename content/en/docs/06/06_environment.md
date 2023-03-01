@@ -1,7 +1,7 @@
 ---
-title: "7.6 Deploy your Chart with different environment configurations"
-weight: 76
-sectionnumber: 7.6
+title: "6.6 Deploy your Chart with different environment configurations"
+weight: 66
+sectionnumber: 6.6
 ---
 
 

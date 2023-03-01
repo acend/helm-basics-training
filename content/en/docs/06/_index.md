@@ -1,360 +1,386 @@
 ---
-title: "6. Go templating"
+title: "6. Your own complex Helm chart"
 weight: 6
 sectionnumber: 6
 ---
 
-In this lab we are going to learn how to use Go templating in Helm templates.
+Let's create a bit more complex Chart.
+
+In this Lab we are covering folling topics:
+
+* 7.1 Deploy the Chart as it is
+* 7.2
 
 
-## Task {{% param sectionnumber %}}.1: Create a new Helm chart
+We already prepared a Helm chart skeleton for this, you can clone the Chart with following command:
+`git clone <url> lab7 && cd lab7`
+Let's have a closer look at its directory structure and components. The Chart consists of the following files and folders:
 
-Let's create a new Helm chart with the name `gotemplatechart` and remove all default templates from the `templates` folder.
+```
+.
+├── Chart.yaml
+├── charts
+├── templates
+│   ├── NOTES.txt
+│   ├── _helpers.tpl
+│   ├── app-deployment.yaml
+│   ├── app-ingress.yaml
+│   ├── app-service.yaml
+│   ├── mariadb-deployment.yaml
+│   ├── mariadb-secret.yaml
+│   ├── mariadb-service.yaml
+│   └── tests
+│       └── test-connection.yaml
+└── values.yaml
+```
+
+Looking at the `templates/` directory, we notice that there already are a few files:
+
+* `NOTES.txt`: The "help text" for your chart which will be displayed to your users when they run `helm install`
+* `app-deployment.yaml`: A basic manifest for creating a Kubernetes deployment
+* `app-service.yaml`: A basic manifest for creating a service endpoint for your deployment
+* `app-ingress.yaml`: A basic manifest for creating a ingress to expose your app deployment
+* `_helpers.tpl`: A place to put template helpers that you can re-use throughout the chart
+* `tests/`: A directory to put test files for testing the deployed Helm chart
+
+Furthermore the are some resources (prefixed with `mariadb-`) for a database backend which we're going to use in the next lab section.
+For now you can ignore them.
+
+
+{{% alert title="Note" color="primary" %}}
+For details on chart templating, check out the [Helm's getting started guide](https://helm.sh/docs/chart_template_guide/getting_started/).
+{{% /alert %}}
+
+
+## values.yaml
+
+In the `values.yaml` file we defined our values used in our templates:
+
+```yaml
+# Default values for helm-complex-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: mychart-<namespace>.{{% param labAppUrl %}}
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: mychart-<namespace>-<appdomain>
+      hosts:
+        - mychart-<namespace>.{{% param labAppUrl %}}
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+database:
+  enabled: false
+```
+
+When instantiating a release from a chart, we can overwrite these values according to our own environment-specific conditions.
+
+So, we can for instance create a `values-dev.yaml` where we keep our development environment values and then use `helm upgrade/install -f values-dev.yaml` to update or instantiate a release for the given environment. A different approach is to keep the files under version control and use branches for the different stages.
+
+{{% alert title="Note" color="primary" %}}
+For details on the values file, check out the [Helm documentation about values files](https://helm.sh/docs/chart_template_guide/values_files/).
+{{% /alert %}}
+
+
+## Templates
+
+All our Kubernetes resource files are in the `templates` folder. Let's have a closer look at `templates/app-deployment.yaml`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm-complex-chart.fullname" . }}
+  labels:
+    {{- include "helm-complex-chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "helm-complex-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helm-complex-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "helm-complex-chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+```
+
+We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go template](https://golang.org/pkg/text/template/) rendering engine. More will be covered on `Go templates` in an upcoming lab.
+
+{{% alert title="Note" color="primary" %}}
+For details on templating, check out the [Helm documentation about template functions and pipelines](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/).
+{{% /alert %}}
+
+
+### _helpers.tpl
+
+Inside the template folder you can also find a `_helpers.tpl` file.
+
+```yaml
+{{/*
+Expand the name of the chart.
+*/}}
+{{- define "helm-complex-chart.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "helm-complex-chart.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create chart name and version as used by the chart label.
+*/}}
+{{- define "helm-complex-chart.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
+Common labels
+*/}}
+{{- define "helm-complex-chart.labels" -}}
+helm.sh/chart: {{ include "helm-complex-chart.chart" . }}
+{{ include "helm-complex-chart.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "helm-complex-chart.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "helm-complex-chart.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "helm-complex-chart.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "helm-complex-chart.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+```
+
+As you can see, you can also define [named templates](https://helm.sh/docs/chart_template_guide/named_templates/) in Helm and then use these named templates.
+
+Have a look at:
+
+```yaml
+{{- define "helm-complex-chart.labels" -}}
+helm.sh/chart: {{ include "helm-complex-chart.chart" . }}
+{{ include "helm-complex-chart.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+```
+
+you can then access this `helm-complex-chart.labels` in your `app-deployment.yaml` like follows:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm-complex-chart.fullname" . }}
+  labels:
+    {{- include "helm-complex-chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+```
+
+
+### Tests
+
+Helm has the capability to test the deployed Kubernetes resources.
+In the `/test` directory we can define multiple test jobs for the deployed Helm chart.
+A test job is defined by a Pod resource which specifies a container with a given command to run. If the container exits successfully (exit code 0), the test was successful. Further the test Pod must contain following annotation `helm.sh/hook: test` to run during the Helm deployment.
+Inside the `/test` directory you can find already a simple test job. This test job starts a busybox image with a wget command to check if the deployed app is reachable by its service name.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "helm-complex-chart.fullname" . }}-test-connection"
+  labels:
+    {{- include "helm-complex-chart.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "helm-complex-chart.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
+```
+
+You can execute the tests on a given release with the following command:
+
+```bash
+helm test myapp --namespace <namespace>
+```
+
+What tests are useful:
+
+* Verify the configuration, eg. username and passwords are correct
+* Make sure the deployed application is reachable over the service
+* Run functional smoke tests for example logging into an application
+
+
+## Task {{% param sectionnumber %}}.1: Change Chart.yaml
+
+Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/topics/charts/#the-chartyaml-file), then change the description to `My awesome app` and add yourself to the list of maintainers.
 
 
 ### Solution
 
-```bash
-helm create gotemplatechart
-rm -rf gotemplatechart/templates/*
-```
-
-{{% onlyWhen openshift %}}
-{{% alert title="Warning" color="secondary" %}}
-Don't forget to adapt the image name to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) so OpenShift can run it. See [lab 2](../02/) for details.
-{{% /alert %}}
-{{% /onlyWhen %}}
-
-
-## Task {{% param sectionnumber %}}.2: Add a ConfigMap template
-
-As the template directory is completely empty, it's time to create our first template. For the purpose of this lab we're going to use a simple ConfigMap template. If you don't exactly understand what a ConfigMap is, consider reading the {{% onlyWhenNot openshift %}}[Kubernetes documentation on how to configure a pod to use a ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/){{% /onlyWhenNot %}}{{% onlyWhen openshift %}}[OpenShift documentation on how to configure a pod to use a ConfigMap](https://docs.openshift.com/container-platform/latest/authentication/configmaps.html#authentication-configmaps-consuming-configmap-in-pods){{% /onlyWhen %}}.
-
-Create the template called `gotemplatechart/templates/configmap.yaml`:
-
 ```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gotemplatelab-configmap
-data:
-  simplevalue: "Hello Helm"
+apiVersion: v2
+name: helm-complex-chart
+description: My awesome app
+type: application
+version: 0.1.0
+appVersion: 1.16.0
+maintainers:
+  - name: YOUR NAME
+    email: YOUR E-MAIL ADDRESS
 ```
 
-We can now render the template with the following command:
-
-```bash
-helm template gotemplatechart -s templates/configmap.yaml
-```
-
-If everything went ok we can deploy a release of the chart in our namespace:
-
-```bash
-helm upgrade -i gotemplaterelease gotemplatechart --namespace <namespace>
-```
-
-
-## Task {{% param sectionnumber %}}.3: The first Go template directive
-
-As our first Go template directives we are going to add so-called built-in objects: the chart name and version `{{ .Chart.Name }}-{{ .Chart.Version }}`.
-
-The template directive is enclosed in double curly braces `{{` and `}}`.
-
-Update the `gotemplatechart/templates/configmap.yaml`:
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gotemplatelab-configmap
-data:
-  simplevalue: "Hello Helm"
-  chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
-```
-
-Rendering the new template again with `helm template gotemplatechart ...` (see task 2) will therefore result in the following output:
-
-```yaml
-# Source: gotemplatechart/templates/configmap.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gotemplatelab-configmap
-data:
-  simplevalue: "Hello Helm"
-  chartnameversion: gotemplatechart-0.1.0
-```
-
-The directives `{{ .Chart.Name }}` and `{{ .Chart.Version }}` inject the name and version of the actual chart. But where are those values coming from?
-
-Within those directives data is accessible through a data structure. The leading `.` represents the root of the object structure and is the entrypoint to access data in templates.
-Built-in objects such as a chart, release, file, template, values and more are therefore accessible in a similar fashion. Check the official [Helm documentation about built-in objects](https://helm.sh/docs/chart_template_guide/builtin_objects/) for further and more in-depth information.
-
-The `.Chart` data structure obviously comes from the `Chart.yaml` file and represents the values of this file.
-
-
-## Task {{% param sectionnumber %}}.4: Add data from values.yaml
-
-As you could have guessed by now, the `values.yaml` file allows us to configure values and parameters used during the rendering of the templates to replace strings, parameters, functions or even to control whether a part of a template is rendered at all. Let's add a couple more directives to our ConfigMap.
-
-Remove the default content of the `values.yaml` and replace it with the following:
-
-```yaml
-favoriteColor: blue
-```
-
-Now also add your favorite color to be rendered in the ConfigMap as data under the key `myFavoriteColor`. Edit the `gotemplatechart/templates/configmap.yaml` file accordingly.
-
-Use `helm template gotemplatechart ...` again (as in task 2) to see what your rendered Kubernetes resources look like.
-
-{{% alert title="Note" color="primary" %}}
-The output should look like this:
-
-```
----
-# Source: gotemplatechart/templates/configmap.yaml
-apiVersion: v1
-kind: ConfigMap
-...
-data:
-  ...
-  myFavoriteColor: blue
-```
-
-{{% /alert %}}
-
-
-### Solution Task {{% param sectionnumber %}}.4
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gotemplatelab-configmap
-data:
-  simplevalue: "Hello Helm"
-  chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
-  myFavoriteColor: {{ .Values.favoriteColor }}
-```
-
-
-## Task {{% param sectionnumber %}}.5: Structured data
-
-As mentioned in task 3, data within the built-in objects can be structured and values can be nested.
-
-Update the ConfigMap template so that the following `values.yaml` will result in the same rendered resource as in task 4.
-
-```yaml
-favorite:
-  color: blue
-```
-
-
-### Solution Task {{% param sectionnumber %}}.5
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gotemplatelab-configmap
-data:
-  simplevalue: "Hello Helm"
-  chartnameversion: {{ .Chart.Name }}-{{ .Chart.Version }}
-  myFavoriteColor: {{ .Values.favorite.color }}
-```
-
-{{% alert title="Note" color="primary" %}}
-The official [Helm best practices](https://helm.sh/docs/chart_best_practices/values/) suggest using flat values over nested ones:
->In most cases, flat should be favored over nested. The reason for this is that it is simpler for template developers and users.
-{{% /alert %}}
-
-
-## Template functions and pipelines
-
-As for now we have learned how to place values unmodified within templates. There are cases where we want to do something with the value before we place it in a resource. With functions and pipelines we can achieve exactly that.
-
-When injecting strings like e.g. our favorite color in a template, we want to quote the strings:
-
-```
-{{ .Values.favorite.color }} --> blue
-{{ quote .Values.favorite.color }} --> "blue"
-```
-
-The quote function therefore adds double quotes around the value. Functions follow the syntax `functionName arg1 arg2 ...`.
-
-Helm has over 60 functions available. Some are defined in the [Go template language](https://godoc.org/text/template), others in the [Sprig template library](https://godoc.org/github.com/Masterminds/sprig).
-
-Similar to Linux pipes known from shell commands, e.g. `ps -aux | grep ps`, you can use pipes in Go templates as well:
-
-```
-{{ .Values.favorite.color | upper | quote }} --> "BLUE"
-{{ .Values.favorite.color | b64enc | quote }} --> "Ymx1ZQ==" # blue base64 encoded
-{{ .Values.favorite.color | repeat 2 | quote }} --> "BLUEBLUE"
-{{ .Values.favorite.band | default "Pink Floyd" | quote }} --> "Pink Floyd" # the our values.yaml doesn't consist of the favorite --> band value therefore the default value is rendered
-{{ printf "%s%s" .Release.Name .Chart.Name | quote }} --> "release-namegotemplatechart"
-```
-
-
-## Task {{% param sectionnumber %}}.6: Add functions and pipelines
-
-Make the required changes to your ConfigMap template so that it renders to the following output:
-
-```yaml
-# Source: gotemplatechart/templates/configmap.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gotemplatelab-configmap
-data:
-  simplevalue: "Hello Helm"
-  chartnameversion: "gotemplatechart-0.1.0"
-  myFavoriteColor: "blue"
-```
-
-
-### Solution Task {{% param sectionnumber %}}.6
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gotemplatelab-configmap
-data:
-  simplevalue: "Hello Helm"
-  chartnameversion: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
-  myFavoriteColor: {{ .Values.favorite.color | quote }}
-```
-
-
-## Conditionals
-
-If then else control structures are very common in templating languages like Go Templating and basically look like this
-
-```yaml
-{{ if condition as pipeline }}
-  # do this
-{{ else if condition as pipeline }}
-  # do that
-{{ else}}
-  # do else
-{{ end }}
-```
-
-{{% alert title="Note: Conditional Operators" color="primary" %}}
-With `and`, `or`, `not`, `eq` being functions, conditions therefore look like this `{{ if and .Values.favorite.band (eq .Values.favorite.band "The Rolling Stones") }}`
-For this condition to be true, the value `.Values.favorite.band` must be set and is set to "The Rolling Stones"
-
-{{% /alert %}}
-
-
-## Task {{% param sectionnumber %}}.7: Add a condition
-
-Let's add an example condition to our ConfigMap:
-
-* When the favorite drink is water, coke, beer or wine, add a new line to the ConfigMap data part `glass: true`
-* When its coffee or tea: `mug: true`
-
-We start with adding the favorite drink to your `values.yaml`
-
-```yaml
-favorite:
-  color: blue
-  drink: [replace with your favorite drink]
-```
-
-Now edit the ConfigMap template accordingly.
-
-
-### Solution Task {{% param sectionnumber %}}.7
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gotemplatelab-configmap
-data:
-  simplevalue: "Hello Helm"
-  chartnameversion: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
-  myFavoriteColor: {{ .Values.favorite.color | quote }}
-  {{ if and .Values.favorite.drink (or (eq .Values.favorite.drink "water") (eq .Values.favorite.drink "coke") (eq .Values.favorite.drink "beer") (eq .Values.favorite.drink "wine")) }}glass: true{{ else if and .Values.favorite.drink (or (eq .Values.favorite.drink "coffee") (eq .Values.favorite.drink "tea")) }}mug: true{{ end }}
-```
-
-This condition is mostly unreadable due to the fact that we need to make sure the spaces for the next key and value set are correct.
-
-Check out [Helm's documentation about controlling whitespace](https://helm.sh/docs/chart_template_guide/control_structures/#controlling-whitespace) for more details on how to control whitespaces and adapt your ConfigMap.
-
-A more readable version could look like this:
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gotemplatelab-configmap
-data:
-  simplevalue: "Hello Helm"
-  chartnameversion: {{printf "%s-%s" .Chart.Name .Chart.Version | quote}}
-  myFavoriteColor: {{ .Values.favorite.color | quote }}
-  {{- with .Values.favorite }}
-  {{- if and .drink (or (eq .drink "water") (eq .drink "coke") (eq .drink "beer") (eq .drink "wine")) }}
-  glass: true
-  {{- else if and .drink (or (eq .drink "coffee") (eq .drink "tea")) }}
-  mug: true
-  {{- end }}
-  {{- end }}
-```
-
-The `with` Operator allows you to set the current scope (`.`) to a particular object, in our case the favorite object.
-
-
-## Loops in Helm templates
-
-The `range` Operator allows you to implement loops in Helm templates. E.g. to iterate over a list of cities:
-
-```yaml
-favorite:
-  color: blue
-  drink: water
-cities:
-  - Bern
-  - Zurich
-  - Basel
-  - Geneva
-  - ...
-```
-
-We can implement the template as follows:
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: gotemplatelab-configmap
-data:
-  simplevalue: "Hello Helm"
-  chartnameversion: {{printf "%s-%s" .Chart.Name .Chart.Version | quote}}
-  myFavoriteColor: {{ .Values.favorite.color | quote }}
-  {{- with .Values.favorite }}
-  {{- if and .drink (or (eq .drink "water") (eq .drink "coke") (eq .drink "beer") (eq .drink "wine")) }}
-  glass: true
-  {{- else if and .drink (or (eq .drink "coffee") (eq .drink "tea")) }}
-  mug: true
-  {{- end }}
-  {{- end }}
-  cities: |-
-    {{- range .Values.cities }}
-    - {{ . | quote }}
-    {{- end }}
-```
-
-Check out [Helm's documentation about developing templates](https://helm.sh/docs/chart_template_guide/#the-chart-template-developers-guide) for more details on templating with Helm.
-
-
-## Task {{% param sectionnumber %}}.8: MariaDB integration (optional)
-
-Change the Helm chart from lab 3 so that the mariadb integration can be configured with a conditional parameter, e.g. `persistence.enabled`.
-Consider changing the following resources:
-
-* Service
-* Deployment
-* PersistentVolumeClaim
-* Configuration in the application
+Continue with the lab "[Deploy your awesome application](./deploy/)".
