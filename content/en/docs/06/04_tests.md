@@ -6,9 +6,9 @@ sectionnumber: 6.4
 
 ## Task {{% param sectionnumber %}}.1: Add a test to your chart
 
-As we learned in the previous section, Helm gives us the availability to run automated test during the Helm deployment.
+As we learned in the previous section, Helm gives us the availability to run automated tests during the Helm deployment.
 Now it's time to write our first test.
-The test should meet following requirements:
+The test should meet the following requirements:
 
 * Image: mariadb
 * Env Variables:

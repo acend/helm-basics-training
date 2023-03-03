@@ -8,12 +8,17 @@ Let's create a bit more complex Chart.
 
 In this Lab we are covering folling topics:
 
-* 7.1 Deploy the Chart as it is
-* 7.2
+* 7.1 Deploy the Chart and add a database to the app
+* 7.2 Template the database resources
+* 7.3 Deploy the same app with a database dependency instead of your own database deployment
+* 7.4 Writing tests for your Helm Charts
+* 7.5 Deploy you app with Helm hooks
+* 7.6 Prepare and deploy your app for different environments
+* 7.7 Publish your Chart
 
 
 We already prepared a Helm chart skeleton for this, you can clone the Chart with following command:
-`git clone <url> lab7 && cd lab7`
+`git clone https://github.com/acend/helm-complex-chart.git lab7 && cd lab7`
 Let's have a closer look at its directory structure and components. The Chart consists of the following files and folders:
 
 ```

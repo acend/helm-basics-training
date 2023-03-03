@@ -59,7 +59,7 @@ version: 10.7.2
 
 ### Conditions
 
-Conditions can be used to enable and disable dependencies. For example if your dev environment has a built in memory database and only your test and prod environment use the mariadb from the dependency.
+Conditions can be used to enable and disable dependencies. For example, if your dev environment has a built-in memory database and only your test and prod environment use the mariadb from the dependency.
 
 ```yaml
 dependencies:
@@ -77,15 +77,15 @@ Check [this link](https://helm.sh/docs/chart_best_practices/dependencies/#condit
 When adding dependencies to your helm charts there are a couple of things you should consider before doing so.
 
 * Be aware of the fact to your helm chart is depending on something you might not have under your control.
-* Make sure the helm chart you use as dependency is well maintained, updated regularly, app version is very close to the actual version of the deployed application.
-* Explore the chart, specially when using third party helm charts
+* Make sure the helm chart you use as dependency is well maintained, updated regularly and the app version is very close to the actual version of the deployed application.
+* Explore the chart, especially when using third party helm charts
   * general architecture
   * Functionality: Does the chart really implement all the features you need.
-  * Security: Check the default images, do they run as root, security context of pod and filesystem, Service accounts
+  * Security: Check the default images, do they run as root, the security context of pod and filesystem, Service accounts
   * Resource Limits and Requests
 * Study default values in the values.yaml
 * If the chart doesn't match your needs perfectly, consider implementing the functionality yourself.
-* Reduce the amount of dependencies.
+* Reduce the number of dependencies.
 * Update your dependencies regularly.
 
 

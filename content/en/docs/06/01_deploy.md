@@ -9,7 +9,7 @@ Using the generated and modified Helm chart, we are going to deploy our own awes
 
 ## Task {{% param sectionnumber %}}.1: Deploy the chart
 
-Let's us deploy our awesome application. Therefore we need to adjust the values file.
+Let's deploy our awesome application. Therefore we need to adjust the values file.
 
 ```yaml
 ingress:
@@ -63,8 +63,8 @@ In order for the python application to be able to connect to the newly deployed 
 Change your Application Deployment Template in `templates/app-deployment.yaml` and include the new environment variables:
 
 * `MYSQL_DATABASE_NAME` with the value `acenddb`
-* `MYSQL_DATABASE_PASSWORD` reference the database password value from the secret you created in task 1
-* `MYSQL_DATABASE_ROOT_PASSWORD` reference the the database root password value from the secret you created in task 1
+* `MYSQL_DATABASE_PASSWORD` references the database password value from the secret you created in task 1
+* `MYSQL_DATABASE_ROOT_PASSWORD` references the the database root password value from the secret you created in task 1
 * `MYSQL_DATABASE_USER` with the value `acend`
 * `MYSQL_URI` with the value `mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE_NAME)`
 
@@ -143,14 +143,14 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
 {{< /highlight >}}
 
-Add following changes in the `values.yaml` to enable and configure the database:
+Add the following changes in the `values.yaml` to enable and configure the database:
 
 ```yaml
 database:
   enabled: true
 ```
 
-Enabeling this property will render the environment variable block in the deployment template, as well alls the `mariadb-*.yaml` templates.
+Enabling this property will render the environment variable block in the deployment template, as well all the `mariadb-*.yaml` templates.
 To upgrade your existing release run:
 
 ```bash
@@ -167,7 +167,7 @@ Check whether the attachment of the new backend worked by either looking at the 
 ### Solution Task {{% param sectionnumber %}}.3
 
 
-First we need to exectute following command to determine the pod name
+First we need to execute the following command to determine the pod name
 ```bash
 {{% param cliToolName %}} get pods -n <namespace>
 ```
@@ -180,13 +180,13 @@ myapp-helm-complex-chart-mariadb-74ddcc878-268ts   1/1     Running     0        
 webshell-67f4cf8c59-st4rg               2/2     Running     0          2d22h
 {{< /highlight >}}
 
-Next execute following command to show the logs
+Next execute the following command to show the logs
 ```bash
 {{% param cliToolName %}} logs myapp-helm-complex-chart-7cc85f99db-n4lsc
 ```
 
 
-As you can see in the log output, our application is now connected to the fresh deployed database
+As you can see in the log output, our application is now connected to the freshly deployed database
 > Never log sensitive informations like database connection strings which contain the password in plain text!
 
 ```bash
