@@ -11,15 +11,15 @@ In the previous lab we learned how to deploy our python example application and 
 
 At some point when developing helm charts we would like to interact or alter certain behaviour of our deployed resources. For example in this usecase we would like to have test data available in our database when releasing our chart. With the hook functionality of helm we can alter the life cycle and intervene at certain points. Hooks are regular templates specially annotated that causes Helm to utilize them differently. The tests used in the previous chapter are a special case of helm hooks. The following hooks are available for you to alter the behaviour of the chart:
 
-* pre-install: Executes after templates are rendered, but before any resources are created in Kubernetes
-* post-install: Executes after all resources are loaded into Kubernetes
-* pre-delete: Executes on a deletion request before any resources are deleted from Kubernetes
-* post-delete: Executes on a deletion request after all of the release's resources have been deleted
-* pre-upgrade: Executes on an upgrade request after templates are rendered, but before any resources are updated
-* post-upgrade: Executes on an upgrade request after all resources have been upgraded
-* pre-rollback: Executes on a rollback request after templates are rendered, but before any resources are rolled back
-* post-rollback: Executes on a rollback request after all resources have been modified
-* test: Executes when the Helm test subcommand is invoked
+* **pre-install**: Executes after templates are rendered, but before any resources are created in Kubernetes
+* **post-install**: Executes after all resources are loaded into Kubernetes
+* **pre-delete**: Executes on a deletion request before any resources are deleted from Kubernetes
+* **post-delete**: Executes on a deletion request after all of the release's resources have been deleted
+* **pre-upgrade**: Executes on an upgrade request after templates are rendered, but before any resources are updated
+* **post-upgrade**: Executes on an upgrade request after all resources have been upgraded
+* **pre-rollback**: Executes on a rollback request after templates are rendered, but before any resources are rolled back
+* **post-rollback**: Executes on a rollback request after all resources have been modified
+* **test**: Executes when the Helm test subcommand is invoked
 
 Hooks are controlled and configured via kubernetes annotations. For example to configure the life cycle the hook should be hooked into we use the annotation:
 
@@ -164,8 +164,8 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
-          image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
-          imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+          image: "{{ .Values.mariadb.image.repository }}:{{ .Values.mariadb.image.tag}}"
+          imagePullPolicy: {{ .Values.mariadb.image.pullPolicy }}
           command: ['/bin/bash', '-c']
           args:
           - >
@@ -212,8 +212,8 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
-          image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
-          imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+          image: "{{ .Values.mariadb.image.repository }}:{{ .Values.mariadb.image.tag}}"
+          imagePullPolicy: {{ .Values.mariadb.image.pullPolicy }}
           command: ['/bin/bash', '-c']
           args:
           - >
@@ -247,9 +247,14 @@ helm upgrade myapp . --namespace <namespace>
 
 When you created your hooks, install or upgrade your helm release with `helm install ...` or `helm upgrade ...`. To verify if the data was created and persisted in the database use:
 
-```s
+
+```bash
 
 {{% param cliToolName %}} --namespace <namespace> exec -it myapp-mariadb-0 -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"  
+```
+
+
+```
 
 +----+------------+
 | id | name       |

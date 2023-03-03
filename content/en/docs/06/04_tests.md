@@ -18,35 +18,14 @@ The test should meet the following requirements:
 * Command: `mysql --host=$MYSQL_DATABASE_HOST --user=$MYSQL_DATABASE_USER --password=$MYSQL_DATABASE_PASSWORD`
 * Annotation: `helm.sh/hook: test`
 
-Copy the test file `templates/tests/test-connection.yaml` to `templates/tests/test-connection-database.yaml` from the previous section and start to modify it.
-
-{{% onlyWhen openshift %}}
-But first we need to adjust the existing `test-connection.yaml` Test. Add the additional argument `--spider` to make the test work within an OpenShift environment.
-
-{{< highlight YAML "hl_lines=14" >}}
-apiVersion: v1
-kind: Pod
-metadata:
-  name: "{{ include "mychart.fullname" . }}-test-connection"
-  labels:
-    {{- include "mychart.labels" . | nindent 4 }}
-  annotations:
-    "helm.sh/hook": test
-spec:
-  containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['--spider', '{{ include "mychart.fullname" . }}:{{ .Values.service.port }}']
-  restartPolicy: Never
-{{< /highlight >}}
-{{% /onlyWhen %}}
+Open the test file `templates/tests/test-connection.yaml` and start to modify it.
 
 
 ### Solution Task {{% param sectionnumber %}}.4
 
+
 ```yaml
-{{- $fullName := include "mychart.fullname" . -}}
+{{- $fullName := include "helm-complex-chart.fullname" . -}}
 {{- $all := . -}}
 ---
 apiVersion: v1
@@ -54,18 +33,18 @@ kind: Pod
 metadata:
   name: "{{ $fullName }}-test-connection"
   labels:
-    app.kubernetes.io/name: {{ include "mychart.name" . }}-mariadb-test
+    app.kubernetes.io/name: {{ include "helm-complex-chart.name" . }}-mariadb-test
     app.kubernetes.io/instance: {{ .Release.Name }}-test
-    helm.sh/chart: {{ include "mychart.chart" . }}
+    helm.sh/chart: {{ include "helm-complex-chart.chart" . }}
     app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
     "helm.sh/hook": test
 spec:
   containers:
-    - image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
+    - image: "{{ .Values.mariadb.image.repository }}:{{ .Values.mariadb.image.tag}}"
       name: mariadb
-      imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+      imagePullPolicy: {{ .Values.mariadb.image.pullPolicy }}
       command: ['mysql']
       args: ['--host=$(MYSQL_DATABASE_HOST)', '--user=$(MYSQL_DATABASE_USER)', '--password=$(MYSQL_DATABASE_PASSWORD)']
       env:
@@ -77,7 +56,7 @@ spec:
             key: mariadb-password
             name: {{ .Release.Name }}-mariadb
       - name: MYSQL_DATABASE_USER
-        value: {{ .Values.database.databaseuser }}
+        value: {{ .Values.mariadb.auth.username }}
   restartPolicy: Never
 ```
 
