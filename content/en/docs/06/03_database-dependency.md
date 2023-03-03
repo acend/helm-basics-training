@@ -66,7 +66,7 @@ dependencies:
 - condition: mariadb.enabled
   name: mariadb
   repository: https://charts.bitnami.com/bitnami
-  version: 9.x.x
+  version: 11.x.x
 ```
 
 Check [this link](https://helm.sh/docs/chart_best_practices/dependencies/#conditions-and-tags) to learn more about the concept of conditions and tags.
@@ -113,10 +113,10 @@ dependencies:
 - condition: mariadb.enabled
   name: mariadb
   repository: https://charts.bitnami.com/bitnami
-  version: 10.x.x
+  version: 11.x.x
 maintainers:
-  - name: <name>
-    email: <email>
+  - name: Acend user
+    email: info@acend.ch
 ```
 
 Since we already added the bitnami repository in lab 3 (`helm repo add bitnami https://charts.bitnami.com/bitnami`), after we added the dependency to the Chart.yaml, we can simply run
@@ -154,6 +154,40 @@ mariadb:
 Update your deployment to match the keys in the `values.yaml` to your environment variables defined in the deployment:
 
 ```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm-complex-chart.fullname" . }}
+  labels:
+    {{- include "helm-complex-chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "helm-complex-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helm-complex-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: MYSQL_DATABASE_USER
             value: {{ .Values.mariadb.auth.username }}
@@ -165,6 +199,20 @@ Update your deployment to match the keys in the `values.yaml` to your environmen
             value: {{ .Values.mariadb.auth.database }}
           - name: MYSQL_URI
             value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE_NAME)
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
 ```
 
 After editing the files we can now install the release.

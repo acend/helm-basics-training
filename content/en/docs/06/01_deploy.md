@@ -45,13 +45,13 @@ It might take some time until your ingress hostname is accessible, as the DNS na
 To create a release from our chart, we run the following command within our chart directory:
 
 ```bash
-helm install myapp ./helm-complex-chart --namespace <namespace>
+helm install myapp . --namespace <namespace>
 ```
 
 This will create a new release with the name `myapp`. If we already had installed a release and wanted to update the existing one, we'd use the following command:
 
 ```bash
-helm upgrade -i myapp  ./helm-complex-chart --namespace <namespace>
+helm upgrade -i myapp  . --namespace <namespace>
 ```
 
 Check whether the ingress was successfully deployed by accessing the URL `http://helm-complex-chart-<namespace>.{{% param labAppUrl %}}/`
@@ -154,7 +154,7 @@ Enabling this property will render the environment variable block in the deploym
 To upgrade your existing release run:
 
 ```bash
-helm upgrade myapp ./helm-complex-chart --namespace <namespace>
+helm upgrade myapp . --namespace <namespace>
 ```
 
 

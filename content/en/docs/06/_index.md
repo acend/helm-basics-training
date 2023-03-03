@@ -62,17 +62,17 @@ For details on chart templating, check out the [Helm's getting started guide](ht
 In the `values.yaml` file we defined our values used in our templates:
 
 ```yaml
-# Default values for helm-complex-chart.
+# Default values for mychart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: quay.io/acend/example-web-python
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: latest
 
 imagePullSecrets: []
 nameOverride: ""
@@ -110,14 +110,14 @@ ingress:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: mychart-<namespace>.{{% param labAppUrl %}}
+    - host: mychart-<namespace>.labapp.acend.ch
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - secretName: mychart-<namespace>-<appdomain>
       hosts:
-        - mychart-<namespace>.{{% param labAppUrl %}}
+        - mychart-<namespace>.labapp.acend.ch
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

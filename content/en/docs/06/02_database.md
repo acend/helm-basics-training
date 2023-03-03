@@ -321,7 +321,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "helm-complex-chart.labelsDatabase" . | nindent 8 }}
+        {{- include "helm-complex-chart.selectorLabelsDatabase" . | nindent 8 }}
     spec:
       containers:
       - image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag}}"
@@ -423,10 +423,10 @@ database:
 ```
 
 
-Finally, to upgrade the existing release run:
+Finally, to install the release run:
 
 ```bash
-helm upgrade myapp ./mychart --namespace <namespace>
+helm upgrade -i myapp . --namespace <namespace>
 ```
 
 
