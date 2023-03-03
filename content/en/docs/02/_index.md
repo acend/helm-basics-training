@@ -71,7 +71,7 @@ Finally, the following command creates a new release and deploys the application
 helm install --namespace <namespace> myfirstrelease ./mychart
 ```
 
-{{% alert title="Note" color="primary" %}}Use the `helm upgrade -i` command, instead of `helm install` or `helm upgrade` depending on whether the release is already installed or not.{{% /alert %}}
+{{% alert title="Note" color="info" %}}Use the `helm upgrade -i` command, instead of `helm install` or `helm upgrade` depending on whether the release is already installed or not.{{% /alert %}}
 
 
 With `{{% param cliToolName %}} get pods --namespace <namespace>` you should see a new Pod:
@@ -150,7 +150,7 @@ spec:
 {{% onlyWhenNot mobi %}}
 Thus, we need to change this value inside our `mychart/values.yaml` file. This is also where we enable the TLS part:
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 Make sure to replace the `<namespace>` and `{{% param labAppUrl %}}` accordingly. `{{% param labAppUrl %}}` will be provided by the trainer.
 {{% /alert %}}
 
@@ -218,7 +218,7 @@ ingress:
 {{% /onlyWhen %}}
 
 {{% onlyWhen mobi %}}
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 It might take some time until your ingress hostname is accessible, as the DNS name first has to be propagated correctly.
 {{% /alert %}}
 {{% /onlyWhen %}}
@@ -247,7 +247,7 @@ NOTES:
 Check whether the ingress was successfully deployed by accessing the URL `https://mychart-<namespace>.{{% param labAppUrl %}}/`
 
 {{% onlyWhen openshift %}}
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 It might take a moment until the app is accessible.
 {{% /alert %}}
 {{% /onlyWhen %}}

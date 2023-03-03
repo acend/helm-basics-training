@@ -107,7 +107,7 @@ Now also add your favorite color to be rendered in the ConfigMap as data under t
 
 Use `helm template gotemplatechart ...` again (as in task 2) to see what your rendered Kubernetes resources look like.
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 The output should look like this:
 
 ```
@@ -163,7 +163,7 @@ data:
   myFavoriteColor: {{ .Values.favorite.color }}
 ```
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 The official [Helm best practices](https://helm.sh/docs/chart_best_practices/values/) suggest using flat values over nested ones:
 >In most cases, flat should be favored over nested. The reason for this is that it is simpler for template developers and users.
 {{% /alert %}}

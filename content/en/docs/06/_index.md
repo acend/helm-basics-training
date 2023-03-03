@@ -47,7 +47,7 @@ Furthermore the are some resources (prefixed with `mariadb-`) for a database bac
 For now you can ignore them.
 
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 For details on chart templating, check out the [Helm's getting started guide](https://helm.sh/docs/chart_template_guide/getting_started/).
 {{% /alert %}}
 
@@ -147,7 +147,7 @@ When instantiating a release from a chart, we can overwrite these values accordi
 
 So, we can for instance create a `values-dev.yaml` where we keep our development environment values and then use `helm upgrade/install -f values-dev.yaml` to update or instantiate a release for the given environment. A different approach is to keep the files under version control and use branches for the different stages.
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 For details on the values file, check out the [Helm documentation about values files](https://helm.sh/docs/chart_template_guide/values_files/).
 {{% /alert %}}
 
@@ -222,7 +222,7 @@ spec:
 
 We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go template](https://golang.org/pkg/text/template/) rendering engine. More will be covered on `Go templates` in an upcoming lab.
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 For details on templating, check out the [Helm documentation about template functions and pipelines](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/).
 {{% /alert %}}
 

@@ -175,7 +175,7 @@ helm upgrade -i myapp . --namespace <namespace>
 
 Verify the installation and check whether the new database was deployed.
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 The whole deployment will take a while until both pods are ready and deployed.
 {{% /alert %}}
 

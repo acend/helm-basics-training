@@ -33,7 +33,7 @@ ingress:
 
 
 {{% onlyWhenNot mobi %}}
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 Don't forget to replace `{{% param labAppUrl %}}` with the value provided by the trainer.
 {{% /onlyWhenNot %}}
 {{% onlyWhen mobi %}}

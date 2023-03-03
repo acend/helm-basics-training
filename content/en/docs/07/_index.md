@@ -58,7 +58,7 @@ Modify the **consumer and producer** ingress templates and extract following var
 * Extract `.spec.tls.hosts[0]` as value, use the same value as above
 
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 If you want to test the chart locally you can execute following command
 
 `helm template -s templates/consumer-ingress.yaml ./helm-basic-chart --debug | cat -n -`
@@ -165,7 +165,7 @@ Consumer Deployment:
 * Extract the `.spec.containers[0].resources` block from line 51 as value `producer.resources`. Make use of the `toYaml` and the `nindent` function.
 * Extract the `.spec.containers[0].env["QUARKUS_LOG_LEVEL"]` on line 26 block as value `producer.logLevel`
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 Take a look at the official Helm documentation for a list of built in functions.
 
 [Built In Helm functions](https://helm.sh/docs/chart_template_guide/function_list/)

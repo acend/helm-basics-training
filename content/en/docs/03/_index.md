@@ -17,7 +17,7 @@ Check out [Artifact Hub](https://artifacthub.io/) where you'll find a huge numbe
 As this WordPress Helm chart is published in Bitnami's Helm repository, we're first going to add it to our local repo list:
 
 {{% onlyWhen mobi %}}
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 Note that the proxy variables must be set according to the instructions in the setup chapter.
 {{% /alert %}}
 {{% /onlyWhen %}}
@@ -72,7 +72,7 @@ mariadb:
 ```
 
 {{% onlyWhenNot mobi %}}
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 Make sure to replace the `<namespace>` and `{{% param labAppUrl %}}` accordingly.
 {{% /alert %}}
 {{% /onlyWhenNot %}}
@@ -156,7 +156,7 @@ version: ~3.5.7
 This is e.g. equivalent to `>= 3.5.7, < 3.6.0`
 Check [this SemVer readme chapter](https://github.com/Masterminds/semver#checking-version-constraints) for more information on version ranges.
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 For more details on how to manage **dependencies**, check out the [Helm Dependencies Documentation](https://helm.sh/docs/chart_best_practices/dependencies/).
 {{% /alert %}}
 
@@ -275,7 +275,7 @@ We are now going to upgrade the application to a newer Helm chart version. When 
 * mariadb.auth.rootPassword
 * mariadb.auth.password
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 This is specific to the wordpress Bitami Chart, and might be different when installing other Charts.
 {{% /alert %}}
 

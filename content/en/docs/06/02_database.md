@@ -136,7 +136,7 @@ database:
     tag: "10.5"
 ```
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 Remember the `--dry-run` option from lab 2. This allows you to render the templates without applying them to the cluster.
 {{% /alert %}}
 
