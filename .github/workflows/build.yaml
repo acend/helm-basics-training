@@ -35,7 +35,7 @@ jobs:
           password: ${{ secrets.QUAYIO_TOKEN }}
       -
         name: Build Acend Version
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
@@ -61,7 +61,7 @@ jobs:
           path: trivy-results.txt
       -
         name: Build Mobi Version
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
@@ -89,7 +89,7 @@ jobs:
           path: trivy-results.txt
       -
         name: Build OpenShift Version
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
@@ -117,7 +117,7 @@ jobs:
           path: trivy-results.txt
       -
         name: Build Rancher Version
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
