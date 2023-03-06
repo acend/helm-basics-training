@@ -218,7 +218,7 @@ spec:
 After editing the files we can now install the release.
 
 ```bash
-helm upgrade -i myapp . --namespace <namespace>
+helm upgrade -i myapp . --namespace $USER
 ```
 
 Verify the installation and check whether the new database was deployed.
@@ -230,7 +230,7 @@ The whole deployment will take a while until both pods are ready and deployed.
 To check if your deployment is working open the browser and enter the url of your app `https://helm-complex-chart-<namespace>-<appdomain>`:
 Add some new entries and the execute following command to restart the application pod.
 ```bash
-{{% param cliToolName %}} rollout restart deployment myapp-mychart --namespace <namespace>
+{{% param cliToolName %}} rollout restart deployment myapp-mychart --namespace $USER
 ```
 After the new pod is created, you can reload the website and you should still the persisted entries.
 
@@ -247,6 +247,6 @@ Explore the [chart source code](https://github.com/bitnami/charts/tree/master/bi
 If you're happy with the result, clean up your namespace:
 
 ```bash
-helm uninstall myapp --namespace <namespace>
+helm uninstall myapp --namespace $USER
 ```
 

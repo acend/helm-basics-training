@@ -42,7 +42,7 @@ You can specify the '--values'/'-f' flag multiple times. The priority will be gi
 Now install the development release with the following command. First pass the `values.yaml` file which contains all the default values. Then pass the `values-dev.yaml` as second file argument. So the `values-dev.yaml` will overwrite the default Chart values.
 
 ```bash
-helm upgrade -i myapp-dev .  -f values.yaml -f values-dev.yaml --namespace <namespace> 
+helm upgrade -i myapp-dev .  -f values.yaml -f values-dev.yaml --namespace $USER 
 ```
 
 
@@ -84,7 +84,7 @@ database:
 Install the production release with the following command. Again pass first the default values with `-f values-yaml` and then the production values with `-d values-prod.yaml`
 
 ```bash
-helm upgrade -i myapp-prod .  -f values.yaml -f values-prod.yaml --namespace <namespace>
+helm upgrade -i myapp-prod .  -f values.yaml -f values-prod.yaml --namespace $USER
 ```
 
 
@@ -93,6 +93,6 @@ helm upgrade -i myapp-prod .  -f values.yaml -f values-prod.yaml --namespace <na
 Uninstall the app
 
 ```bash
-helm uninstall myapp-prod --namespace <namespace>
-helm uninstall myapp-dev --namespace <namespace>
+helm uninstall myapp-prod --namespace $USER
+helm uninstall myapp-dev --namespace $USER
 ```

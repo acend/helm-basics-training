@@ -426,7 +426,7 @@ database:
 Finally, to install the release run:
 
 ```bash
-helm upgrade -i myapp . --namespace <namespace>
+helm upgrade -i myapp . --namespace $USER
 ```
 
 
@@ -435,5 +435,5 @@ helm upgrade -i myapp . --namespace <namespace>
 If you're happy with the result, clean up your namespace:
 
 ```bash
-helm uninstall myapp --namespace <namespace>
+helm uninstall myapp --namespace $USER
 ```

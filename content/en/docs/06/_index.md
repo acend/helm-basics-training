@@ -359,7 +359,7 @@ spec:
 You can execute the tests on a given release with the following command:
 
 ```bash
-helm test myapp --namespace <namespace>
+helm test myapp --namespace $USER
 ```
 
 What tests are useful:
