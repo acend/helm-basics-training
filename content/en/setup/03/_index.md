@@ -19,7 +19,7 @@ Install the `helm` CLI binary on your system:
 
 ## Proxy configuration
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 If you have direct access to the internet from your location, the proxy configuration is not required.
 {{% /alert %}}
 

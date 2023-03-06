@@ -14,7 +14,7 @@ Install the `helm` CLI binary on your system:
 1. Find the `helm` binary in the unpacked directory and move it to its desired destination
     * The desired destination should be listed in your $PATH environment variable (`echo $PATH`)
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 Windows quick hack: Copy the `helm` binary directly into the folder `C:\Windows`.
 {{% /alert %}}
 
@@ -27,7 +27,7 @@ If the `$PATH` variable doesn't contain a suitable directory, it can be changed 
 
 ## Proxy configuration
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 If you have direct access to the internet from your location, the proxy configuration is not required.
 {{% /alert %}}
 

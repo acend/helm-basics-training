@@ -8,9 +8,9 @@ sectionnumber: 1
 
 The first thing we're going to do is to explore our lab environment and get in touch with the different components.
 
-{{% alert title="Note" color="primary" %}}You can also use your local installation of the cli tools. Make sure you completed [the setup](../../setup/) before you continue with this lab.{{% /alert %}}
+{{% alert title="Note" color="info" %}}You can also use your local installation of the cli tools. Make sure you completed [the setup](../../setup/) before you continue with this lab.{{% /alert %}}
 
-{{% alert title="Note" color="primary" %}}The URL and Credentials to the Web IDE will provided by the teacher. Use Chrome for the best experience.{{% /alert %}}
+{{% alert title="Note" color="info" %}}The URL and Credentials to the Web IDE will be provided by the teacher. Use Chrome for the best experience.{{% /alert %}}
 
 
 Once you're successfully logged into the web IDE open a new Terminal by hitting `CTRL + SHIFT + ¨` or clicking the Menu button --> Terminal --> new Terminal and check the installed {{% param cliToolName %}}version by executing the following command:
@@ -38,7 +38,7 @@ The files in the home directory under `/home/project` are stored in a persistenc
 
 {{% onlyWhen mobi %}}
 Make sure you have access to the Mobiliar `kubedev` Kubernetes cluster and `kubectl` is configured to use the right context.
-For these labs, we use the Rancher project with name `helm`.
+For these labs, we use the Rancher project with the name `helm`.
 {{% /onlyWhen %}}
 
 {{% onlyWhenNot mobi %}}
@@ -47,7 +47,7 @@ Please make sure you have `{{% param cliToolName %}}` installed on your laptop, 
 
 Our Kubernetes cluster of the lab environment runs on [cloudscale.ch](https://cloudscale.ch) (a Swiss IaaS provider) and has been provisioned with [Rancher](https://rancher.com/). You can log in to the cluster with a Rancher user.
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 Your teacher will provide you with the credentials to log in.
 {{% /alert %}}
 
@@ -59,7 +59,7 @@ You now see a button at the top right that says **Kubeconfig File**. Click it, s
 
 The copied kubeconfig now needs to be put into a file. The default location for the kubeconfig file is `~/.kube/config`.
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 If you already have a kubeconfig file, you might need to merge the Rancher entries with yours. Or use a dedicated file as described below.
 {{% /alert %}}
 
@@ -70,13 +70,13 @@ If you decide to not use the default kubeconfig location at `~/.kube/config` the
 export KUBECONFIG=$KUBECONFIG:~/.kube-techlab/config
 ```
 
-{{% alert title="Note" color="primary" %}} When using PowerShell on a Windows Computer use the following command. You'll have to replace `<user>` with your actual user
+{{% alert title="Note" color="info" %}} When using PowerShell on a Windows Computer use the following command. You'll have to replace `<user>` with your actual user
 
 ```
 $Env:KUBECONFIG = "C:\Users\<user>\.kube-techlab\config"
 ```
 
-To set the environment variable (`KUBECONFIG` = `C:\Users\<user>\.kube-techlab\config`) permenantly, check the following documentation:
+To set the environment variable (`KUBECONFIG` = `C:\Users\<user>\.kube-techlab\config`) permanently, check the following documentation:
 
 The `PATH` can be set in Windows in the advanced system settings. It depends on the version:
 
@@ -91,7 +91,7 @@ The `PATH` can be set in Windows in the advanced system settings. It depends on 
 
 {{% onlyWhen openshift %}}
 
-* Open a seperate Browser Tab and login to the OpenShift [Webconsole]({{% param webConsoleURL %}}) using your `<username>` and `<password>`
+* Open a separate Browser Tab and login to the OpenShift [Webconsole]({{% param webConsoleURL %}}) using your `<username>` and `<password>`
 * Open the menu behind your username in the top right corner
 * Hit `Copy Login Command`
 * Display the Token and copy the command
@@ -101,10 +101,10 @@ The `PATH` can be set in Windows in the advanced system settings. It depends on 
 
 ## Task {{% param sectionnumber %}}.3: Namespace
 
-For the following labs we are going to create a namespace. You can choose any name, we suggest using e.g. your username.
+For the following labs, we are going to create a namespace. You can choose any name, we suggest using e.g. your username.
 
 {{% onlyWhen rancher %}}
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 Namespaces created via `kubectl` have to be assigned to the correct Rancher Project in order to be visible in the Rancher web console. Please ask your trainer for this assignment or create the namespace directly within this project on the Rancher web console.
 {{% /alert %}}
 {{% /onlyWhen %}}
@@ -117,7 +117,7 @@ You can create your namespace with:
 {{% param cliToolName %}} create namespace <namespace>
 ```
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 We are going to use `<namespace>` as a placeholder for your created namespace. Each time you see a `<namespace>` somewhere in a command, replace it with your chosen namespace name.
 {{% /alert %}}
 
@@ -128,7 +128,7 @@ We are going to use `<namespace>` as a placeholder for your created namespace. E
 oc new-project <namespace>
 ```
 
-{{% alert title="Note" color="primary" %}}
+{{% alert title="Note" color="info" %}}
 We are going to use `<namespace>` as a placeholder for your created project. Each time you see a `<namespace>` somewhere in a command, replace it with your chosen project name.
 {{% /alert %}}
 
@@ -137,7 +137,7 @@ We are going to use `<namespace>` as a placeholder for your created project. Eac
 
 ## Task {{% param sectionnumber %}}.3: Helm CLI
 
-The Helm [CLI](https://helm.sh/docs/intro/install/) is a self-contained binary written in the Go programming language. The most recent release can be found on the official [GitHub page](https://github.com/helm/helm/releases). In this chapter you will learn how to get help and how to enable the autocompletion feature.
+The Helm [CLI](https://helm.sh/docs/intro/install/) is a self-contained binary written in the Go programming language. The most recent release can be found on the official [GitHub page](https://github.com/helm/helm/releases). In this chapter, you will learn how to get help and how to enable the autocompletion feature.
 
 
 ### Task {{% param sectionnumber %}}.1: Getting familiar with the CLI
@@ -148,7 +148,7 @@ You can get help for each command of the CLI with the flag `--help`.
 helm --help
 ```
 
-You will see a list with the available commands and flags. If you prefer to browse the manual in the browser you’ll find it in the [online documentation](https://helm.sh/docs/helm/).
+You will see a list of the available commands and flags. If you prefer to browse the manual in the browser you’ll find it in the [online documentation](https://helm.sh/docs/helm/).
 
 ```
 Usage:
@@ -204,12 +204,12 @@ You can use the `--help` flag on each command and subcommand of the CLI.
 helm install --help
 ```
 
-This will print out the documentation for the `install command`. Play around and getting familiar with the different commands of the Helm CLI.
+This will print out the documentation for the `install command`. Play around and get familiar with the different commands of the Helm CLI.
 
 
 ### Task {{% param sectionnumber %}}.1: Autocompletion
 
-{{% alert title="Note" color="primary" %}}This step is only needed, when you're not working with the Web IDE we've provided. The autocompletion is already installed in the Web IDE{{% /alert %}}
+{{% alert title="Note" color="info" %}}This step is only needed when you're not working with the Web IDE we've provided. The autocompletion is already installed in the Web IDE{{% /alert %}}
 
 If you are using the Helm CLI on Linux or Mac OS X you can enable the [autocompletion feature](https://helm.sh/docs/helm/helm_completion/). With autocompletion it's even easier to learn the commands, subcommands and their flags. Last but not least it improves the productivity while using Helm.
 

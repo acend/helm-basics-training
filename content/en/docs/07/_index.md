@@ -1,368 +1,748 @@
 ---
-title: "7. Your own complex Helm chart"
+title: "7. Create your own chart"
 weight: 7
 sectionnumber: 7
 ---
 
-Remember [lab 2 "A simple chart"](../02/) where you created your first chart? Let's have a closer look at its directory structure and components. A typical chart consists of the following files and folders:
+In this section were going to show you how to modify a Helm chart from an existing Kubernetes deployment. To provide you an easy entry point, we have already prepared a Helm chart skeleton. This chart contains all necessary template files. With this chart, we want to deploy two java microservices, one which produces random data when it’s REST interface is called. The other microservice consumes then the data and exposes it to its endpoint.
 
 ```
-./
-├── charts
-├── Chart.yaml
-├── templates
-│   ├── deployment.yaml
-│   ├── _helpers.tpl
-│   ├── hpa.yaml
-│   ├── ingress.yaml
-│   ├── NOTES.txt
-│   ├── serviceaccount.yaml
-│   ├── service.yaml
-│   └── tests
-│       └── test-connection.yaml
-└── values.yaml
++----------+                    +----------+
+| producer +<-------------------+ consumer +
++----------+                    +----------+
 ```
 
-Looking at the `mychart/templates/` directory, we notice that there already are a few files:
-
-* `NOTES.txt`: The "help text" for your chart which will be displayed to your users when they run `helm install`
-* `deployment.yaml`: A basic manifest for creating a Kubernetes deployment
-* `service.yaml`: A basic manifest for creating a service endpoint for your deployment
-* `_helpers.tpl`: A place to put template helpers that you can re-use throughout the chart
-* `tests/`: A directory to put test files for testing the deployed Helm chart
+Imagine you're being a java development team embracing the DevOps culture and your job is to deploy the two services you designed to your Kubernetes cluster.
 
 
-{{% alert title="Note" color="primary" %}}
-For details on chart templating, check out the [Helm's getting started guide](https://helm.sh/docs/chart_template_guide/getting_started/).
-{{% /alert %}}
+## Task {{% param sectionnumber %}}.1: Get the chart skeleton
 
-
-## values.yaml
-
-In the `values.yaml` file we define our values used in our templates:
-
-```yaml
-# Default values for mychart.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-replicaCount: 1
-
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: mychart-<namespace>.{{% param labAppUrl %}}
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: mychart-<namespace>-<appdomain>
-      hosts:
-        - mychart-<namespace>.{{% param labAppUrl %}}
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-```
-
-When instantiating a release from a chart, we can overwrite these values according to our own environment-specific conditions.
-
-So, we can for instance create a `values-dev.yaml` where we keep our development environment values and then use `helm upgrade/install -f values-dev.yaml` to update or instantiate a release for the given environment. A different approach is to keep the files under version control and use branches for the different stages.
-
-{{% alert title="Note" color="primary" %}}
-For details on the values file, check out the [Helm documentation about values files](https://helm.sh/docs/chart_template_guide/values_files/).
-{{% /alert %}}
-
-
-## Templates
-
-All our Kubernetes resource files are in the `templates` folder. Let's have a closer look at `templates/deployment.yaml`:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "mychart.fullname" . }}
-  labels:
-    {{- include "mychart.labels" . | nindent 4 }}
-spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
-  selector:
-    matchLabels:
-      {{- include "mychart.selectorLabels" . | nindent 6 }}
-  template:
-    metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "mychart.selectorLabels" . | nindent 8 }}
-    spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "mychart.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-```
-
-We can see that they look similar to the well-known Kubernetes resource files, but we have some control elements starting and ending with two curly brackets (`{{ }}`). These template files are rendered through a [Go template](https://golang.org/pkg/text/template/) rendering engine. More will be covered on `Go templates` in an upcoming lab.
-
-{{% alert title="Note" color="primary" %}}
-For details on templating, check out the [Helm documentation about template functions and pipelines](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/).
-{{% /alert %}}
-
-
-### _helpers.tpl
-
-Inside the template folder you can also find a `_helpers.tpl` file.
-
-```yaml
-{{/*
-Expand the name of the chart.
-*/}}
-{{- define "mychart.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
-{{- define "mychart.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
-{{- end }}
-
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
-{{- define "mychart.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
-Common labels
-*/}}
-{{- define "mychart.labels" -}}
-helm.sh/chart: {{ include "mychart.chart" . }}
-{{ include "mychart.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
-{{/*
-Selector labels
-*/}}
-{{- define "mychart.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "mychart.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "mychart.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "mychart.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-```
-
-As you can see, you can also define [named templates](https://helm.sh/docs/chart_template_guide/named_templates/) in Helm and then use these named templates.
-
-Have a look at:
-
-```yaml
-{{- define "mychart.labels" -}}
-helm.sh/chart: {{ include "mychart.chart" . }}
-{{ include "mychart.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-```
-
-you can then access this `mychart.labels` in your `deployment.yaml` like follows:
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "mychart.fullname" . }}
-  labels:
-    {{- include "mychart.labels" . | nindent 4 }}
-spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-```
-
-
-### Tests
-
-Helm has the capability to test the deployed Kubernetes resources.
-In the `/test` directory we can define multiple test jobs for the deployed Helm chart.
-A test job is defined by a Pod resource which specifies a container with a given command to run. If the container exits successfully (exit code 0), the test was successful. Further the test Pod must contain following annotation `helm.sh/hook: test` to run during the Helm deployment.
-Inside the `/test` directory you can find already a simple test job. This test job starts a busybox image with a wget command to check if the deployed app is reachable by its service name.
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: "{{ include "mychart.fullname" . }}-test-connection"
-  labels:
-    {{- include "mychart.labels" . | nindent 4 }}
-  annotations:
-    "helm.sh/hook": test
-spec:
-  containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['{{ include "mychart.fullname" . }}:{{ .Values.service.port }}']
-  restartPolicy: Never
-```
-
-You can execute the tests on a given release with the following command:
+Clone the repository we have prepared for you containing all the needed template files to get you started.
 
 ```bash
-helm test myapp --namespace <namespace>
+git clone https://github.com/acend/helm-basic-chart.git
 ```
 
-What tests are useful:
+After cloning the chart you have following structure:
 
-* Verify the configuration, eg. username and passwords are correct
-* Make sure the deployed application is reachable over the service
-* Run functional smoke tests for example logging into an application
+```
+.
+├── Readme.md
+└── helm-basic-chart
+    ├── Chart.yaml
+    ├── templates
+    │   ├── _helpers.tpl
+    │   ├── consumer-deployment.yaml
+    │   ├── consumer-ingress.yaml
+    │   ├── consumer-service.yaml
+    │   ├── producer-deployment.yaml
+    │   ├── producer-ingress.yaml
+    │   ├── producer-service.yaml
+    │   └── tests
+    │       └── test-connection.yaml
+    └── values.yaml
+```
+
+The template files are always prefixed with the according application (e.g. `consumer-deployment.yaml` and `producer-deployment.yaml`) and suffixed with the resource they represent. This is a best approach we like to follow in order to keep our files ordered by the applications and for readability purposes.
+
+The setup is quite simple here, for each application we have a deployment, a service and an ingress. If you inspect the files in the folder you will realize that we have a lot of hard coded properties we maybe would like to change in order to bring the applications to multiple environments.
 
 
-## Task {{% param sectionnumber %}}.1: Change Chart.yaml
+## Task {{% param sectionnumber %}}.2: Make the Ingress resource more configurable
 
-Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/topics/charts/#the-chartyaml-file), then change the description to `My awesome app` and add yourself to the list of maintainers.
+After cloning the repository and inspecting the templates already created for you, you will notice some potential for improvement. For example the hostname of the applications should not be hard-coded. When deploying to multiple environments you will run into conflicts.
+
+Modify the **consumer and producer** ingress templates and extract following variables to make them configurable:
+
+* Extract `.spec.rules.host` as value
+* Extract `.spec.tls.hosts[0]` as value, use the same value as above
 
 
-### Solution
+{{% alert title="Note" color="info" %}}
+If you want to test the chart locally you can execute following command
+
+`helm template -s templates/consumer-ingress.yaml ./helm-basic-chart --debug | cat -n -`
+{{% /alert %}}
+
+First let us define the new variables in our `values.yaml` file. Replace `<username>` with your username
+
+
+{{% onlyWhenNot openshift %}}
+
+{{< highlight YAML "hl_lines=2 6" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/main/helm-basic-chart/values.yaml" %}}
+{{< /highlight >}}
+
+{{% /onlyWhenNot  %}}
+{{% onlyWhen openshift %}}
 
 ```yaml
-apiVersion: v2
-name: mychart
-description: My awesome app
-type: application
-version: 0.1.0
-appVersion: 1.16.0
-maintainers:
-  - name: YOUR NAME
-    email: YOUR E-MAIL ADDRESS
+producer:
+  host: producer-<namespace>.training.openshift.ch
+
+consumer:
+  tag: latest
+  host: consumer-<namespace>.training.openshift.ch
+```
+{{% /onlyWhen  %}}
+
+Next replace the hard coded values for the host value in our `consumer-ingress.yaml` file.
+
+{{< highlight YAML "hl_lines=11 23" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/consumer-ingress.yaml" %}}
+{{< /highlight >}}
+
+Replace the same value in our `producer-ingress.yaml` file.
+
+{{< highlight YAML "hl_lines=11 23" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-ingress.yaml" %}}
+{{< /highlight >}}
+
+
+Afterwards we can install our Helm Chart with following command.
+
+```s
+helm upgrade -i myrelease --namespace <namespace> ./helm-basic-chart
 ```
 
-Continue with the lab "[Your awesome application](./deploy/)".
+Verify your deployment! Check if your pods are running and healthy!
+
+```bash
+{{% param cliToolName %}} get pods
+```
+
+This should return something like this:
+
+```
+{{% param cliToolName %}} get pods
+NAME                             READY   STATUS    RESTARTS   AGE
+data-consumer-7686976d88-2wbh5   1/1     Running   0          72s
+data-producer-786d6bb688-qpg4c   1/1     Running   0          72s
+```
+
+Pay attention to the `1/1` status in the ready section! After checking if our pods are ready and therefore will accept traffic from the service, check if the application is running correctly:
+
+Both applications (data-producer and data-consumer) you just deployed expose an endpoint `/data` which will return a random double data json. Try to verify if your deployment is running correctly by using curl.
+
+{{% details title="Hint 1" %}}
+
+If you are struggling with curl you can use the following syntax:
+
+```bash
+curl http(s)://HOST
+```
+
+When the problem will be a redirect or certificate problem, try the flags `-L` and `-k` to mitigate the error.
+
+{{% /details %}}
+
+{{% details title="Solution" %}}
+
+```bash
+
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+{"data":0.15495350024595755}
+
+```
+
+If your application returns the data point when consuming the consumers `/data` endpoint, then both applications work.
+
+{{% /details %}}
+
+
+## Task {{% param sectionnumber %}}.3: Make the deployments more configurable
+
+Not just the ingresses could use some improvements. Also the deployments could be more configurable. In order to keep up to date with the current requirements your task is to adapt the following things:
+
+Producer Deployment:
+
+* Extract the image tag from the `.spec.containers[0].image` on Line 22 field as value
+* Extract the `.spec.containers[0].resources` block from line 51 as value `consumer.resources`. Make use of the `toYaml` and the `nindent` function.
+* Extract the `.spec.containers[0].env["QUARKUS_LOG_LEVEL"]` on line 26 block as value
+
+Consumer Deployment:
+
+* Extract the `.spec.containers[0].resources` block from line 51 as value `producer.resources`. Make use of the `toYaml` and the `nindent` function.
+* Extract the `.spec.containers[0].env["QUARKUS_LOG_LEVEL"]` on line 26 block as value `producer.logLevel`
+
+{{% alert title="Note" color="info" %}}
+Take a look at the official Helm documentation for a list of built in functions.
+
+[Built In Helm functions](https://helm.sh/docs/chart_template_guide/function_list/)
+{{% /alert %}}
+
+{{% details title="Solution" %}}
+
+
+### producer-deployment.yaml
+
+{{< highlight YAML "hl_lines=22 26 51" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/producer-deployment.yaml" %}}
+{{< /highlight >}}
+
+
+### consumer-deployment.yaml
+
+{{< highlight YAML "hl_lines=26 51" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/templates/consumer-deployment.yaml" %}}
+{{< /highlight >}}
+
+
+### values.yaml
+
+{{< highlight YAML "hl_lines=2-11 14-22" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/values.yaml" %}}
+{{< /highlight >}}
+
+{{% /details %}}
+
+
+## Task {{% param sectionnumber %}}.4: Upgrade the chart
+
+Execute following command to update our helm release.
+
+```shell
+helm upgrade myrelease --namespace <namespace> ./helm-basic-chart
+```
+
+Finally, you can visit your application with the URL provided from the Route: `https://consumer-<username>.{{% param labAppUrl %}}/data`
+
+{{% alert  color="primary" %}}Replace **\<username>** with your username or get the URL from your route.{{% /alert %}}
+
+Or you could access the `data` endpoint using curl:
+
+```BASH
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+```
+
+When you open the URL you should see the producers data
+
+```json
+{"data":0.6681209742895893}
+```
+
+If you only see `Your new Cloud-Native application is ready!`, then you forgot to append the `/data`path to the URL.
+
+
+## Task {{% param sectionnumber %}}.5: Prepare another release
+
+At this point we have a configurable Helm chart and a running release. Next we gonna use the cart for another release. We consider to release it into a production environment. therefore we have to adjust some values. First copy the existing `values.yaml` to `values-production.yaml`.
+Open the `values-production.yaml` and change following values.
+
+* Debug log level is too high in a production environment, change it to `INFO`
+* The resource requirements are usually higher in a production environment than in a development environment. Increase the Memory Limits to `750Mi`
+* To avoid DNS collisions we need to chang the host to, change it to `producer-<username>-prod.{{% param labAppUrl %}}` and `consumer-<username>-prod.{{% param labAppUrl %}}`
+
+
+## Solution Task {{% param sectionnumber %}}.5
+
+
+### values-production.yaml
+
+{{< highlight YAML "hl_lines=" >}}
+{{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/values-production.yaml" %}}
+{{< /highlight >}}
+
+
+## Task {{% param sectionnumber %}}.6: Install and verify production release
+
+Now we have prepared our values file for the production environment. Next we can install the chart again, but with a different name and different values.
+Execute the Helm install command and pass the new created production values as parameter.
+
+```bash
+helm upgrade -i myrelease-prod --values values-production.yaml --namespace <namespace> ./helm-basic-chart
+```
+
+Use the helm list command to list all releases in your namespace
+
+```bash
+helm ls --namespace <namespace>
+```
+
+You should see following output with de development and the production release
+
+```
+NAME            NAMESPACE       REVISION        UPDATED                                         STATUS          CHART                   APP VERSION
+myrelease       default         1               2022-05-19 13:26:56.278026261 +0200 CEST        deployed        helm-basic-chart-0.1.0  1.16.0
+myrelease-prod  default         1               2022-05-19 13:26:36.570013792 +0200 CEST        deployed        helm-basic-chart-0.1.0  1.16.0
+```
+
+
+## Task {{% param sectionnumber %}}.7: Cleanup
+
+```bash
+helm uninstall myrelease --namespace <namespace>
+helm uninstall myrelease-prod --namespace <namespace>
+```
+
+
+## Task {{% param sectionnumber %}}.8: Refactoring
+
+If you take a closer look at your Chart you will still recognize some weak spots. For example the producer and consumer will look like a lot of code duplication. We don't like code duplication at all! The only big difference is the `"consumer"` or `"producer"` pre- or suffixed everywhere.
+
+**Just for fun:** How much lines of code are actually different?
+
+{{% details title="Hint / Solution" %}}
+
+```bash
+
+bc -l <<< "$(diff -U0 templates/consumer-deployment.yaml templates/producer-deployment.yaml | wc -l)"/2
+
+```
+
+{{% /details %}}
+
+When considering the differences and how they affect the service, we can easily see the flaw of this Chart. The entire Chart is a duplication. Both services could use the same Chart and just be two instances / releases!
+
+There are now two possibilities achieving the reduction of code duplication here: instantiation or composition.
+
+
+## {{% param sectionnumber %}}.8.1: Option 1: Instantiate the Chart two times
+
+The idea is simple: Instead of having a Chart consisting of two deployments, two services and two ingresses, reduce all resources to one! Eliminate the specifics in the variable names (if you like), if you're lazy you can just remove half of the Chart and continue.
+
+
+### Task {{% param sectionnumber %}}.8.1.1
+
+Start of by removing all the resources for the one of the two services and rename them by removing the prefix "producer" or "consumer". After doing so, your Chart's structure should look something like this:
+
+```bash
+
+$ tree
+
+.
+├── helm-basic-chart
+│   ├── Chart.yaml
+│   ├── templates
+│   │   ├── deployment.yaml
+│   │   ├── _helpers.tpl
+│   │   ├── ingress.yaml
+│   │   ├── service.yaml
+│   │   └── tests
+│   │       └── test-connection.yaml
+│   └── values.yaml
+└── Readme.md
+
+```
+
+
+### Task {{% param sectionnumber %}}.8.1.2
+
+Update your variables by removing top most yaml-object "consumer" or "producer". So there is only one configuration for one service left in your `values.yaml` file. Add another value called `serviceName` to your `values.yaml`.
+
+Your `values.yaml` should look like this (might differ if you deleted the consumer or producer part):
+
+```yaml
+# values.yaml
+
+host: consumer-<username>.{{% param labAppUrl %}}
+image:
+  name: quay.io/puzzle/quarkus-techlab-data-consumer
+  tag: latest
+logLevel: INFO
+resources:
+  limits:
+    cpu: '1'
+    memory: 750Mi
+  requests:
+    cpu: 50m
+    memory: 100Mi
+serviceName: 
+producerServiceName:
+
+```
+
+
+### Task {{% param sectionnumber %}}.8.1.3
+
+Update your deployment, service and ingress and edit the values accordingly. So your `{{ .Values.producer.image.tag }}` will become `{{ .Values.image.tag }}`.
+
+Change the hard-coded occurrences of `data-producer` or `data-consumer` in your templates to `{{ .Values.serviceName }}`. If you fancy you can remove the suffixes `-producer` or `-consumer` in your templates as well.
+
+{{% details title="Solution" %}}
+
+**deployment.yaml**:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+  name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+      app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        deployment: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+        app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+    spec:
+      containers:
+        - image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+          imagePullPolicy: Always
+          env:
+          - name: QUARKUS_LOG_LEVEL
+            value: {{ .Values.logLevel }}
+          {{- if .Values.producerServiceName }}
+          - name: DATA_PRODUCER_API_MP_REST_URL
+            value: http://{{ .Values.producerServiceName }}:8080
+          {{- end}}
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /health/live
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 20
+            timeoutSeconds: 15
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 20
+            timeoutSeconds: 15
+          name: {{ .Values.serviceName }}
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+```
+
+**service.yaml**:
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+  name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    deployment: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+  sessionAffinity: None
+  type: ClusterIP
+```
+
+**ingress.yaml**:
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/tls-acme: "true"
+  labels:
+    app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+  name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+spec:
+  rules:
+    - host: {{ .Values.host }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
+                port:
+                  number: 8080
+            path: /
+            pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - {{ .Values.host }}
+      secretName: {{ .Values.serviceName }}-labapp-acend-ch
+```
+
+{{% /details %}}
+
+
+### Task {{% param sectionnumber %}}.8.1.4
+
+Install the release with the configuration for the producer. As we learned in previous chapters, we can overwrite values from the `values.yaml` with the help of the `--set variable=value` parameter of the helm-cli. Overwrite the values for the producer like the following:
+
+* `host`: `producer-<username>.{{% param labAppUrl %}}`
+* `image.name`: `quay.io/puzzle/quarkus-techlab-data-producer`
+* `serviceName`: `producer`
+
+Call the release data-producer and install it!
+
+{{% details title="Solution" %}}
+
+```bash
+
+helm upgrade -i producer helm-basic-chart/. --set host=producer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=producer
+
+```
+
+{{% /details %}}
+
+After you installed the producer service you can verify the deployment if you'd like to be sure you did everything right!
+
+Let's do the same thing and deploy the consuming service accordingly. Overwrite the following values for the data-consumer microservice:
+
+* `host`: `consumer-<username>.{{% param labAppUrl %}}`
+* `image.name`: `puzzle/quarkus-techlab-data-consumer`
+* `serviceName`: `data-consumer`
+* `producerServiceName` : `producer-helm-basic-chart-producer`
+
+{{% details title="Solution" %}}
+
+```bash
+helm upgrade -i consumer helm-basic-chart/. --set host=consumer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer --set producerServiceName=producer-helm-basic-chart-producer
+```
+
+{{% /details %}}
+
+At the end, verify your two releases again and test if they are still delivering data as they did before!
+
+```bash
+
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+{"data":0.4145158804475594}
+
+```
+
+
+### Task {{% param sectionnumber %}}.8.1.5
+
+Uninstall the two releases again to have a fresh ground for the second option!
+
+```bash
+
+helm uninstall producer
+helm uninstall consumer
+
+```
+
+
+## {{% param sectionnumber %}}.8.2: Option 2: Composition
+
+Instead of instantiating the Chart two times manually by hand, we can also define a composition of two Charts in a single Chart. In other words we create a new Helm Chart and add the Chart we just wrote twice as a dependency to the chart.
+
+In Helm we can make a composition of already existing Charts and own templates and define it as a new Chart. This is a very common use case if we mix self created resources with own templated resources.
+
+How do we achieve this? Maybe first a bit of theoretical input:
+
+We can declare dependencies in the `Chart.yaml` like the following:
+
+```yaml
+
+# Chart.yaml
+dependencies:
+- name: memcached
+  version: "3.2.1"
+  repository: "https://another.example.com/charts"
+- name: nginx
+  version: "1.2.3"
+  repository: "file://../dependency_chart/nginx"
+- name: helm-basic-chart
+  version: "0.1.0"
+  alias: consumer
+
+```
+
+In the example above we can see the `dependency` block of the `Chart.yaml`. We define three dependencies in the Chart and add `memcached`, `nginx` and `helm-basic-chart` as a dependency. As you can see the syntax varies a bit, let's check it for a second:
+
+* `name`: The 'name' should be the name of a chart, where that name must match the name in that chart's 'Chart.yaml' file
+* `version`: The 'version' field should contain a semantic version or version range
+* `repository`: The 'repository' URL should point to a Chart Repository or to a Chart in your local filesystem
+* `alias`: The 'alias' of a dependency (this is very handy to import the same Chart twice)
+
+If we add a dependency without the repository defined, Helm will try to find the defined dependency in either your added repositories or the `/charts` directory in your Chart's directory.
+
+So let's get some work done!
+
+
+### Task {{% param sectionnumber %}}.8.2.1
+
+Create a new Chart `parent` and empty the templates folder, since we don't need any additional templates in the Chart other than the dependencies.
+
+{{% details title="Hint" %}}
+
+```bash
+
+helm create parent
+rm -rf parent/templates/*
+
+```
+
+{{% /details %}}
+
+
+### Task {{% param sectionnumber %}}.8.2.2
+
+Duplicate the Chart we created in the section before. Copy the duplicated Chart from the section before into your new Chart's `/charts` directory.
+
+Your new Chart's structure should look like this:
+
+```shell
+
+$ tree parent/
+parent/
+├── Chart.yaml
+├── charts
+│   └── helm-basic-chart
+│       ├── Chart.yaml
+│       ├── templates
+│       │   ├── _helpers.tpl
+│       │   ├── deployment.yaml
+│       │   ├── ingress.yaml
+│       │   ├── service.yaml
+│       │   └── tests
+│       │       └── test-connection.yaml
+│       └── values.yaml
+├── templates
+└── values.yaml
+
+```
+
+
+### Task {{% param sectionnumber %}}.8.2.3
+
+Add two new dependencies to your `parent` Chart's dependencies with the aliases `producer` and `consumer`. Since we have the `helm-basic-chart` (or the name you chose in the dependency) in the local `/charts` directory, we don't need to add any `repository` in the dependency definition.
+
+{{% details title="Solution" %}}
+
+```yaml
+# Chart.yaml
+
+apiVersion: v2
+name: parent
+description: A Helm chart for Kubernetes
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
+dependencies:
+- name: helm-basic-chart
+  version: "0.1.0"
+  alias: producer
+- name: helm-basic-chart
+  version: "0.1.0"
+  alias: consumer
+
+```
+
+{{% /details %}}
+
+
+### Task {{% param sectionnumber %}}.8.2.4
+
+When we add dependencies to your Helm Charts we can configure them in the parent's `values.yaml`. We can override configuration of dependencies in a parent chart by adding configuration in the `values.yaml` prefixed by the dependencies name or alias. For example if we have a dependency `nginx` in your `Chart.yaml` we can override the configuration of the nginx's `url` property like the following:
+
+```yaml
+
+# parent/values.yaml 
+nginx:
+    url: samplehost
+
+```
+
+It is your task to configure the two dependencies so they will work just as they worked before!
+
+{{% details title="Hint" %}}
+
+In our example we added two dependencies: `consumer` and `producer`. We can define two blocks of configuration in the parent's `Chart.yaml`:
+
+```yaml
+
+# parent/values.yaml
+
+consumer:
+  # Consumer's config
+
+producer:
+  # Producer's config
+
+```
+
+{{% /details %}}
+
+
+{{% details title="Solution" %}}
+
+```yaml
+
+consumer:
+  host: consumer-<username>.{{% param labAppUrl %}}
+  image:
+    name: quay.io/puzzle/quarkus-techlab-data-consumer
+    tag: latest
+  logLevel: INFO
+  resources:
+    limits:
+      cpu: '1'
+      memory: 750Mi
+    requests:
+      cpu: 50m
+      memory: 100Mi
+  serviceName: consumer
+  producerServiceName: producer-helm-basic-chart-producer
+
+producer:
+  host: producer-<username>.{{% param labAppUrl %}}
+  image:
+    name: quay.io/puzzle/quarkus-techlab-data-producer
+    tag: latest
+  logLevel: INFO
+  resources:
+    limits:
+      cpu: '1'
+      memory: 750Mi
+    requests:
+      cpu: 50m
+      memory: 100Mi
+  serviceName: producer
+
+```
+
+{{% /details %}}
+
+
+### Task {{% param sectionnumber %}}.8.2.5
+
+Install a Helm Chart release `myrelease` and verify if the two services are running correctly!
+
+{{% details title="Solution" %}}
+
+```bash
+
+helm upgrade -i myrelease parent/.
+
+```
+
+```bash
+
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+{"data":0.4145158804475594}
+
+```
+
+{{% /details %}}
+
+
+### Task {{% param sectionnumber %}}.8.2.6
+
+Congratulations! You succeeded in the Chapter and the only thing left is to do some cleanup afterwards!
+
+Remove all the installed objects installed during the chapter!
+
+```bash
+
+helm uninstall myrelease
+
+```
