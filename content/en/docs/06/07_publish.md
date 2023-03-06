@@ -32,13 +32,13 @@ ingress:
 After that you can install the Chart. Make sure to postfix the release name also with `-dev`.
 
 ```bash
-helm upgrade -i myapp-dev  ./mychart --namespace <namespace>
+helm upgrade -i myapp-dev  ./mychart --namespace $USER
 ```
 
 Next check if the deployment was successfully with the follwing Helm command
 
 ```bash
-helm ls --namespace <namespace>
+helm ls --namespace $USER
 ```
 
 You should see follwoing output:
@@ -78,7 +78,7 @@ But instead of changing these values in our `values.yaml` file, we create a new 
 
 
 ```bash
-helm upgrade -i myapp-prod  ./mychart --namespace <namespace>
+helm upgrade -i myapp-prod  ./mychart --namespace $USER
 ```
 
 

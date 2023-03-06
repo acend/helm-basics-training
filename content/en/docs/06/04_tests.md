@@ -63,13 +63,13 @@ spec:
 To install your release run:
 
 ```bash
-helm upgrade -i myapp . --namespace <namespace>
+helm upgrade -i myapp . --namespace $USER
 ```
 
 To run the test manually:
 
 ```bash
-helm test myapp --namespace <namespace>
+helm test myapp --namespace $USER
 ```
 
 Then you should see following output
@@ -96,5 +96,5 @@ Phase:          Succeeded
 If you're happy with the result, clean up your namespace:
 
 ```bash
-helm uninstall myapp --namespace <namespace>
+helm uninstall myapp --namespace $USER
 ```

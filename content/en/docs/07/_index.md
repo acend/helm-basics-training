@@ -101,8 +101,8 @@ Replace the same value in our `producer-ingress.yaml` file.
 
 Afterwards we can install our Helm Chart with following command.
 
-```s
-helm upgrade -i myrelease --namespace <namespace> ./helm-basic-chart
+```bash
+helm upgrade -i myrelease --namespace $USER ./helm-basic-chart
 ```
 
 Verify your deployment! Check if your pods are running and healthy!
@@ -202,7 +202,7 @@ Take a look at the official Helm documentation for a list of built in functions.
 Execute following command to update our helm release.
 
 ```shell
-helm upgrade myrelease --namespace <namespace> ./helm-basic-chart
+helm upgrade myrelease --namespace $USER ./helm-basic-chart
 ```
 
 Finally, you can visit your application with the URL provided from the Route: `https://consumer-<username>.{{% param labAppUrl %}}/data`
@@ -250,13 +250,13 @@ Now we have prepared our values file for the production environment. Next we can
 Execute the Helm install command and pass the new created production values as parameter.
 
 ```bash
-helm upgrade -i myrelease-prod --values values-production.yaml --namespace <namespace> ./helm-basic-chart
+helm upgrade -i myrelease-prod --values values-production.yaml --namespace $USER ./helm-basic-chart
 ```
 
 Use the helm list command to list all releases in your namespace
 
 ```bash
-helm ls --namespace <namespace>
+helm ls --namespace $USER
 ```
 
 You should see following output with de development and the production release
@@ -271,8 +271,8 @@ myrelease-prod  default         1               2022-05-19 13:26:36.570013792 +0
 ## Task {{% param sectionnumber %}}.7: Cleanup
 
 ```bash
-helm uninstall myrelease --namespace <namespace>
-helm uninstall myrelease-prod --namespace <namespace>
+helm uninstall myrelease --namespace $USER
+helm uninstall myrelease-prod --namespace $USER
 ```
 
 

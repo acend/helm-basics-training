@@ -114,11 +114,11 @@ Let's install the release and check whether the hook was deployed.
 First open a second terminal and run the following command:
 
 ```bash
-{{% param cliToolName %}} get pod -w --namespace <namespace>
+{{% param cliToolName %}} get pod -w --namespace $USER
 ```
 
 ```bash
-helm upgrade -i myapp . --namespace <namespace>
+helm upgrade -i myapp . --namespace $USER
 ```
 
 The output of the `{{% param cliToolName %}} get pod` command should show the deployment of the `post-install-hook` pod.
@@ -239,7 +239,7 @@ spec:
 Deploy the new hooks with the following command:
 
 ```bash
-helm upgrade myapp . --namespace <namespace>
+helm upgrade myapp . --namespace $USER
 ```
 
 
@@ -250,7 +250,7 @@ When you created your hooks, install or upgrade your helm release with `helm ins
 
 ```bash
 
-{{% param cliToolName %}} --namespace <namespace> exec -it myapp-mariadb-0 -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"  
+{{% param cliToolName %}} --namespace $USER exec -it myapp-mariadb-0 -- mysql --host=localhost --user=acend --password=mysuperpassword123 --database=acenddb -e "SELECT * FROM test"  
 ```
 
 
@@ -274,5 +274,5 @@ When you created your hooks, install or upgrade your helm release with `helm ins
 Uninstall the app
 
 ```bash
-helm uninstall myapp --namespace <namespace>
+helm uninstall myapp --namespace $USER
 ```
