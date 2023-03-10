@@ -18,7 +18,7 @@ In this Lab we are covering folling topics:
 
 
 We already prepared a Helm chart skeleton for this, you can clone the Chart with following command:
-`git clone https://github.com/acend/helm-complex-chart.git lab7 && cd lab7`
+`git clone https://github.com/acend/helm-complex-chart.git lab{{% param sectionnumber %}} && cd lab{{% param sectionnumber %}}`
 Let's have a closer look at its directory structure and components. The Chart consists of the following files and folders:
 
 ```
