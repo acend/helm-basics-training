@@ -43,20 +43,6 @@ acendTraining:
         secretOverride: acend-wildcard
         appname: helm-basics-openshift
         domain: training.acend.ch
-    -
-      name: rancher
-      replicaCount: 1
-      image:
-        repository: quay.io/acend/helm-basics-training
-        pullPolicy: Always
-        tag: ""
-        tagsuffix: "-rancher"
-      ingress:
-        annotations: 
-          kubernetes.io/ingress.class: nginx-public
-        secretOverride: acend-wildcard
-        appname: helm-basics-rancher
-        domain: training.acend.ch
 
 
 
