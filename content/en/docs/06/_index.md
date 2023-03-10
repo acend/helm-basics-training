@@ -8,13 +8,13 @@ Let's create a bit more complex Chart.
 
 In this Lab we are covering folling topics:
 
-* 7.1 Deploy the Chart and add a database to the app
-* 7.2 Template the database resources
-* 7.3 Deploy the same app with a database dependency instead of your own database deployment
-* 7.4 Writing tests for your Helm Charts
-* 7.5 Deploy you app with Helm hooks
-* 7.6 Prepare and deploy your app for different environments
-* 7.7 Publish your Chart
+* {{% param sectionnumber %}}.1 Deploy the Chart and add a database to the app
+* {{% param sectionnumber %}}.2 Template the database resources
+* {{% param sectionnumber %}}.3 Deploy the same app with a database dependency instead of your own database deployment
+* {{% param sectionnumber %}}.4 Writing tests for your Helm Charts
+* {{% param sectionnumber %}}.5 Deploy you app with Helm hooks
+* {{% param sectionnumber %}}.6 Prepare and deploy your app for different environments
+* {{% param sectionnumber %}}.7 Publish your Chart
 
 
 We already prepared a Helm chart skeleton for this, you can clone the Chart with following command:
