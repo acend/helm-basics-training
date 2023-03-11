@@ -130,7 +130,7 @@ This will download the dependent chart to the `charts/` and update the `Chart.lo
 
 Next we have to add the configuration of our mariadb dependency to the `values.yaml`.
 Since the name of our dependency in the `Chart.yaml` is `mariadb`, the configuration of the mariadb must be defined under the mariadb root element.
-Let's add the following configuration right after the database section from lab {{% param sectionnumber %}}.2
+Let's add the following configuration right after the database section from lab 6.2
 
 ```yaml
 mariadb:
