@@ -50,7 +50,7 @@ There are two helper functions you can use to generate these labels
 
 
 As mentioned above, the `_helpers.tpl` file provides some neat functions to generate the Labels and Selectors for Kubernetes resources.
-But if we take a closer look, we see that we can not simply use the same labels and selectors. Because we have two different deployments, each with its own service, we need to ensure that the selecttor and labels ardistinct for both deployments and services.
+But if we take a closer look, we see that we can not simply use the same labels and selectors. Because we have two different deployments, each with its own service, we need to ensure that the selector and labels ardistinct for both deployments and services.
 
 Let's open the `_helpers.tpl` file and scroll down to the helper function for the labels.
 
