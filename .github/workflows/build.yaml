@@ -43,23 +43,6 @@ jobs:
           tags: |
             quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}
       -
-        name: Run vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}'
-          format: 'table'
-          output: 'trivy-results.txt'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os'
-          severity: 'CRITICAL,HIGH'
-      -
-        name: Archive vulnerability scan results
-        uses: actions/upload-artifact@v3
-        with:
-          name: trivy-results-main
-          path: trivy-results.txt
-      -
         name: Build Mobi Version
         uses: docker/build-push-action@v4
         with:
@@ -71,23 +54,6 @@ jobs:
           tags: |
             quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}-mobi
       -
-        name: Run vulnerability scanner Mobi
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}-mobi'
-          format: 'table'
-          output: 'trivy-results.txt'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os'
-          severity: 'CRITICAL,HIGH'
-      -
-        name: Archive vulnerability scan results
-        uses: actions/upload-artifact@v3
-        with:
-          name: trivy-results-main
-          path: trivy-results.txt
-      -
         name: Build OpenShift Version
         uses: docker/build-push-action@v4
         with:
@@ -98,51 +64,6 @@ jobs:
           push: true
           tags: |
             quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}-openshift
-      -
-        name: Run vulnerability scanner OpenShift
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}-openshift'
-          format: 'table'
-          output: 'trivy-results.txt'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os'
-          severity: 'CRITICAL,HIGH'
-      -
-        name: Archive vulnerability scan results
-        uses: actions/upload-artifact@v3
-        with:
-          name: trivy-results-main
-          path: trivy-results.txt
-      -
-        name: Build Rancher Version
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          build-args: |
-            TRAINING_HUGO_ENV=rancher
-          push: true
-          tags: |
-            quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}-rancher
-      -
-        name: Run vulnerability scanner Rancher
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'quay.io/acend/helm-basics-training:pr-${{ github.event.pull_request.number }}-rancher'
-          format: 'table'
-          output: 'trivy-results.txt'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os'
-          severity: 'CRITICAL,HIGH'
-      -
-        name: Archive vulnerability scan results
-        uses: actions/upload-artifact@v3
-        with:
-          name: trivy-results-main
-          path: trivy-results.txt
       -
         name: 'Install Helm'
         uses: azure/setup-helm@v3
@@ -178,7 +99,6 @@ jobs:
           kubectl rollout restart deployment/${TRAINING_HELM_RELEASE}-${TRAINING_HELM_NAME}-acend --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
           kubectl rollout restart deployment/${TRAINING_HELM_RELEASE}-${TRAINING_HELM_NAME}-mobi --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
           kubectl rollout restart deployment/${TRAINING_HELM_RELEASE}-${TRAINING_HELM_NAME}-openshift --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
-          kubectl rollout restart deployment/${TRAINING_HELM_RELEASE}-${TRAINING_HELM_NAME}-rancher --kubeconfig $HOME/.kube/config --namespace $TRAINING_NAMESPACE
       -
         name: Comment PR Environments in PR
         uses: marocchino/sticky-pull-request-comment@v2
@@ -189,4 +109,3 @@ jobs:
            * acend version <https://helm-basics-pr-${{ github.event.pull_request.number }}.training.acend.ch>
            * mobi version <https://helm-basics-mobi-pr-${{ github.event.pull_request.number }}.k8s.puzzle.ch>
            * openshift version <https://helm-basics-openshift-pr-${{ github.event.pull_request.number }}.training.acend.ch>
-           * rancher version <https://helm-basics-rancher-pr-${{ github.event.pull_request.number }}.training.acend.ch>

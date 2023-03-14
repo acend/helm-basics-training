@@ -18,7 +18,7 @@
     disable = false
 
 [params]
-enabledModule = "base mobi rancher"
+enabledModule = "base mobi"
 copyright = "Puzzle ITC GmbH"
 imagePrefix = "puzzle_"
 imageRegistry = "<registry-url>/puzzle/k8s/kurs"
