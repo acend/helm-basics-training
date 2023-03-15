@@ -177,7 +177,7 @@ Even though the chart could successfully be installed the pod has a status of `I
 ```
     spec:
       containers:
-      - image: 'nginx:'
+      - image: 'nginxinc/nginx-unprivileged:'
         imagePullPolicy: IfNotPresent
 ```
 
@@ -191,7 +191,7 @@ So let's have a look at the `values.yaml` file:
 
 ```
 image:
-  repository: nginx
+  repository: nginxinc/nginx-unprivileged
   tag: stable
   pullPolicy: IfNotPresent
 ```
@@ -216,12 +216,3 @@ If you want to check if your solution is correct, you can simply compare your wo
 git diff origin/solution
 ```
 
-{{% onlyWhen openshift %}}
-
-
-#### Deployment image
-
-We've already encountered this one in [lab 2](../02/). Because of the used image, which wants to have root and privileged port numbers, it cannot be started on OpenShift.
-
-We need to change the default image to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) and also change the containerPort to `8080`.
-{{% /onlyWhen %}}
