@@ -227,6 +227,27 @@ If you only see `Your new Cloud-Native application is ready!`, then you forgot t
 ## Task {{% param sectionnumber %}}.5: Prepare another release
 
 At this point we have a configurable Helm chart and a running release. Next we gonna use the cart for another release. We consider to release it into a production environment. therefore we have to adjust some values. First copy the existing `values.yaml` to `values-production.yaml`.
+
+{{< highlight YAML "hl_lines=15" >}}
+.
+├── Readme.md
+└── helm-basic-chart
+    ├── Chart.yaml
+    ├── templates
+    │   ├── _helpers.tpl
+    │   ├── consumer-deployment.yaml
+    │   ├── consumer-ingress.yaml
+    │   ├── consumer-service.yaml
+    │   ├── producer-deployment.yaml
+    │   ├── producer-ingress.yaml
+    │   ├── producer-service.yaml
+    │   └── tests
+    │       └── test-connection.yaml
+    ├── values-production.yaml
+    └── values.yaml
+{{< /highlight >}}
+
+
 Open the `values-production.yaml` and change following values.
 
 * Debug log level is too high in a production environment, change it to `INFO`
