@@ -291,9 +291,7 @@ myfirstrelease-mychart-c95cb97d6-tqztc   1/1     Running   0          8m25s
 ## Task {{% param sectionnumber %}}.5: Rollback a release
 
 Helm also provides the functionality to roll back a release to a specific revision number.
-In the previous tasks, you might have noticed the `REVISION` be increased each time you installed or updated a release.
-
-Every change you make to a release by installing or upgrading it will increase the `REVISION`. The actual deployed revision can be displayed with the following command:
+Every change you make to a release by installing, upgrading and even rollback, it will increase the `REVISION`. The deployed revision can be displayed with the following command:
 
 ```bash
 helm ls --namespace $USER
