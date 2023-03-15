@@ -20,7 +20,7 @@ rm -rf gotemplatechart/templates/*
 ```
 
 {{% onlyWhen openshift %}}
-{{% alert title="Warning" color="secondary" %}}
+{{% alert title="Warning" color="warning" %}}
 Don't forget to adapt the image name to an unprivileged one (`nginxinc/nginx-unprivileged:latest`) so OpenShift can run it. See [lab 2](../02/) for details.
 {{% /alert %}}
 {{% /onlyWhen %}}
@@ -240,7 +240,7 @@ If then else control structures are very common in templating languages like Go 
 {{ end }}
 ```
 
-{{% alert title="Note: Conditional Operators" color="primary" %}}
+{{% alert title="Note: Conditional Operators" color="info" %}}
 With `and`, `or`, `not`, `eq` being functions, conditions therefore look like this `{{ if and .Values.favorite.band (eq .Values.favorite.band "The Rolling Stones") }}`
 For this condition to be true, the value `.Values.favorite.band` must be set and is set to "The Rolling Stones"
 
