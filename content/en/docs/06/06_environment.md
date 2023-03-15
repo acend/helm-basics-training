@@ -17,7 +17,7 @@ In this lab we are going to show you how to prepare your Helm releases for diffe
 Let us start with a new value file for the Development environment. Create a new file called `values-dev.yaml` and add following content to the file
 
 * Set the number of replicas to `1`
-* Change the Ingress configuration to match the following path schema `mychart-develop-<namespace>.ocp-internal.cloudscale.puzzle.ch`
+* Change the Ingress configuration to match the following path schema `http://mychart-develop-<namespace>.{{% param labAppUrl %}}/`
 * Because we don't need any persistence for the Development environment, disable the database with `database.enabled: false`
 
 
@@ -27,7 +27,7 @@ replicaCount: 1
 ingress:
   enabled: true
   hosts:
-    - host: mychart-develop-helm.ocp-internal.cloudscale.puzzle.ch
+    - host: mychart-develop-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -56,7 +56,7 @@ Create for the Production environment e new value files named `values-prod.yaml`
 * For production usage we also want to persist the data. To enable the database set `database.enabled` to `true`
 * Change the database user under `database.databaseuser` to `acend-prod`
 * As a best practice, never use the same password in different environemnts. Change the password under `database.databasename`
-* Change the Ingress configuration to match the following path schema `mychart-production-<namespace>.ocp-internal.cloudscale.puzzle.ch`
+* Change the Ingress configuration to match the following path schema `mychart-production-<namespace>.{{% param labAppUrl %}}`
 
 
 ## Task {{% param sectionnumber %}}.3 Solution
@@ -69,7 +69,7 @@ replicaCount: 3
 ingress:
   enabled: true
   hosts:
-    - host: mychart-production-helm.ocp-internal.cloudscale.puzzle.ch
+    - host: mychart-production-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: ImplementationSpecific
