@@ -211,7 +211,10 @@ Open the `values-production.yaml` and change following values.
 * To avoid DNS collisions we need to chang the host to, change it to `producer-<username>-prod.{{% param labAppUrl %}}` and `consumer-<username>-prod.{{% param labAppUrl %}}`
 
 {{% details title="Solution" %}}
+
+
 ### values-production.yaml
+
 
 {{< highlight YAML "hl_lines=" >}}
 {{% remoteFile "https://raw.githubusercontent.com/acend/helm-basic-chart/solution/helm-basic-chart/values-production.yaml" %}}
@@ -222,6 +225,7 @@ Open the `values-production.yaml` and change following values.
 
 
 ## Task {{% param sectionnumber %}}.6: Install and verify production release
+
 
 Now we have prepared our values file for the production environment. Next we can install the chart again, but with a different name and different values.
 Execute the Helm install command and pass the new created production values as parameter.

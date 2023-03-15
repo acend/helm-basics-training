@@ -196,7 +196,9 @@ helm upgrade -i myrelease parent/.
 ```
 {{% /details %}}
 
+
 ### Task {{% param sectionnumber %}}.5 Verify the release
+
 
 ```bash
 curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
@@ -204,8 +206,8 @@ curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --templa
 ```
 
 
-
 ### Task {{% param sectionnumber %}}.6 Clean up
+
 
 Congratulations! You succeeded in the Chapter and the only thing left is to do some cleanup afterwards!
 

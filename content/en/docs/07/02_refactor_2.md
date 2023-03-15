@@ -149,7 +149,9 @@ spec:
 
 {{% /details %}}
 
+
 ### Service
+
 
 {{% details title="Solution" %}}
 
@@ -173,7 +175,9 @@ spec:
   type: ClusterIP
 ```
 
+
 {{% /details %}}
+
 
 ### Ingress
 
