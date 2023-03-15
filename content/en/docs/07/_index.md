@@ -207,7 +207,7 @@ helm upgrade myrelease --namespace $USER ./helm-basic-chart
 
 Finally, you can visit your application with the URL provided from the Route: `https://consumer-<username>.{{% param labAppUrl %}}/data`
 
-{{% alert  color="primary" %}}Replace **\<username>** with your username or get the URL from your route.{{% /alert %}}
+{{% alert  color="info" %}}Replace **\<username>** with your username or get the URL from your route.{{% /alert %}}
 
 Or you could access the `data` endpoint using curl:
 
