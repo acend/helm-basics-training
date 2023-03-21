@@ -1,84 +1,159 @@
 ---
 title: "6.7 Optional: Publish your chart"
 weight: 67
-sectionnumber: 6.7
+sectionnumber: 67
 ---
 
-As you already learned during the presentation, Helm is a great choice if you want to deploy your app in different configurations or over different environments. In this Lab section we are going to show you how you can instantiate the Chart in two different configurations, first a release for the Develop environment and then another release for a Production environment.
-Best practice is to deploy them into different namespaces. But thus we have only one, we deploy them into the same namespace but with different release names.
+In this lab we will learn how to publish our Helm chart and make it accessible to the public by using GitHub pages.
+
+{{% alert title="Note" color="primary" %}}
+To work through this lab, you need a personal GitHub account. See [Hosting chart repositories](https://helm.sh/docs/topics/chart_repository#hosting-chart-repositories) for a lot of different strategies how to serve a Helm repository.
+{{% /alert %}}
+
+GitHub pages provides an easy way to expose static files over HTTP(S) to the public. Everyone with a GitHub account can use this feature. The files to expose must be located in the `docs/` subdirectory or on a separate branch which can be configured in the repository settings.
 
 
-## Task {{% param sectionnumber %}}.1: Deploy the Chart as develop release
+## Task {{% param sectionnumber %}}.1: Linting your chart
+
+Linting the Helm chart and fix the errors before packaging and publishing is a good practice:
+
+```bash
+helm lint ./mychart
+```
+
+The linter recommends to add an icon to the chart. We can safely ignore this hint :)
+
+```
+==> Linting mychart
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+```
 
 
-Before we deploy the Chart, make following changes in your `values.yaml` file. Append `-dev` to the host names. This makes us later easier to dinstinct between the two releases.
+## Task {{% param sectionnumber %}}.2: Package your chart
+
+Helm chart packages are compressed `tgz` archives. Use the `helm package` command to create such an archive:
+
+```bash
+mkdir docs && cd docs
+helm package ../mychart
+```
+
+This will create an archive with the name `mychart-0.1.0.tgz` inside the `docs` directory. The chart version is defined in `Chart.yaml` and will be appended to the filename.
+
+
+```
+❯ tree
+.
+├── docs
+│   └── mychart-0.1.0.tgz
+└── mychart
+    ├── Chart.yaml
+    ├── charts
+    ├── templates
+    │   ├── deployment-mariadb.yaml
+    │   ├── deployment.yaml
+    │   ├── _helpers.tpl
+    │   ├── hpa.yaml
+    │   ├── ingress.yaml
+    │   ├── NOTES.txt
+    │   ├── secret.yaml
+    │   ├── serviceaccount.yaml
+    │   ├── service.yaml
+    │   └── tests
+    │       └── test-connection.yaml
+    └── values.yaml
+```
+
+
+## Task {{% param sectionnumber %}}.3: Create a new Github Repository
+
+We will use GitHub pages to publish our packages and make them accessible to the public.
+
+Replace `<GITHUB_USERNAME>` with your personal GitHub account.
+
+```bash
+USERNAME=<GITHUB_USERNAME>
+git init
+echo "charts/"> .gitignore
+git config --global user.email "$USERNAME@foo.ch"
+git config --global user.name "$USERNAME"
+git add .
+git commit -m "First chart version"
+git branch -M main
+git remote add origin git@github.com:$USERNAME/mycharts.git
+git push -u origin main
+```
+
+{{% alert title="Note" color="primary" %}}
+If you want to access your Git repository over HTTPS use the following url pattern for the origin `https://github.com/$USERNAME/mycharts.git`
+{{% /alert %}}
+
+
+## Task {{% param sectionnumber %}}.4: Activate GitHub Pages
+
+On the GitHub website navigate to `Settings -> Pages` of your newly created repository `mycharts`. Select the `main` branch and `/docs` repository and click _Save_.
+
+You will see a message with the URL under which the Chart repository will be exposed:
+
+`https://<GITHUB_USERNAME>.github.io/mycharts/`
+
+
+## Task {{% param sectionnumber %}}.5: Create an index file
+
+The Helm repository must provide an `index.yaml` file which list all contained packages and provide some metadata about them. Create an index file inside the `docs` directory. Replace `<GITHUB_USERNAME>` with your personal GitHub account.
+
+```bash
+USERNAME=<GITHUB_USERNAME>
+helm repo index . --url https://$USERNAME.github.io/mycharts/
+```
+
+This creates an index file with the following content:
 
 ```yaml
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: mychart-<namespace>-dev.labapp.acend.ch
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: mychart-<namespace>-<appdomain>
-      hosts:
-        - mychart-<namespace>-dev.labapp.acend.ch
+apiVersion: v1
+entries:
+  mychart:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-09-02T10:05:54.135132319+02:00"
+    description: A Helm chart for Kubernetes
+    digest: 43745683f4e51e95524042f96de0072d798473a63a6e1f0d116c60ac7ef784f3
+    maintainers:
+    - email: john@doe.org
+      name: John Doe
+    name: mychart
+    type: application
+    urls:
+    - https://johndoe.github.io/mycharts/mychart-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-09-02T10:05:54.134536373+02:00"
 ```
-After that you can install the Chart. Make sure to postfix the release name also with `-dev`.
+
+
+## Task {{% param sectionnumber %}}.6 Verifying your repository
+
+Register your GitHub pages as a new Helm repository:
 
 ```bash
-helm upgrade -i myapp-dev  ./mychart --namespace $USER
+USERNAME=<GITHUB_USERNAME>
+helm repo add mycharts https://$USERNAME.github.io/mycharts/
 ```
 
-Next check if the deployment was successfully with the follwing Helm command
-
-```bash
-helm ls --namespace $USER
-```
-
-You should see follwoing output:
-
-//TODO
-
-
-## Task {{% param sectionnumber %}}.2: Prepare a production release
-
-Now let's create another release for the production environment.
-Compared to the develop release we want to adjust following things for our production release:
-
-* Change ingress host name to `mychart-<namespace>-prod.labapp.acend.ch`
-* Set the `resource.requests.cpu` to 100m
-* Set the `resource.request.memory` to 128Mi
-
-But instead of changing these values in our `values.yaml` file, we create a new empty file called `values-prod.yaml` next to the existing `values.yaml` file.
-
-{{< highlight YAML "hl_lines=15" >}}
-.
-├── Chart.yaml
-├── charts
-├── templates
-│   ├── NOTES.txt
-│   ├── _helpers.tpl
-│   ├── app-deployment.yaml
-│   ├── app-ingress.yaml
-│   ├── app-service.yaml
-│   ├── mariadb-deployment.yaml
-│   ├── mariadb-secret.yaml
-│   ├── mariadb-service.yaml
-│   └── tests
-│       └── test-connection.yaml
-├── values-prod.yaml
-└── values.yaml
-{{< /highlight >}}
+Verify that your published chart is found by Helm:
 
 
 ```bash
-helm upgrade -i myapp-prod  ./mychart --namespace $USER
+helm repo update
+helm search repo mycharts/mychart
+```
+
+You should the the following output:
+
+```
+NAME                    CHART VERSION   APP VERSION     DESCRIPTION
+mycharts/mychart        0.1.0           1.16.0          A Helm chart for Kubernetes
 ```
 
 
