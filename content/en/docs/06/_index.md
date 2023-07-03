@@ -107,17 +107,16 @@ service:
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: mychart-<namespace>.labapp.acend.ch
+    - host: mychart-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
-    - secretName: mychart-<namespace>-<appdomain>
+    - secretName: mychart-tls
       hosts:
-        - mychart-<namespace>.labapp.acend.ch
+        - mychart-<namespace>.{{% param labAppUrl %}}
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

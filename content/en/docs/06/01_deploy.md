@@ -15,7 +15,6 @@ Let's deploy our awesome application. Therefore we need to adjust the values fil
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   hosts:
     - host: helm-complex-chart-<namespace>.labapp.acend.ch
@@ -23,7 +22,7 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls:
-    - secretName: helm-complex-chart-<namespace>-<appdomain>
+    - secretName: helm-complex-chart-tls
       hosts:
         - helm-complex-chart-<namespace>.labapp.acend.ch
 ```

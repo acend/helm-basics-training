@@ -160,7 +160,6 @@ Make sure to replace the `<namespace>` and `{{% param labAppUrl %}}` accordingly
 ingress:
   enabled: true
   annotations:
-    # kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   hosts:
     - host: mychart-<namespace>.{{% param labAppUrl %}}
@@ -168,7 +167,7 @@ ingress:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: mychart-<namespace>-{{% param labAppUrl %}}
+    - secretName: mychart-tls
       hosts:
         - mychart-<namespace>.{{% param labAppUrl %}}
 ```
@@ -180,7 +179,6 @@ ingress:
 ingress:
   enabled: true
   annotations:
-    kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   hosts:
     - host: mychart-<namespace>.{{% param labAppUrl %}}
@@ -188,7 +186,7 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls:
-    - secretName: mychart-<namespace>-{{% param labAppUrl %}}
+    - secretName: mychart-tls
       hosts:
         - mychart-<namespace>.{{% param labAppUrl %}}
 ```
@@ -203,7 +201,6 @@ Therefore, we need to change this value inside our `values.yaml` file.
 ingress:
   enabled: true
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: mychart-<namespace>.{{% param labAppUrl %}}
