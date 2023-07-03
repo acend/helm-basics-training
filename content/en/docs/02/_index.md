@@ -151,7 +151,7 @@ spec:
 Thus, we need to change this value inside our `mychart/values.yaml` file. This is also where we enable the TLS part:
 
 {{% alert title="Note" color="info" %}}
-Make sure to replace the `<namespace>` and `{{% param labAppUrl %}}` accordingly. `{{% param labAppUrl %}}` will be provided by the trainer.
+Make sure to replace the `<namespace>` accordingly.
 {{% /alert %}}
 
 {{% onlyWhen openshift %}}
