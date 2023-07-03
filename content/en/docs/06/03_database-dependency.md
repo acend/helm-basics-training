@@ -227,7 +227,7 @@ Verify the installation and check whether the new database was deployed.
 The whole deployment will take a while until both pods are ready and deployed.
 {{% /alert %}}
 
-To check if your deployment is working open the browser and enter the url of your app `https://helm-complex-chart-<namespace>-<appdomain>`:
+To check if your deployment is working open the browser and enter the url of your app `https://helm-complex-chart-<namespace>-{{% param labAppUrl %}}`:
 Add some new entries and the execute following command to restart the application pod.
 ```bash
 {{% param cliToolName %}} rollout restart deployment myapp-mychart --namespace $USER
