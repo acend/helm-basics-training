@@ -75,7 +75,7 @@ imageRegistry = "quay.io/acend"
 enabledModule = "base"
 distroName = "Kubernetes"
 cliToolName = "kubectl"
-labAppUrl = "labapp.acend.ch"
+labAppUrl = "training.cluster.acend.ch"
 webConsoleURL = "null"
 
 # Enable Lunr.js offline search
