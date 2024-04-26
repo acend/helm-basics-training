@@ -190,7 +190,7 @@ At this point we have a configurable Helm chart and a running release. Next we g
 └── helm-basic-chart
     ├── Chart.yaml
     ├── templates
-    │   ├── _helpers.tpl
+    │   ├── helpers.tpl
     │   ├── consumer-deployment.yaml
     │   ├── consumer-ingress.yaml
     │   ├── consumer-service.yaml
