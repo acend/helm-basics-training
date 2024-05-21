@@ -377,7 +377,8 @@ Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/to
 
 ### Solution
 
-{{< highlight YAML "hl_lines= 3 7-9" >}}
+
+```yaml {hl_lines=["3","7-9"]}
 apiVersion: v2
 name: helm-complex-chart
 description: My awesome app
@@ -387,6 +388,6 @@ appVersion: 1.16.0
 maintainers:
   - name: YOUR NAME
     email: YOUR E-MAIL ADDRESS
-{{< /highlight >}}
+```
 
 Continue with the lab "[Deploy your awesome application](./deploy/)".
