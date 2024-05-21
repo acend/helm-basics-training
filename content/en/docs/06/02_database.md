@@ -121,7 +121,17 @@ There are three template files which are neccessary for the MariaDB deployment.
 * `service-mariadb.yaml`
 * `secret-mariadb.yaml`
 
-But first add the new values for the ...
+But first add the new values for the configuration of the database connection and set the `database.enabled` value to true.
+
+Replace following block at the end of `values.yaml`
+
+
+```yaml
+database:
+  enabled: false
+```
+
+with following content:
 
 ```yaml
 database:
@@ -302,8 +312,7 @@ The following points need to be taken into consideration when creating the templ
 
 ### Deployment
 
-
-```yaml
+{{< highlight YAML "hl_lines= 7 12 18 21-23 28 40" >}}
 {{- if .Values.database.enabled }}
 apiVersion: apps/v1
 kind: Deployment
@@ -356,8 +365,7 @@ spec:
       volumes:
       - name: mariadb-persistent-storage
         emptyDir: {}
-{{- end }}
-```
+{{< /highlight >}}
 
 
 ### Secret
@@ -365,7 +373,7 @@ spec:
 
 The secret `templates/mariadb-secret.yaml` file should look like this:
 
-```yaml
+{{< highlight YAML "hl_lines= 7 9-10" >}}
 {{- if .Values.database.enabled }}
 apiVersion: v1
 kind: Secret
@@ -377,7 +385,8 @@ data:
   mariadb-password: {{ .Values.database.databasepassword | b64enc }}
   mariadb-root-password: {{ .Values.database.databaserootpassword | b64enc }}
 {{- end }}
-```
+{{< /highlight >}}
+
 
 Note the `| b64enc`, which is a built-in function to encode strings with base64.
 
@@ -387,7 +396,7 @@ Note the `| b64enc`, which is a built-in function to encode strings with base64.
 
 The service at `templates/mariadb-service.yaml` for our MySQL database should look similar to this:
 
-```yaml
+{{< highlight YAML "hl_lines= 7 15" >}}
 {{- if .Values.database.enabled }}
 apiVersion: v1
 kind: Service
@@ -405,7 +414,11 @@ spec:
     {{- include "helm-complex-chart.selectorLabelsDatabase" . | nindent 4 }}
   clusterIP: None
 {{- end }}
-```
+{{< /highlight >}}
+
+
+### Values
+
 
 Then we need to add the following to our `values.yaml`:
 
@@ -421,6 +434,9 @@ database:
     pullPolicy: IfNotPresent
     tag: "10.5"
 ```
+
+
+### Install
 
 
 Finally, to install the release run:

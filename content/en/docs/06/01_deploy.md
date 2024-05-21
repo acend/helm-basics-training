@@ -9,7 +9,7 @@ Using the generated and modified Helm chart, we are going to deploy our own awes
 
 ## Task {{% param sectionnumber %}}.1: Deploy the chart
 
-Let's deploy our awesome application. Therefore we need to adjust the values file.
+Let's deploy our awesome application. Therefore we need to adjust ingress configuriation in the values file.
 
 ```yaml
 ingress:
@@ -17,14 +17,14 @@ ingress:
   annotations:
     kubernetes.io/tls-acme: "true"
   hosts:
-    - host: helm-complex-chart-<namespace>.labapp.acend.ch
+    - host: helm-complex-chart-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
     - secretName: helm-complex-chart-tls
       hosts:
-        - helm-complex-chart-<namespace>.labapp.acend.ch
+        - helm-complex-chart-<namespace>.{{% param labAppUrl %}}
 ```
 
 
@@ -58,7 +58,7 @@ Check whether the ingress was successfully deployed by accessing the URL `http:/
 
 ## Task {{% param sectionnumber %}}.2: Connect to the database
 
-In order for the python application to be able to connect to the newly deployed database, we need to add some environment variables to our deployment. The goal of this task is to allow a user to set them via values.
+In order for the python application to be able to connect to a database, we need to add some environment variables to our deployment. The goal of this task is to allow a user to set them via values.
 Change your Application Deployment Template in `templates/app-deployment.yaml` and include the new environment variables:
 
 * `MYSQL_DATABASE_NAME` with the value `acenddb`
@@ -66,6 +66,8 @@ Change your Application Deployment Template in `templates/app-deployment.yaml` a
 * `MYSQL_DATABASE_ROOT_PASSWORD` references the the database root password value from the secret you created in task 1
 * `MYSQL_DATABASE_USER` with the value `acend`
 * `MYSQL_URI` with the value `mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE_NAME)`
+
+And enclose all environment variables in a conditional If-statement with following condition: `database.enabled == true`
 
 
 ### Solution Task {{% param sectionnumber %}}.2
@@ -142,7 +144,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
 {{< /highlight >}}
 
-Add the following changes in the `values.yaml` to enable and configure the database:
+Add the following changes in the `values.yaml` to enable the database:
 
 ```yaml
 database:

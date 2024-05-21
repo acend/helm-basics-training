@@ -18,7 +18,9 @@ In this Lab we are covering folling topics:
 
 
 We already prepared a Helm chart skeleton for this, you can clone the Chart with following command:
-`git clone https://github.com/acend/helm-complex-chart.git lab{{% param sectionnumber %}} && cd lab{{% param sectionnumber %}}`
+```bash
+git clone https://github.com/acend/helm-complex-chart.git lab{{% param sectionnumber %}} && cd lab{{% param sectionnumber %}}
+```
 Let's have a closer look at its directory structure and components. The Chart consists of the following files and folders:
 
 ```
@@ -375,7 +377,7 @@ Study the [Helm documentation about the Chart.yaml file](https://helm.sh/docs/to
 
 ### Solution
 
-```yaml
+{{< highlight YAML "hl_lines= 3 7-9" >}}
 apiVersion: v2
 name: helm-complex-chart
 description: My awesome app
@@ -385,6 +387,6 @@ appVersion: 1.16.0
 maintainers:
   - name: YOUR NAME
     email: YOUR E-MAIL ADDRESS
-```
+{{< /highlight >}}
 
 Continue with the lab "[Deploy your awesome application](./deploy/)".
