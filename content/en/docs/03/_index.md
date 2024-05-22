@@ -58,6 +58,9 @@ containerSecurityContext:
 ingress:
   enabled: true
   hostname: wordpress-<namespace>.{{% param labAppUrl %}}
+  extraTls:
+  - hosts:
+    - wordpress-<namespace>.{{% param labAppUrl %}}
 
 mariadb:
   primary:
@@ -249,6 +252,9 @@ USER-SUPPLIED VALUES:
 ingress:
   enabled: true
   hostname: wordpress-<namespace>.{{% param labAppUrl %}}
+  extraTls:
+  - hosts:
+    - wordpress-<namespace>.{{% param labAppUrl %}}
 mariadb:
   primary:
     persistence:
