@@ -249,6 +249,10 @@ Check whether the ingress was successfully deployed by accessing the URL `http:/
 
 {{% /onlyWhen %}}
 
+You should see the Nginx welcome page.
+
+![Nginx welcome page](image.png)
+
 
 ## Task {{% param sectionnumber %}}.4: Overwrite value using commandline param
 
