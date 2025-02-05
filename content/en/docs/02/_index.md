@@ -159,16 +159,13 @@ Make sure to replace the `<namespace>` accordingly.
 ```yaml
 ingress:
   enabled: true
-  annotations:
-    kubernetes.io/tls-acme: "true"
   hosts:
     - host: mychart-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: mychart-tls
-      hosts:
+    - hosts:
         - mychart-<namespace>.{{% param labAppUrl %}}
 ```
 
@@ -178,16 +175,13 @@ ingress:
 ```yaml
 ingress:
   enabled: true
-  annotations:
-    kubernetes.io/tls-acme: "true"
   hosts:
     - host: mychart-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
-    - secretName: mychart-tls
-      hosts:
+    - hosts:
         - mychart-<namespace>.{{% param labAppUrl %}}
 ```
 

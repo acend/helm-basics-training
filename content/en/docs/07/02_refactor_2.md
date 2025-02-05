@@ -188,8 +188,6 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    kubernetes.io/tls-acme: "true"
   labels:
     app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
   name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
@@ -208,7 +206,6 @@ spec:
   tls:
     - hosts:
         - {{ .Values.host }}
-      secretName: {{ .Values.serviceName }}-labapp-acend-ch
 ```
 
 {{% /details %}}

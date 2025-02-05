@@ -108,16 +108,13 @@ service:
 
 ingress:
   enabled: true
-  annotations:
-    kubernetes.io/tls-acme: "true"
   hosts:
     - host: mychart-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
-    - secretName: mychart-tls
-      hosts:
+    - hosts:
         - mychart-<namespace>.{{% param labAppUrl %}}
 
 resources: {}

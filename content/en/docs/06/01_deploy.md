@@ -14,16 +14,13 @@ Let's deploy our awesome application. Therefore we need to adjust ingress config
 ```yaml
 ingress:
   enabled: true
-  annotations:
-    kubernetes.io/tls-acme: "true"
   hosts:
     - host: helm-complex-chart-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
-    - secretName: helm-complex-chart-tls
-      hosts:
+    - hosts:
         - helm-complex-chart-<namespace>.{{% param labAppUrl %}}
 ```
 
