@@ -55,13 +55,23 @@ podSecurityContext:
 containerSecurityContext:
   enabled: false
 {{% /onlyWhen %}}
+{{% onlyWhen openshift %}}
+ingress:
+  enabled: true
+  hostname: wordpress-<namespace>.{{% param labAppUrl %}}
+  ingressClassName: openshift-default
+  annotations:
+    route.openshift.io/termination: edge
+  tls: true
+{{% /onlyWhen%}}
+{{% onlyWhenNot openshift %}}
 ingress:
   enabled: true
   hostname: wordpress-<namespace>.{{% param labAppUrl %}}
   extraTls:
   - hosts:
     - wordpress-<namespace>.{{% param labAppUrl %}}
-
+{{% /onlyWhenNot %}}
 mariadb:
   primary:
     persistence:

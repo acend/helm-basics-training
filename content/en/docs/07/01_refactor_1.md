@@ -34,11 +34,11 @@ First let us define the new variables in our `values.yaml` file. Replace `<usern
 
 ```yaml
 producer:
-  host: producer-<namespace>.training.openshift.ch
+  host: producer-<namespace>.{{% param labAppUrl %}}
 
 consumer:
   tag: latest
-  host: consumer-<namespace>.training.openshift.ch
+  host: consumer-<namespace>.{{% param labAppUrl %}}
 ```
 {{% /onlyWhen  %}}
 

@@ -159,14 +159,15 @@ Make sure to replace the `<namespace>` accordingly.
 ```yaml
 ingress:
   enabled: true
+  className: openshift-default
+  annotations:
+    route.openshift.io/termination: edge
   hosts:
     - host: mychart-<namespace>.{{% param labAppUrl %}}
       paths:
         - path: /
           pathType: Prefix
-  tls:
-    - hosts:
-        - mychart-<namespace>.{{% param labAppUrl %}}
+  tls: []
 ```
 
 {{% /onlyWhen %}}

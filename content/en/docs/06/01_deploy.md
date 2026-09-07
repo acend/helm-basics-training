@@ -11,6 +11,27 @@ Using the generated and modified Helm chart, we are going to deploy our own awes
 
 Let's deploy our awesome application. Therefore we need to adjust ingress configuriation in the values file.
 
+{{% onlyWhen openshift %}}
+
+```yaml
+ingress:
+  enabled: true
+  className: openshift-default
+  annotations:
+    route.openshift.io/termination: edge
+  hosts:
+    - host: helm-complex-chart-<namespace>.{{% param labAppUrl %}}
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+```
+
+{{% /onlyWhen %}}
+
+
+{{% onlyWhenNot openshift %}}
+
 ```yaml
 ingress:
   enabled: true
@@ -24,6 +45,7 @@ ingress:
         - helm-complex-chart-<namespace>.{{% param labAppUrl %}}
 ```
 
+{{% /onlyWhenNot %}}
 
 ### Solution
 

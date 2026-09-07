@@ -188,6 +188,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    route.openshift.io/termination: edge
   labels:
     app: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
   name: {{ include "helm-basic-chart.fullname" . }}-{{ .Values.serviceName }}
@@ -202,10 +204,8 @@ spec:
                 port:
                   number: 8080
             path: /
-            pathType: ImplementationSpecific
-  tls:
-    - hosts:
-        - {{ .Values.host }}
+            pathType: Prefix
+  tls: []
 ```
 
 {{% /details %}}
