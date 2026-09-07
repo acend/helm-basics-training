@@ -238,7 +238,7 @@ After the new pod is created, you can reload the website and you should still th
 ## Task {{% param sectionnumber %}}.2: Explore the bitnami mariadb chart
 
 
-Use the `--dry-run` option or the `template` command to have a look at the new k8s resources introduced by the dependency.
+Use the `--dry-run=server` option or the `template` command to have a look at the new k8s resources introduced by the dependency.
 Explore the [chart source code](https://github.com/bitnami/charts/tree/master/bitnami/mariadb) and have a look at alle the possible [configuration options](https://artifacthub.io/packages/helm/bitnami/mariadb).
 
 
@@ -249,4 +249,3 @@ If you're happy with the result, clean up your namespace:
 ```bash
 helm uninstall myapp --namespace $USER
 ```
-

@@ -147,7 +147,7 @@ database:
 ```
 
 {{% alert title="Note" color="info" %}}
-Remember the `--dry-run` option from lab 2. This allows you to render the templates without applying them to the cluster.
+Remember the `--dry-run=server` option from lab 2. This allows you to render the templates without applying them to the cluster.
 {{% /alert %}}
 
 

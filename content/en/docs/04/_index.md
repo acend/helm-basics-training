@@ -9,12 +9,12 @@ Debugging templates can be tricky because the rendered templates are sent to the
 There are a few commands that can help you debug:
 
 * `helm lint` is your go-to tool for verifying that your chart follows best practices.
-* `helm install --dry-run --debug --generate-name <chart> --namespace $USER` or `helm template --debug <chart>`: We’ve seen this trick already. It’s a great way to render your templates without applying them to the cluster.
+* `helm install --dry-run=server --debug --generate-name <chart> --namespace $USER` or `helm template --debug <chart>`: We’ve seen this trick already. It’s a great way to render your templates without applying them to the cluster.
 * `helm template -s templates/<template-file> . --debug | cat -n -` render a single file to the standard output
 * `helm get manifest <release> --namespace $USER`: This is a good way to see what templates are installed on the server.
 * `helm get values <release> --namespace $USER`: This helps you to understand which values are used for a release.
 
-When your YAML is failing to parse but you want to see what is generated, one easy way to retrieve the YAML is to comment out the problem section in the template and then re-run `helm install --dry-run --debug --generate-name <chart>`.
+When your YAML is failing to parse but you want to see what is generated, one easy way to retrieve the YAML is to comment out the problem section in the template and then re-run `helm install --dry-run=server --debug --generate-name <chart>`.
 
 ```
 apiVersion: v2
@@ -49,7 +49,7 @@ The goal of this task is a successfully running `myrelease-error-chart` pod in y
 
 If you try to install the chart with following command, you will get an error:
 ```bash
-helm install my-error-chart . --dry-run
+helm install my-error-chart . --dry-run=server
 ```
 
 
@@ -215,4 +215,3 @@ If you want to check if your solution is correct, you can simply compare your wo
 ```bash
 git diff origin/solution
 ```
-

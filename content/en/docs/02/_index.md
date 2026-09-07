@@ -61,7 +61,7 @@ Before actually deploying our generated chart, we can check the (to be) generate
 
 
 ```bash
-helm install --dry-run --debug --namespace $USER myfirstrelease ./mychart
+helm install --dry-run=server --debug --namespace $USER myfirstrelease ./mychart
 ```
 
 
