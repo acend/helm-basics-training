@@ -232,8 +232,12 @@ USER-SUPPLIED VALUES:
 containerSecurityContext:
   enabled: false
 ingress:
+  annotations:
+    route.openshift.io/termination: edge
   enabled: true
   hostname: wordpress-<namespace>.{{% param labAppUrl %}}
+  ingressClassName: openshift-default
+  tls: true
 mariadb:
   primary:
     containerSecurityContext:
@@ -249,9 +253,8 @@ podSecurityContext:
 service:
   type: ClusterIP
 updateStrategy:
-updateStrategy:
-  type: Recreate
   rollingUpdate: null
+  type: Recreate
 ```
 
 {{% /onlyWhen %}}
