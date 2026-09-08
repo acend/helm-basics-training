@@ -270,7 +270,7 @@ Uninstall the two releases again to have a fresh ground for the second option!
 
 ```bash
 
-helm uninstall producer
-helm uninstall consumer
+helm uninstall producer $USER
+helm uninstall consumer $USER
 
 ```

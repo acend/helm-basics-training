@@ -192,7 +192,7 @@ Install a Helm Chart release `myrelease` and verify if the two services are runn
 {{% details title="Solution" %}}
 
 ```bash
-helm upgrade -i myrelease parent/.
+helm upgrade -n $USER -i myrelease parent/.
 ```
 {{% /details %}}
 
@@ -201,7 +201,7 @@ helm upgrade -i myrelease parent/.
 
 
 ```bash
-curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer -n $USER --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.4145158804475594}
 ```
 
@@ -214,5 +214,5 @@ Congratulations! You succeeded in the Chapter and the only thing left is to do s
 Remove all the installed objects installed during the chapter!
 
 ```bash
-helm uninstall myrelease
+helm uninstall -n $USER myrelease
 ```
