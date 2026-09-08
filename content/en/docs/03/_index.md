@@ -72,7 +72,12 @@ ingress:
   - hosts:
     - wordpress-<namespace>.{{% param labAppUrl %}}
 {{% /onlyWhenNot %}}
+image:
+  repository: bitnamilegacy/wordpress
+
 mariadb:
+  image:
+    repository: bitnamilegacy/mariadb
   primary:
     persistence:
       size: 1Gi
@@ -231,6 +236,8 @@ which gives you:
 USER-SUPPLIED VALUES:
 containerSecurityContext:
   enabled: false
+image:
+    repository: bitnamilegacy/wordpress
 ingress:
   annotations:
     route.openshift.io/termination: edge
@@ -239,6 +246,8 @@ ingress:
   ingressClassName: openshift-default
   tls: true
 mariadb:
+  image:
+    repository: bitnamilegacy/mariadb
   primary:
     containerSecurityContext:
       enabled: false
