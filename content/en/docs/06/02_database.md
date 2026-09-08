@@ -117,9 +117,9 @@ We want to add a MariaDB database and use it as a backend for our `example-web-p
 
 There are three template files which are neccessary for the MariaDB deployment.
 
-* `deployment-mariadb.yaml`
-* `service-mariadb.yaml`
-* `secret-mariadb.yaml`
+* `templates/mariadb-service.yaml`
+* `templates/mariadb-deployment.yaml`
+* `templates/mariadb-secret.yaml`
 
 But first add the new values for the configuration of the database connection and set the `database.enabled` value to true.
 
