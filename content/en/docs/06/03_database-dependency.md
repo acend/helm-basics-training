@@ -155,7 +155,7 @@ mariadb:
 
 Update your deployment to match the keys in the `values.yaml` to your environment variables defined in the deployment:
 
-```yaml
+{{< highlight YAML "hl_lines=35-47" >}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -190,6 +190,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.database.enabled }}
           env:
           - name: MYSQL_DATABASE_USER
             value: {{ .Values.mariadb.auth.username }}
@@ -201,6 +202,7 @@ spec:
             value: {{ .Values.mariadb.auth.database }}
           - name: MYSQL_URI
             value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE_NAME)
+          {{- end }}
           ports:
             - name: http
               containerPort: 5000
@@ -215,7 +217,7 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-```
+{{< /highlight >}}
 
 After editing the files we can now install the release.
 
