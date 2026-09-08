@@ -49,7 +49,7 @@ The goal of this task is a successfully running `myrelease-error-chart` pod in y
 
 If you try to install the chart with following command, you will get an error:
 ```bash
-helm install my-error-chart . --dry-run=server
+helm template my-error-chart . | kubectl apply --dry-run=server -f -
 ```
 
 
