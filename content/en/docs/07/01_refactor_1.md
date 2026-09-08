@@ -238,7 +238,7 @@ Now we have prepared our values file for the production environment. Next we can
 Execute the Helm install command and pass the new created production values as parameter.
 
 ```bash
-helm upgrade -i myrelease-prod --values values-production.yaml --namespace $USER ./helm-basic-chart
+helm upgrade -i myrelease-prod --values ./helm-basic-chart/values-production.yaml --namespace $USER ./helm-basic-chart
 ```
 
 Use the helm list command to list all releases in your namespace
