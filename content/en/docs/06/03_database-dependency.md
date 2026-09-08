@@ -95,9 +95,9 @@ Let's now replace the mariadb backend, we've manually created in the previous la
 
 Delete the three templates from the previous lab.
 
-* `templates/service-mariadb.yaml`
-* `templates/deployment-mariadb.yaml`
-* `templates/secret-mariadb.yaml`
+* `templates/mariadb-service.yaml`
+* `templates/mariadb-deployment.yaml`
+* `templates/mariadb-secret.yaml`
 
 Then we need to add the dependency to the `Chart.yaml`
 
