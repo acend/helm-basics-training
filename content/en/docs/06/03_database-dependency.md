@@ -134,6 +134,8 @@ Let's add the following configuration right after the database section from lab 
 
 ```yaml
 mariadb:
+  image:
+    repository: bitnamilegacy/mariadb
   enabled: true
   auth:
     rootPassword: mysuperrootpassword123
