@@ -155,8 +155,8 @@ The `Chart.yaml` file allows us to define dependencies on other charts. In our W
 dependencies:
   - condition: mariadb.enabled
     name: mariadb
-    repository: https://charts.bitnami.com/bitnami
-    version: 11.x.x
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 22.x.x
 ```
 
 [Helm's best practices](https://helm.sh/docs/chart_best_practices/) suggest to use version ranges instead of a fixed version whenever possible.
