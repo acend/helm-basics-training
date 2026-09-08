@@ -141,7 +141,7 @@ database:
   databasepassword: mysuperpassword123
   databaserootpassword: mysuperrootpassword123
   image:
-    repository: registry.puzzle.ch/docker.io/mariadb
+    repository: docker.io/library/mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
 ```
@@ -430,7 +430,7 @@ database:
   databasepassword: mysuperpassword123
   databaserootpassword: mysuperrootpassword123
   image:
-    repository: registry.puzzle.ch/docker.io/mariadb
+    repository: docker.io/library/mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
 ```
