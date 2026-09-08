@@ -257,6 +257,12 @@ curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer -n $USER
 
 ```
 
+Instead of the more complicated command you can also try:
+
+```bash
+curl -L https://consumer-<namespace>.{{% param labAppUrl %}}/data
+curl -L https://producer-<namespace>.{{% param labAppUrl %}}/data
+```
 
 ## Task {{% param sectionnumber %}}.3 Clean up
 
