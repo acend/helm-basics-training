@@ -64,13 +64,13 @@ helm upgrade -i myrelease --namespace $USER ./helm-basic-chart
 Verify your deployment! Check if your pods are running and healthy!
 
 ```bash
-{{% param cliToolName %}} get pods
+{{% param cliToolName %}} get pods --namespace $USER
 ```
 
 This should return something like this:
 
 ```
-{{% param cliToolName %}} get pods
+{{% param cliToolName %}} get pods --namespace $USER
 NAME                             READY   STATUS    RESTARTS   AGE
 data-consumer-7686976d88-2wbh5   1/1     Running   0          72s
 data-producer-786d6bb688-qpg4c   1/1     Running   0          72s
@@ -96,9 +96,16 @@ When the problem will be a redirect or certificate problem, try the flags `-L` a
 
 ```bash
 
-curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress -n $USER <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.15495350024595755}
 
+```
+
+Instead of the more complicated command you can also try:
+
+```bash
+curl -L https://consumer-<namespace>.{{% param labAppUrl %}}/data
+curl -L https://producer-<namespace>.{{% param labAppUrl %}}/data
 ```
 
 If your application returns the data point when consuming the consumers `/data` endpoint, then both applications work.
@@ -168,7 +175,7 @@ Finally, you can visit your application with the URL provided from the Route: `h
 Or you could access the `data` endpoint using curl:
 
 ```BASH
-curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress -n $USER <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 ```
 
 When you open the URL you should see the producers data
