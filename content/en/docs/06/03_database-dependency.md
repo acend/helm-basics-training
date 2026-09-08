@@ -234,8 +234,18 @@ The whole deployment will take a while until both pods are ready and deployed.
 To check if your deployment is working open the browser and enter the url of your app `https://helm-complex-chart-<namespace>-{{% param labAppUrl %}}`:
 Add some new entries and the execute following command to restart the application pod.
 ```bash
-{{% param cliToolName %}} rollout restart deployment myapp-mychart --namespace $USER
+{{% param cliToolName %}} rollout restart deployment myapp-helm-complex-chart --namespace $USER
 ```
+
+{{% alert title="Note" color="info" %}}
+If you`re unsure what the name of the deployment is you can run
+
+```bash
+{{% param cliToolName %}} get deployment --namespace $USER
+```
+beforehand.
+{{% /alert %}}
+
 After the new pod is created, you can reload the website and you should still the persisted entries.
 
 
