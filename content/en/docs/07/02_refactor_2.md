@@ -225,7 +225,7 @@ Call the release data-producer and install it!
 
 ```bash
 
-helm upgrade -i producer helm-basic-chart/. --set host=producer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=producer
+helm upgrade -n $USER -i producer helm-basic-chart/. --set host=producer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-producer --set serviceName=producer
 
 ```
 
@@ -243,7 +243,7 @@ Let's do the same thing and deploy the consuming service accordingly. Overwrite 
 {{% details title="Solution" %}}
 
 ```bash
-helm upgrade -i consumer helm-basic-chart/. --set host=consumer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer --set producerServiceName=producer-helm-basic-chart-producer
+helm upgrade -n $USER -i consumer helm-basic-chart/. --set host=consumer-<username>.{{% param labAppUrl %}} --set image.name=quay.io/puzzle/quarkus-techlab-data-consumer --set serviceName=data-consumer --set producerServiceName=producer-helm-basic-chart-producer
 ```
 
 {{% /details %}}
@@ -252,7 +252,7 @@ At the end, verify your two releases again and test if they are still delivering
 
 ```bash
 
-curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer -n $USER --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.4145158804475594}
 
 ```
