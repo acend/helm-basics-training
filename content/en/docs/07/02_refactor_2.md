@@ -264,7 +264,9 @@ curl -L https://consumer-<namespace>.{{% param labAppUrl %}}/data
 curl -L https://producer-<namespace>.{{% param labAppUrl %}}/data
 ```
 
+
 ## Task {{% param sectionnumber %}}.3 Clean up
+
 
 Uninstall the two releases again to have a fresh ground for the second option!
 

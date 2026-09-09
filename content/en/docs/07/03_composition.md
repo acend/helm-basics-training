@@ -212,6 +212,7 @@ curl -L https://consumer-<namespace>.{{% param labAppUrl %}}/data
 curl -L https://producer-<namespace>.{{% param labAppUrl %}}/data
 ```
 
+
 ### Task {{% param sectionnumber %}}.6 Clean up
 
 
