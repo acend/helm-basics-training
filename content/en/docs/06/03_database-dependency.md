@@ -95,9 +95,9 @@ Let's now replace the mariadb backend, we've manually created in the previous la
 
 Delete the three templates from the previous lab.
 
-* `templates/service-mariadb.yaml`
-* `templates/deployment-mariadb.yaml`
-* `templates/secret-mariadb.yaml`
+* `templates/mariadb-service.yaml`
+* `templates/mariadb-deployment.yaml`
+* `templates/mariadb-secret.yaml`
 
 Then we need to add the dependency to the `Chart.yaml`
 
@@ -134,6 +134,8 @@ Let's add the following configuration right after the database section from lab 
 
 ```yaml
 mariadb:
+  image:
+    repository: bitnamilegacy/mariadb
   enabled: true
   auth:
     rootPassword: mysuperrootpassword123
@@ -153,7 +155,7 @@ mariadb:
 
 Update your deployment to match the keys in the `values.yaml` to your environment variables defined in the deployment:
 
-```yaml
+{{< highlight YAML "hl_lines=35-47" >}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -188,6 +190,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.database.enabled }}
           env:
           - name: MYSQL_DATABASE_USER
             value: {{ .Values.mariadb.auth.username }}
@@ -199,6 +202,7 @@ spec:
             value: {{ .Values.mariadb.auth.database }}
           - name: MYSQL_URI
             value: mysql://$(MYSQL_DATABASE_USER):$(MYSQL_DATABASE_PASSWORD)@{{ .Release.Name }}-mariadb/$(MYSQL_DATABASE_NAME)
+          {{- end }}
           ports:
             - name: http
               containerPort: 5000
@@ -213,7 +217,7 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-```
+{{< /highlight >}}
 
 After editing the files we can now install the release.
 
@@ -230,15 +234,25 @@ The whole deployment will take a while until both pods are ready and deployed.
 To check if your deployment is working open the browser and enter the url of your app `https://helm-complex-chart-<namespace>-{{% param labAppUrl %}}`:
 Add some new entries and the execute following command to restart the application pod.
 ```bash
-{{% param cliToolName %}} rollout restart deployment myapp-mychart --namespace $USER
+{{% param cliToolName %}} rollout restart deployment myapp-helm-complex-chart --namespace $USER
 ```
+
+{{% alert title="Note" color="info" %}}
+If you`re unsure what the name of the deployment is you can run
+
+```bash
+{{% param cliToolName %}} get deployment --namespace $USER
+```
+beforehand.
+{{% /alert %}}
+
 After the new pod is created, you can reload the website and you should still the persisted entries.
 
 
 ## Task {{% param sectionnumber %}}.2: Explore the bitnami mariadb chart
 
 
-Use the `--dry-run` option or the `template` command to have a look at the new k8s resources introduced by the dependency.
+Use the `--dry-run=server` option or the `template` command to have a look at the new k8s resources introduced by the dependency.
 Explore the [chart source code](https://github.com/bitnami/charts/tree/master/bitnami/mariadb) and have a look at alle the possible [configuration options](https://artifacthub.io/packages/helm/bitnami/mariadb).
 
 
@@ -249,4 +263,3 @@ If you're happy with the result, clean up your namespace:
 ```bash
 helm uninstall myapp --namespace $USER
 ```
-
