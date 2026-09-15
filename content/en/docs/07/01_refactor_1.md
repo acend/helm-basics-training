@@ -34,11 +34,11 @@ First let us define the new variables in our `values.yaml` file. Replace `<usern
 
 ```yaml
 producer:
-  host: producer-<namespace>.training.openshift.ch
+  host: producer-<namespace>.{{% param labAppUrl %}}
 
 consumer:
   tag: latest
-  host: consumer-<namespace>.training.openshift.ch
+  host: consumer-<namespace>.{{% param labAppUrl %}}
 ```
 {{% /onlyWhen  %}}
 
@@ -64,13 +64,13 @@ helm upgrade -i myrelease --namespace $USER ./helm-basic-chart
 Verify your deployment! Check if your pods are running and healthy!
 
 ```bash
-{{% param cliToolName %}} get pods
+{{% param cliToolName %}} get pods --namespace $USER
 ```
 
 This should return something like this:
 
 ```
-{{% param cliToolName %}} get pods
+{{% param cliToolName %}} get pods --namespace $USER
 NAME                             READY   STATUS    RESTARTS   AGE
 data-consumer-7686976d88-2wbh5   1/1     Running   0          72s
 data-producer-786d6bb688-qpg4c   1/1     Running   0          72s
@@ -96,9 +96,16 @@ When the problem will be a redirect or certificate problem, try the flags `-L` a
 
 ```bash
 
-curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress -n $USER <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 {"data":0.15495350024595755}
 
+```
+
+Instead of the more complicated command you can also try:
+
+```bash
+curl -L https://consumer-<namespace>.{{% param labAppUrl %}}/data
+curl -L https://producer-<namespace>.{{% param labAppUrl %}}/data
 ```
 
 If your application returns the data point when consuming the consumers `/data` endpoint, then both applications work.
@@ -168,7 +175,7 @@ Finally, you can visit your application with the URL provided from the Route: `h
 Or you could access the `data` endpoint using curl:
 
 ```BASH
-curl -kL $({{% param cliToolName %}} get ingress <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
+curl -kL $({{% param cliToolName %}} get ingress -n $USER <releasename>-consumer --template="{{(index .spec.rules 0).host}}")/data
 ```
 
 When you open the URL you should see the producers data
@@ -231,7 +238,7 @@ Now we have prepared our values file for the production environment. Next we can
 Execute the Helm install command and pass the new created production values as parameter.
 
 ```bash
-helm upgrade -i myrelease-prod --values values-production.yaml --namespace $USER ./helm-basic-chart
+helm upgrade -i myrelease-prod --values ./helm-basic-chart/values-production.yaml --namespace $USER ./helm-basic-chart
 ```
 
 Use the helm list command to list all releases in your namespace

@@ -20,7 +20,31 @@ Let us start with a new value file for the Development environment. Create a new
 * Change the Ingress configuration to match the following path schema `http://mychart-develop-<namespace>.{{% param labAppUrl %}}/`
 * Because we don't need any persistence for the Development environment, disable the database with `database.enabled: false`
 
+{{% onlyWhen openshift %}}
 
+```yaml
+replicaCount: 1
+
+ingress:
+  enabled: true
+  className: openshift-default
+  annotations:
+    route.openshift.io/termination: edge
+  hosts:
+    - host: mychart-develop-<namespace>.{{% param labAppUrl %}}
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+database:
+  enabled: false
+```
+
+{{% /onlyWhen %}}
+
+
+{{% onlyWhenNot openshift %}}
 ```yaml
 replicaCount: 1
 
@@ -36,6 +60,9 @@ ingress:
 database:
   enabled: false
 ```
+
+{{% /onlyWhenNot %}}
+
 
 You can specify the '--values'/'-f' flag multiple times. The priority will be given to the last (right-most) file specified. For example, if both myvalues.yaml and override.yaml contained a key called 'Test', the value set in override.yaml would take precedence.
 
@@ -63,6 +90,33 @@ Create for the Production environment e new value files named `values-prod.yaml`
 
 The `values-prod.yaml` should look as follow:
 
+{{% onlyWhen openshift %}}
+
+```yaml
+replicaCount: 3
+
+ingress:
+  enabled: true
+  className: openshift-default
+  annotations:
+    route.openshift.io/termination: edge
+  hosts:
+    - host: mychart-production-<namespace>.{{% param labAppUrl %}}
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+database:
+  enabled: true
+  databaseuser: acend-prod
+  databasename: acenddb-prod
+```
+
+{{% /onlyWhenNot %}}
+
+{{% onlyWhenNot openshift %}}
+
 ```yaml
 replicaCount: 3
 
@@ -80,6 +134,8 @@ database:
   databaseuser: acend-prod
   databasename: acenddb-prod
 ```
+
+{{% /onlyWhenNot %}}
 
 Install the production release with the following command. Again pass first the default values with `-f values-yaml` and then the production values with `-d values-prod.yaml`
 

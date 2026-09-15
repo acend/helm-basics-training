@@ -55,14 +55,29 @@ podSecurityContext:
 containerSecurityContext:
   enabled: false
 {{% /onlyWhen %}}
+{{% onlyWhen openshift %}}
+ingress:
+  enabled: true
+  hostname: wordpress-<namespace>.{{% param labAppUrl %}}
+  ingressClassName: openshift-default
+  annotations:
+    route.openshift.io/termination: edge
+  tls: true
+{{% /onlyWhen%}}
+{{% onlyWhenNot openshift %}}
 ingress:
   enabled: true
   hostname: wordpress-<namespace>.{{% param labAppUrl %}}
   extraTls:
   - hosts:
     - wordpress-<namespace>.{{% param labAppUrl %}}
+{{% /onlyWhenNot %}}
+image:
+  repository: bitnamilegacy/wordpress
 
 mariadb:
+  image:
+    repository: bitnamilegacy/mariadb
   primary:
     persistence:
       size: 1Gi
@@ -145,8 +160,8 @@ The `Chart.yaml` file allows us to define dependencies on other charts. In our W
 dependencies:
   - condition: mariadb.enabled
     name: mariadb
-    repository: https://charts.bitnami.com/bitnami
-    version: 11.x.x
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 22.x.x
 ```
 
 [Helm's best practices](https://helm.sh/docs/chart_best_practices/) suggest to use version ranges instead of a fixed version whenever possible.
@@ -221,10 +236,18 @@ which gives you:
 USER-SUPPLIED VALUES:
 containerSecurityContext:
   enabled: false
+image:
+    repository: bitnamilegacy/wordpress
 ingress:
+  annotations:
+    route.openshift.io/termination: edge
   enabled: true
   hostname: wordpress-<namespace>.{{% param labAppUrl %}}
+  ingressClassName: openshift-default
+  tls: true
 mariadb:
+  image:
+    repository: bitnamilegacy/mariadb
   primary:
     containerSecurityContext:
       enabled: false
@@ -239,9 +262,8 @@ podSecurityContext:
 service:
   type: ClusterIP
 updateStrategy:
-updateStrategy:
-  type: Recreate
   rollingUpdate: null
+  type: Recreate
 ```
 
 {{% /onlyWhen %}}

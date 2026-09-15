@@ -387,4 +387,4 @@ maintainers:
     email: YOUR E-MAIL ADDRESS
 ```
 
-Continue with the lab "[Deploy your awesome application](./deploy/)".
+Continue with the lab "[Deploy your awesome application](./01_deploy/)".

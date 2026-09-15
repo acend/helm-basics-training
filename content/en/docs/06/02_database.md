@@ -117,9 +117,9 @@ We want to add a MariaDB database and use it as a backend for our `example-web-p
 
 There are three template files which are neccessary for the MariaDB deployment.
 
-* `deployment-mariadb.yaml`
-* `service-mariadb.yaml`
-* `secret-mariadb.yaml`
+* `templates/mariadb-service.yaml`
+* `templates/mariadb-deployment.yaml`
+* `templates/mariadb-secret.yaml`
 
 But first add the new values for the configuration of the database connection and set the `database.enabled` value to true.
 
@@ -141,13 +141,13 @@ database:
   databasepassword: mysuperpassword123
   databaserootpassword: mysuperrootpassword123
   image:
-    repository: registry.puzzle.ch/docker.io/mariadb
+    repository: docker.io/library/mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
 ```
 
 {{% alert title="Note" color="info" %}}
-Remember the `--dry-run` option from lab 2. This allows you to render the templates without applying them to the cluster.
+Remember the `--dry-run=server` option from lab 2. This allows you to render the templates without applying them to the cluster.
 {{% /alert %}}
 
 
@@ -430,7 +430,7 @@ database:
   databasepassword: mysuperpassword123
   databaserootpassword: mysuperrootpassword123
   image:
-    repository: registry.puzzle.ch/docker.io/mariadb
+    repository: docker.io/library/mariadb
     pullPolicy: IfNotPresent
     tag: "10.5"
 ```
